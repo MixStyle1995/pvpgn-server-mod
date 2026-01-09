@@ -1,0 +1,6 @@
+- Mod và chỉnh sửa bởi mình (Thái Sơn).
+- Sử dụng mã nguồn mới nhất PvPGN-PRO 1.99.7.2.1.
+- Thông tin thay đổi:
+  - Mởi giới hạn Packet Send/Recv
+  - Thêm 2 gói tin mới (SERVER_GAME_HOST_INFO (S -> C), CLIENT_REQUEST_GAME_LIST (C -> S)) để đồng bộ thông tin Game trong war3 cho chuẩn.
+  - Sửa lại gói tin SID_STARTADVEX3 thêm 2 biến mới.
