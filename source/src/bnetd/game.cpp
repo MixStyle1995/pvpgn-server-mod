@@ -2523,18 +2523,10 @@ namespace pvpgn
 			t_packet* rpacket;
 			t_elist* pos;
 			t_game* game;
-			int count = 0;
 
 			if (!c) return -1;
 
-			elist_for_each(pos, gamelist())
-			{
-				game = elist_entry(pos, t_game, glist_link);
-				if (game)
-				{
-					count++;
-				}
-			}
+			int count = gamelist_get_length();
 
 			eventlog(eventlog_level_info, __FUNCTION__, "sending {} games to connection", count);
 

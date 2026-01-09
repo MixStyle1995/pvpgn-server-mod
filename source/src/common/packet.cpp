@@ -437,8 +437,6 @@ namespace pvpgn
 					return "CLIENT_EXTRAWORK";
 				case CLIENT_REQUEST_GAME_LIST:
 					return "CLIENT_REQUEST_GAME_LIST";
-				case CLIENT_REQUEST_GAME_INFO:
-					return "CLIENT_REQUEST_GAME_INFO";
 				case CLIENT_UNKNOWN_24:
 					return "CLIENT_UNKNOWN_24";
 				case CLIENT_LADDERREQ:

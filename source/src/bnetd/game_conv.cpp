@@ -1045,11 +1045,12 @@ namespace pvpgn
 				offset += std::strlen(mapname) + 1;  // Skip hostName + null
 
 				const char* hostName = pstr + offset;
+				size_t hostname_len = std::strlen(hostName);
 				if (hostName[0] != '\0')
 				{
 					game_set_hostName(game, hostName);
 					eventlog(eventlog_level_info, __FUNCTION__, "parsed hostName: '{}'", hostName);
-					offset += std::strlen(hostName) + 1;  // Skip hostName + null
+					offset += hostname_len + 1;  // Skip hostName + null
 
 					offset += 20; // Skip SHA1
 

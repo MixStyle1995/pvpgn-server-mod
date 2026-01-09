@@ -179,7 +179,6 @@ namespace pvpgn
 		static int _client_claninforeq(t_connection * c, t_packet const *const packet);
 		static int _client_extrawork(t_connection * c, t_packet const *const packet);
 		static int _client_request_game_list(t_connection* c, t_packet const* const packet);
-		static int _client_request_game_info(t_connection* c, t_packet const* const packet);
 
 		/* connection state connected handler table */
 		static const t_htable_row bnet_htable_con[] = {
@@ -282,7 +281,6 @@ namespace pvpgn
 			{ CLIENT_CLANINFOREQ, _client_claninforeq },
 			{ CLIENT_EXTRAWORK, _client_extrawork },
 			{ CLIENT_REQUEST_GAME_LIST, _client_request_game_list },
-			{ CLIENT_REQUEST_GAME_INFO, _client_request_game_info },
 			{ CLIENT_NULL, NULL },
 			{ -1, NULL }
 		};
@@ -5573,17 +5571,6 @@ namespace pvpgn
 
 			{ 
 				game_send_list_to_connection(c); 
-			}
-
-			return 0;
-		}
-
-		static int _client_request_game_info(t_connection* c, t_packet const* const packet)
-		{
-			if (packet_get_size(packet) < sizeof(t_client_request_game_info_packet))
-			{
-				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad REQUEST_GAME_INFO packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_request_game_info_packet), packet_get_size(packet));
-				return -1;
 			}
 
 			return 0;

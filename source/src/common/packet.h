@@ -372,7 +372,6 @@ namespace pvpgn
 			t_server_requiredwork	    server_requiredwork;
 			t_client_extrawork	    client_extrawork;
 			t_client_request_game_list_packet	client_request_game_list_packet;
-			t_client_request_game_info_packet	client_request_game_info_packet;
 			t_server_game_list_packet_header	server_game_list_packet_header;
 		} u;
 	} t_packet;

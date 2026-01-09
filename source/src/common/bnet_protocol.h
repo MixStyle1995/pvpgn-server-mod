@@ -77,15 +77,8 @@ namespace pvpgn
 	{
 		t_bnet_header h;
 	} PACKED_ATTR() t_client_request_game_list_packet;
-	typedef struct
-	{
-		t_bnet_header h;
-		char	host_name[32];
-		char	owner_host_name[32];
-	} PACKED_ATTR() t_client_request_game_info_packet;
 #pragma pack()
 
-#define CLIENT_REQUEST_GAME_INFO 0xf1ff
 #define CLIENT_REQUEST_GAME_LIST 0xf2ff
 
 	/******************************************************/
