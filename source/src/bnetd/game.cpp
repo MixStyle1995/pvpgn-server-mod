@@ -2555,7 +2555,7 @@ namespace pvpgn
 					strcpy(game_data.map_name, game_get_mapname(game)); 
 					strcpy(game_data.IP_Port, addr_num_to_addr_str(game_get_addr(game), game_get_port(game)));
 					strcpy(game_data.version, vernum_to_verstr(game_get_version(game)));
-					bn_byte_set(&game_data.current_players, game_get_count(game));
+					bn_byte_set(&game_data.current_players, game_get_ref(game));
 					bn_byte_set(&game_data.max_players, game_get_maxplayersmap(game));
 					bn_byte_set(&game_data.game_status, game_get_status(game));
 
