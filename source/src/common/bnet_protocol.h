@@ -77,9 +77,16 @@ namespace pvpgn
 	{
 		t_bnet_header h;
 	} PACKED_ATTR() t_client_request_game_list_packet;
+
+	typedef struct
+	{
+		t_bnet_header h;
+		bn_int version;     // War3 version (26, 27, 28, 29, 30...)
+	} PACKED_ATTR() t_client_custom_war3_version;
 #pragma pack()
 
-#define CLIENT_REQUEST_GAME_LIST 0xf2ff
+#define CLIENT_CUSTOM_WAR3_VERSION  0xf1ff
+#define CLIENT_REQUEST_GAME_LIST	0xf2ff
 
 	/******************************************************/
 	/*
