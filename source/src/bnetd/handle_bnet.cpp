@@ -281,6 +281,7 @@ namespace pvpgn
 			{ CLIENT_SETEMAILREPLY, _client_setemailreply },
 			{ CLIENT_CLANINFOREQ, _client_claninforeq },
 			{ CLIENT_EXTRAWORK, _client_extrawork },
+			{ CLIENT_CUSTOM_WAR3_VERSION, _client_request_custom_war3_version },
 			{ CLIENT_REQUEST_GAME_LIST, _client_request_game_list },
 			{ CLIENT_NULL, NULL },
 			{ -1, NULL }
@@ -5583,11 +5584,13 @@ namespace pvpgn
 				return -1;
 			}
 
-			conn_set_gameversion(c, bn_int_get(packet->u.client_custom_war3_version.version));
-			std::string version = vernum_to_verstr(bn_int_get(packet->u.client_custom_war3_version.version));
+			conn_set_versionid(c, bn_int_get(packet->u.client_custom_war3_version.version));
+			conn_set_checksum(c, bn_int_get(packet->u.client_custom_war3_version.checksum));
+			conn_set_gameversion(c, bn_int_get(packet->u.client_custom_war3_version.gameversion));
+			std::string version = vernum_to_verstr(bn_int_get(packet->u.client_custom_war3_version.gameversion));
 			conn_set_clientver(c, version.c_str());
 
-			eventlog(eventlog_level_info, __FUNCTION__, "[{}] CUSTOM_WAR3_VERSION verstr={}", conn_get_socket(c), version);
+			eventlog(eventlog_level_info, __FUNCTION__, "[{}] CUSTOM_WAR3_VERSION verstr={} versionid=0x{:08x} gameversion=0x{:08x} checksum=0x{:08x}", conn_get_socket(c), version, conn_get_versionid(c), conn_get_gameversion(c), conn_get_checksum(c));
 
 			return 0;
 		}

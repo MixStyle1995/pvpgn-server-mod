@@ -81,7 +81,9 @@ namespace pvpgn
 	typedef struct
 	{
 		t_bnet_header h;
-		bn_int version;     // War3 version (26, 27, 28, 29, 30...)
+		bn_int version;
+		bn_int gameversion;
+		bn_int checksum;
 	} PACKED_ATTR() t_client_custom_war3_version;
 #pragma pack()
 
