@@ -39,8 +39,8 @@ namespace pvpgn
 			int		last_active;
 			int nCharsInReadBuffer;
 			int nCharsInWriteBuffer;
-			char ReadBuf[kBufferSize];
-			char WriteBuf[kBufferSize];
+			char* ReadBuf;
+			char* WriteBuf;
 		} t_d2dbs_connection;
 
 		typedef struct raw_preset_d2gsid {

@@ -27,7 +27,7 @@ namespace pvpgn
 
 	namespace d2dbs
 	{
-
+#pragma pack(push, 1)
 		typedef struct {
 			bn_short  size;
 			bn_short  type;
@@ -37,7 +37,8 @@ namespace pvpgn
 		typedef struct {
 			bn_byte   cclass;
 		} t_d2gs_d2dbs_connect;
-#define CONNECT_CLASS_D2GS_TO_D2DBS    0x65
+#define CONNECT_CLASS_D2GS_TO_D2DBS		0x65
+#define CONNECT_CLASS_D2GS_TO_D2DBS_EX    0x66
 
 #define D2GS_D2DBS_SAVE_DATA_REQUEST    0x30
 		typedef struct {
@@ -115,6 +116,48 @@ namespace pvpgn
 			t_d2dbs_d2gs_header	h;
 		} t_d2gs_d2dbs_echoreply;
 
+		// Thêm mới hoàn toàn:
+		typedef struct {
+			bn_int    size;    /* 4 bytes thay vì bn_short */
+			bn_short  type;
+			bn_int    seqno;
+		} t_d2dbs_d2gs_header_ex;
+
+#define D2GS_D2DBS_SAVE_DATA_REQUEST_EX  0x38
+		typedef struct {
+			t_d2dbs_d2gs_header_ex  h;
+			bn_short  datatype;
+			bn_int    datalen;     /* bn_int: không bị giới hạn 64KB */
+		} t_d2gs_d2dbs_save_data_request_ex;
+
+#define D2DBS_D2GS_SAVE_DATA_REPLY_EX    0x38
+		typedef struct {
+			t_d2dbs_d2gs_header_ex  h;
+			bn_int    result;
+			bn_short  datatype;
+		} t_d2dbs_d2gs_save_data_reply_ex;
+
+#define D2GS_D2DBS_GET_DATA_REQUEST_EX   0x39
+		typedef struct {
+			t_d2dbs_d2gs_header_ex  h;
+			bn_short  datatype;
+		} t_d2gs_d2dbs_get_data_request_ex;
+
+#define D2DBS_D2GS_GET_DATA_REPLY_EX     0x39
+		typedef struct {
+			t_d2dbs_d2gs_header_ex  h;
+			bn_int    result;
+			bn_int    charcreatetime;
+			bn_int    allowladder;
+			bn_short  datatype;
+			bn_int    datalen;     /* bn_int: không bị giới hạn 64KB */
+		} t_d2dbs_d2gs_get_data_reply_ex;
+
+#define D2GS_D2DBS_ECHOREPLY_EX		0x35
+		typedef struct {
+			t_d2dbs_d2gs_header_ex	h;
+		} t_d2gs_d2dbs_echoreply_ex;
+#pragma pack(pop)
 
 		extern int dbs_packet_handle(t_d2dbs_connection * conn);
 		extern int dbs_keepalive(void);
