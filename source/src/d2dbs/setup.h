@@ -32,6 +32,7 @@ constexpr long kBufferSize = 1024L * 1024L * 10L;  // 10MB
 #define DEFAULT_LOG_LEVELS		"info,warn,error"
 #define D2DBS_CHARSAVE_DIR		"/usr/local/var/charsave"
 #define D2DBS_CHARINFO_DIR		"/usr/local/var/charinfo"
+#define D2DBS_CHAR_STASH_DIR		"/usr/local/var/charstash"
 #define D2DBS_CHARSAVEBAK_DIR		"/usr/local/var/bak/charsave"
 #define D2DBS_CHARINFOBAK_DIR		"/usr/local/var/bak/charinfo"
 #define D2DBS_LADDER_DIR		"/usr/local/var/ladders"

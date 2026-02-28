@@ -157,6 +157,29 @@ namespace pvpgn
 		typedef struct {
 			t_d2dbs_d2gs_header_ex	h;
 		} t_d2gs_d2dbs_echoreply_ex;
+
+#define D2GS_D2DBS_SAVE_STASH_EX   0x3A
+#define D2DBS_D2GS_SAVE_STASH_REPLY_EX 0x3A
+		typedef struct 
+		{
+			t_d2dbs_d2gs_header_ex h;
+
+			bn_int  stashtype;   // loại stash (shared, personal, hc, v.v.)
+			bn_int  datasize;    // kích thước buffer
+
+			/* AccountName */
+			/* CharName */
+			/* data */
+		} t_d2gs_d2dbs_save_stash_request_ex;
+		typedef struct {
+			t_d2dbs_d2gs_header_ex h;
+
+			bn_int result;   // 0 = OK, 1 = FAIL
+		} t_d2dbs_d2gs_save_stash_reply_ex;
+
+#define D2DBS_SAVE_STASH_SUCCESS 0
+#define D2DBS_SAVE_STASH_FAILED  1
+
 #pragma pack(pop)
 
 		extern int dbs_packet_handle(t_d2dbs_connection * conn);

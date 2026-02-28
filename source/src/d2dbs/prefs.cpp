@@ -34,7 +34,7 @@ namespace pvpgn
 
 		static struct
 		{
-			char const      * logfile;
+			char const	* logfile;
 			char const	* logfile_gs;
 			char const	* servaddrs;
 			char const	* charsave_dir;
@@ -56,6 +56,7 @@ namespace pvpgn
 			unsigned int	ladderupdate_threshold;
 			unsigned int	ladder_chars_only;
 			unsigned int	difficulty_hack;
+			char const* char_stash_dir;
 
 		} prefs_conf;
 
@@ -125,6 +126,8 @@ namespace pvpgn
 		static int conf_set_difficulty_hack(const char* valstr);
 		static int conf_setdef_difficulty_hack(void);
 
+		static int conf_set_char_stash_dir(const char* valstr);
+		static int conf_setdef_char_stash_dir(void);
 
 		static t_conf_entry prefs_conf_table[] = {
 			{ "logfile", conf_set_logfile, NULL, conf_setdef_logfile },
@@ -149,6 +152,7 @@ namespace pvpgn
 			{ "ladderupdate_threshold", conf_set_ladderupdate_threshold, NULL, conf_setdef_ladderupdate_threshold },
 			{ "ladder_chars_only", conf_set_ladder_chars_only, NULL, conf_setdef_ladder_chars_only },
 			{ "difficulty_hack", conf_set_difficulty_hack, NULL, conf_setdef_difficulty_hack },
+			{ "charstashdir", conf_set_char_stash_dir, NULL, conf_setdef_char_stash_dir },
 			{ NULL, NULL, NULL, NULL }
 		};
 
@@ -540,6 +544,21 @@ namespace pvpgn
 			return conf_set_int(&prefs_conf.difficulty_hack, NULL, 0);
 		}
 
+
+		extern char const* d2dbs_prefs_get_char_stash_dir(void)
+		{
+			return prefs_conf.char_stash_dir;
+		}
+
+		static int conf_set_char_stash_dir(const char* valstr)
+		{
+			return conf_set_str(&prefs_conf.char_stash_dir, valstr, NULL);
+		}
+
+		static int conf_setdef_char_stash_dir(void)
+		{
+			return conf_set_str(&prefs_conf.char_stash_dir, NULL, D2DBS_CHAR_STASH_DIR);
+		}
 	}
 
 }

@@ -67,12 +67,14 @@ namespace pvpgn
 		static int dbs_packet_charlock(t_d2dbs_connection* conn);
 		static int dbs_packet_updateladder(t_d2dbs_connection* conn);
 		static int dbs_verify_ipaddr(char const * addrlist, t_d2dbs_connection * c);
+		static int dbs_packet_fix_charinfo(t_d2dbs_connection * conn, char * AccountName, char * CharName, char * charsave);
+		static void dbs_packet_set_charinfo_level(char * CharName, char * charinfo);
 
 		static int dbs_packet_savedata_ex(t_d2dbs_connection* conn);
 		static int dbs_packet_getdata_ex(t_d2dbs_connection* conn);
 
-		static int dbs_packet_fix_charinfo(t_d2dbs_connection * conn, char * AccountName, char * CharName, char * charsave);
-		static void dbs_packet_set_charinfo_level(char * CharName, char * charinfo);
+		static unsigned int dbs_packet_savedata_char_stash(t_d2dbs_connection* conn, char* AccountName, char* CharName, char* data, unsigned int datalen);
+		static unsigned int dbs_packet_getdata_char_stash(t_d2dbs_connection* conn, char* AccountName, char* CharName, char* data, long bufsize);
 
 		static unsigned int dbs_packet_savedata_charsave(t_d2dbs_connection* conn, char * AccountName, char * CharName, char * data, unsigned int datalen)
 		{
@@ -681,41 +683,50 @@ namespace pvpgn
 			getret = (t_d2dbs_d2gs_get_data_reply_ex*)writepos;
 			datalen = 0;
 
-			if (datatype == D2GS_DATA_CHARSAVE) {
-				if (cl_query_charlock_status((unsigned char*)CharName, (unsigned char*)RealmName, &gsid) != 0) {
+			if (datatype == D2GS_DATA_CHARSAVE) 
+			{
+				if (cl_query_charlock_status((unsigned char*)CharName, (unsigned char*)RealmName, &gsid) != 0)
+				{
 					eventlog(eventlog_level_warn, __FUNCTION__, "char {}(*{})@{} is already locked on gs {}", CharName, AccountName, RealmName, gsid);
 					result = D2DBS_GET_DATA_CHARLOCKED;
 				}
-				else if (cl_lock_char((unsigned char*)CharName, (unsigned char*)RealmName, conn->serverid) != 0) {
+				else if (cl_lock_char((unsigned char*)CharName, (unsigned char*)RealmName, conn->serverid) != 0) 
+				{
 					eventlog(eventlog_level_error, __FUNCTION__, "failed to lock char {}(*{})@{} for gs {}({})", CharName, AccountName, RealmName, conn->serverip, conn->serverid);
 					result = D2DBS_GET_DATA_CHARLOCKED;
 				}
-				else {
+				else 
+				{
 					eventlog(eventlog_level_info, __FUNCTION__, "lock char {}(*{})@{} for gs {}({})", CharName, AccountName, RealmName, conn->serverip, conn->serverid);
 					datalen = dbs_packet_getdata_charsave(conn, AccountName, CharName, databuf, kBufferSize);
-					if (datalen > 0) {
+					if (datalen > 0) 
+					{
 						result = D2DBS_GET_DATA_SUCCESS;
 						charinfolen = dbs_packet_getdata_charinfo(conn, AccountName, CharName, (char*)&charinfo, sizeof(charinfo));
 						if (charinfolen > 0) {
 							result = D2DBS_GET_DATA_SUCCESS;
 						}
-						else {
+						else 
+						{
 							result = D2DBS_GET_DATA_FAILED;
 							cl_unlock_char((unsigned char*)CharName, (unsigned char*)RealmName, gsid);
 						}
 					}
-					else {
+					else 
+					{
 						datalen = 0;
 						result = D2DBS_GET_DATA_FAILED;
 						cl_unlock_char((unsigned char*)CharName, (unsigned char*)RealmName, gsid);
 					}
 				}
-				if (result == D2DBS_GET_DATA_SUCCESS) {
+				if (result == D2DBS_GET_DATA_SUCCESS) 
+				{
 					bn_int_set(&getret->charcreatetime, bn_int_get(charinfo.header.create_time));
 					bn_int_set(&getret->allowladder,
 						bn_int_get(charinfo.header.create_time) >= prefs_get_ladderinit_time() ? 1 : 0);
 				}
-				else {
+				else 
+				{
 					bn_int_set(&getret->charcreatetime, 0);
 					bn_int_set(&getret->allowladder, 0);
 				}
@@ -1143,6 +1154,101 @@ namespace pvpgn
 			return 1; /* difficulty hack not enabled */
 		}
 
+		static unsigned int dbs_packet_savedata_char_stash(t_d2dbs_connection* conn, char* AccountName, char* CharName, char* data, unsigned int datalen)
+		{
+			char filename[4096]{};
+			char savefile[4096]{};
+			std::FILE* fd;
+
+			strtolower(AccountName);
+			strtolower(CharName);
+
+			std::sprintf(filename, "%s/.%s.tmp", d2dbs_prefs_get_char_stash_dir(), CharName);
+			fd = std::fopen(filename, "wb");
+			if (!fd) 
+			{
+				eventlog(eventlog_level_error, __FUNCTION__, "open() failed : {}", filename);
+				return 0;
+			}
+
+			std::size_t curlen = 0;
+			std::size_t leftlen = datalen;
+			while (curlen < datalen)
+			{
+				std::size_t writelen = leftlen > 2000 ? 2000 : leftlen;
+
+				std::size_t readlen = std::fwrite(data + curlen, 1, writelen, fd);
+				if (readlen <= 0) 
+				{
+					std::fclose(fd);
+					eventlog(eventlog_level_error, __FUNCTION__, "write() failed error : {}", std::strerror(errno));
+					return 0;
+				}
+				curlen += readlen;
+				leftlen -= readlen;
+			}
+			std::fclose(fd);
+
+			std::sprintf(savefile, "%s/%s.stash", d2dbs_prefs_get_charsave_dir(), CharName);
+			if (p_rename(filename, savefile) == -1)
+			{
+				eventlog(eventlog_level_error, __FUNCTION__, "error std::rename {} to {}", filename, savefile);
+				return 0;
+			}
+			eventlog(eventlog_level_info, __FUNCTION__, "saved char stash {}(*{}) for gs {}({})", CharName, AccountName, conn->serverip, conn->serverid);
+			return datalen;
+		}
+
+		static unsigned int dbs_packet_getdata_char_stash(t_d2dbs_connection* conn, char* AccountName, char* CharName, char* data, long bufsize)
+		{
+			char filename[4096]{};
+			std::FILE* fd;
+
+			strtolower(AccountName);
+			strtolower(CharName);
+
+			std::sprintf(filename, "%s/%s.stash", d2dbs_prefs_get_char_stash_dir(), CharName);
+			fd = std::fopen(filename, "rb");
+			if (!fd) {
+				eventlog(eventlog_level_error, __FUNCTION__, "open() failed : {}", filename);
+				return 0;
+			}
+			std::fseek(fd, 0, SEEK_END);
+			long filesize = std::ftell(fd);
+			if (filesize == -1L)
+			{
+				std::fclose(fd);
+				eventlog(eventlog_level_error, __FUNCTION__, "ftell() failed");
+				return 0;
+			}
+			std::rewind(fd);
+
+			if (bufsize < filesize) 
+			{
+				std::fclose(fd);
+				eventlog(eventlog_level_error, __FUNCTION__, "not enough buffer");
+				return 0;
+			}
+
+			long curlen = 0;
+			std::size_t leftlen = filesize;
+			while (curlen < filesize)
+			{
+				std::size_t writelen = leftlen > 2000 ? 2000 : leftlen;
+
+				std::size_t readlen = std::fread(data + curlen, 1, writelen, fd);
+				if (readlen <= 0) {
+					std::fclose(fd);
+					eventlog(eventlog_level_error, __FUNCTION__, "read() failed error : {}", std::strerror(errno));
+					return 0;
+				}
+				leftlen -= readlen;
+				curlen += readlen;
+			}
+			std::fclose(fd);
+			eventlog(eventlog_level_info, __FUNCTION__, "loaded char stash {}(*{}) for gs {}({})", CharName, AccountName, conn->serverip, conn->serverid);
+			return filesize;
+		}
 	}
 
 }

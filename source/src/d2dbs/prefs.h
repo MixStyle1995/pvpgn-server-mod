@@ -52,6 +52,7 @@ namespace pvpgn
 		extern unsigned int prefs_get_difficulty_hack(void);
 		extern char const * d2dbs_prefs_get_pidfile(void);
 
+		extern char const* d2dbs_prefs_get_char_stash_dir(void);
 	}
 
 }
