@@ -37,6 +37,7 @@
 #include "charlock.h"
 #include "dbspacket.h"
 #include "handle_signal.h"
+#include "d2fs_server.h"
 
 #ifdef HAVE_ARPA_INET_H
 # include <arpa/inet.h>
@@ -89,6 +90,21 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "dbs_server_init error ");
 				return 3;
 			}
+
+			/* Start D2FileServer on (d2dbs_port + 1) */
+			{
+				t_addr* servaddr = addr_create_str(d2dbs_prefs_get_servaddrs(), INADDR_ANY, DEFAULT_LISTEN_PORT);
+				unsigned short d2dbs_port = servaddr ? (unsigned short)addr_get_port(servaddr) : DEFAULT_LISTEN_PORT;
+				if (servaddr) addr_destroy(servaddr);
+				unsigned short d2fs_port = d2dbs_port + 1;
+				/* datadir = parent cua charsave_dir */
+				std::string datadir = d2dbs_prefs_get_charsave_dir();
+				size_t pos = datadir.rfind("/charsave");
+				if (pos == std::string::npos) pos = datadir.rfind("\\charsave");
+				if (pos != std::string::npos) datadir = datadir.substr(0, pos);
+				d2fs_server_start(d2fs_port, datadir.c_str());
+			}
+
 			eventlog(eventlog_level_info, __FUNCTION__, "waiting for connections...");
 			dbs_server_loop(dbs_server_listen_socket);
 			dbs_on_exit();
@@ -421,6 +437,9 @@ namespace pvpgn
 		{
 			t_elem * elem;
 			t_d2dbs_connection * it;
+
+			/* Stop D2FileServer thread truoc */
+			d2fs_server_stop();
 
 			if (dbs_server_listen_socket >= 0)
 				psock_close(dbs_server_listen_socket);

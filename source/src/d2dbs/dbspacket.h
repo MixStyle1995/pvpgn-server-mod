@@ -112,24 +112,33 @@ namespace pvpgn
 		} t_d2dbs_d2gs_echorequest;
 
 #define D2GS_D2DBS_ECHOREPLY		0x34
-		typedef struct {
-			t_d2dbs_d2gs_header	h;
-		} t_d2gs_d2dbs_echoreply;
 
-		// Thêm mới hoàn toàn:
+/* =================================================================
+ * Extended packets - large save file support (> 64KB)
+ * Type 0x38 = EX_SAVE, 0x39 = EX_GET
+ * Header mới: [bn_int size][bn_short type][bn_int seqno] = 10 bytes
+ * D2GS cũ vẫn dùng 0x30/0x31 với header cũ, không bị ảnh hưởng
+ * ================================================================= */
+
+ /* Extended header: size là bn_int (4 bytes) thay vì bn_short */
 		typedef struct {
-			bn_int    size;    /* 4 bytes thay vì bn_short */
-			bn_short  type;
-			bn_int    seqno;
+			bn_int    size;    /* 4 bytes: hỗ trợ packet tới 4GB */
+			bn_short  type;    /* 2 bytes */
+			bn_int    seqno;   /* 4 bytes */
 		} t_d2dbs_d2gs_header_ex;
 
+		/* EX SAVE REQUEST: GS → DBS
+		 * [t_d2dbs_d2gs_header_ex][bn_short datatype][bn_int datalen]
+		 * [AccountName\0][CharName\0][RealmName\0][data...] */
 #define D2GS_D2DBS_SAVE_DATA_REQUEST_EX  0x38
 		typedef struct {
 			t_d2dbs_d2gs_header_ex  h;
 			bn_short  datatype;
-			bn_int    datalen;     /* bn_int: không bị giới hạn 64KB */
+			bn_int    datalen;
 		} t_d2gs_d2dbs_save_data_request_ex;
 
+		/* EX SAVE REPLY: DBS → GS
+		 * [t_d2dbs_d2gs_header_ex][bn_int result][bn_short datatype][CharName\0] */
 #define D2DBS_D2GS_SAVE_DATA_REPLY_EX    0x38
 		typedef struct {
 			t_d2dbs_d2gs_header_ex  h;
@@ -137,12 +146,18 @@ namespace pvpgn
 			bn_short  datatype;
 		} t_d2dbs_d2gs_save_data_reply_ex;
 
+		/* EX GET REQUEST: GS → DBS
+		 * [t_d2dbs_d2gs_header_ex][bn_short datatype]
+		 * [AccountName\0][CharName\0][RealmName\0] */
 #define D2GS_D2DBS_GET_DATA_REQUEST_EX   0x39
 		typedef struct {
 			t_d2dbs_d2gs_header_ex  h;
 			bn_short  datatype;
 		} t_d2gs_d2dbs_get_data_request_ex;
 
+		/* EX GET REPLY: DBS → GS
+		 * [t_d2dbs_d2gs_header_ex][bn_int result][bn_int charcreatetime]
+		 * [bn_int allowladder][bn_short datatype][bn_int datalen][CharName\0][data...] */
 #define D2DBS_D2GS_GET_DATA_REPLY_EX     0x39
 		typedef struct {
 			t_d2dbs_d2gs_header_ex  h;
@@ -150,35 +165,68 @@ namespace pvpgn
 			bn_int    charcreatetime;
 			bn_int    allowladder;
 			bn_short  datatype;
-			bn_int    datalen;     /* bn_int: không bị giới hạn 64KB */
+			bn_int    datalen;
 		} t_d2dbs_d2gs_get_data_reply_ex;
 
-#define D2GS_D2DBS_ECHOREPLY_EX		0x35
+
+		/* =================================================================
+		 * Stash packets — type 0x3A = STASH_SAVE, 0x3B = STASH_GET
+		 * Dung header_ex (bn_int size) de ho tro file lon hon 64KB
+		 *
+		 * Layout STASH_SAVE request  (GS → DBS):
+		 *   [header_ex][bn_int datalen][AccountName\0][CharName\0][data...]
+		 *
+		 * Layout STASH_SAVE reply    (DBS → GS):
+		 *   [header_ex][bn_int result][CharName\0]
+		 *
+		 * Layout STASH_GET request   (GS → DBS):
+		 *   [header_ex][AccountName\0][CharName\0]
+		 *
+		 * Layout STASH_GET reply     (DBS → GS):
+		 *   [header_ex][bn_int result][bn_int datalen][CharName\0][data...]
+		 *
+		 * File luu tren dia: <charstash_dir>/<AccountName>/<CharName>.stash
+		 * ================================================================= */
+
+#define D2GS_D2DBS_STASH_SAVE_REQUEST   0x3A
 		typedef struct {
-			t_d2dbs_d2gs_header_ex	h;
-		} t_d2gs_d2dbs_echoreply_ex;
+			t_d2dbs_d2gs_header_ex  h;
+			bn_int    datalen;        /* kich thuoc data */
+			/* AccountName\0 */
+			/* CharName\0    */
+			/* data...        */
+		} t_d2gs_d2dbs_stash_save_request;
 
-#define D2GS_D2DBS_SAVE_STASH_EX   0x3A
-#define D2DBS_D2GS_SAVE_STASH_REPLY_EX 0x3A
-		typedef struct 
-		{
-			t_d2dbs_d2gs_header_ex h;
-
-			bn_int  stashtype;   // loại stash (shared, personal, hc, v.v.)
-			bn_int  datasize;    // kích thước buffer
-
-			/* AccountName */
-			/* CharName */
-			/* data */
-		} t_d2gs_d2dbs_save_stash_request_ex;
+#define D2DBS_D2GS_STASH_SAVE_REPLY     0x3A
 		typedef struct {
-			t_d2dbs_d2gs_header_ex h;
+			t_d2dbs_d2gs_header_ex  h;
+			bn_int    result;
+			/* CharName\0 */
+		} t_d2dbs_d2gs_stash_save_reply;
+#define D2DBS_STASH_SAVE_SUCCESS  0
+#define D2DBS_STASH_SAVE_FAILED   1
 
-			bn_int result;   // 0 = OK, 1 = FAIL
-		} t_d2dbs_d2gs_save_stash_reply_ex;
+#define D2GS_D2DBS_STASH_GET_REQUEST    0x3B
+		typedef struct {
+			t_d2dbs_d2gs_header_ex  h;
+			/* AccountName\0 */
+			/* CharName\0    */
+		} t_d2gs_d2dbs_stash_get_request;
 
-#define D2DBS_SAVE_STASH_SUCCESS 0
-#define D2DBS_SAVE_STASH_FAILED  1
+#define D2DBS_D2GS_STASH_GET_REPLY      0x3B
+		typedef struct {
+			t_d2dbs_d2gs_header_ex  h;
+			bn_int    result;
+			bn_int    datalen;
+			/* CharName\0 */
+			/* data...     */
+		} t_d2dbs_d2gs_stash_get_reply;
+#define D2DBS_STASH_GET_SUCCESS   0
+#define D2DBS_STASH_GET_FAILED    1
+
+		typedef struct {
+			t_d2dbs_d2gs_header	h;
+		} t_d2gs_d2dbs_echoreply;
 
 #pragma pack(pop)
 
