@@ -18,6 +18,7 @@
 #include "common/setup_before.h"
 #include "setup.h"
 #include "dbserver.h"
+#include "d2fs_server.h"
 
 #include <cstring>
 #include <ctime>
@@ -37,7 +38,6 @@
 #include "charlock.h"
 #include "dbspacket.h"
 #include "handle_signal.h"
-#include "d2fs_server.h"
 
 #ifdef HAVE_ARPA_INET_H
 # include <arpa/inet.h>
