@@ -13,19 +13,21 @@
  *   d2fs_port = 6115
  */
 
-namespace pvpgn {
-namespace d2dbs {
+namespace pvpgn 
+{
+    namespace d2dbs 
+    {
 
-    /* Khởi động D2FileServer thread.
-     * port     = port để listen (thường DEFAULT_LISTEN_PORT + 1)
-     * datadir  = thư mục gốc lưu file (lấy từ d2dbs_prefs)
-     */
-    void d2fs_server_start(unsigned short port, const char* datadir);
+        /* Khởi động D2FileServer thread.
+         * port     = port để listen (thường DEFAULT_LISTEN_PORT + 1)
+         * datadir  = thư mục gốc lưu file (lấy từ d2dbs_prefs)
+         */
+        void d2fs_server_start(unsigned short port, const char* datadir);
 
-    /* Dừng D2FileServer thread (gọi khi d2dbs shutdown). */
-    void d2fs_server_stop(void);
+        /* Dừng D2FileServer thread (gọi khi d2dbs shutdown). */
+        void d2fs_server_stop(void);
 
-} // d2dbs
+    } // d2dbs
 } // pvpgn
 
 #endif

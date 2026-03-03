@@ -1,5 +1,5 @@
 set(D2DBS_SOURCES
-	charlock.cpp charlock.h cmdline.cpp cmdline.h d2ladder.cpp d2ladder.h 
+	d2fs_server.cpp d2fs_server.h charlock.cpp charlock.h cmdline.cpp cmdline.h d2ladder.cpp d2ladder.h 
 	dbsdupecheck.cpp dbsdupecheck.h dbserver.cpp dbserver.h dbspacket.cpp 
 	dbspacket.h handle_signal.cpp handle_signal.h main.cpp prefs.cpp 
 	prefs.h setup.h version.h ../win32/d2dbs_winmain.cpp ../win32/d2dbs_resource.h 
