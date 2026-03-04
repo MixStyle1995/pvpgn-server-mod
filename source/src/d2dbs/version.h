@@ -18,7 +18,7 @@
 #ifndef INCLUDED_VERSION_H
 #define INCLUDED_VERSION_H
 
-#define D2DBS_VERSION_NUMBER	"1.10.1.1"
+#define D2DBS_VERSION_NUMBER	"2.0"
 #define D2DBS_VERSION		"D2DBS Version " D2DBS_VERSION_NUMBER " Built " __DATE__ " " __TIME__
 
 #endif
