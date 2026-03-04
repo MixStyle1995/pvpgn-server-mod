@@ -48,6 +48,7 @@
 #ifdef WIN32
 #  include <winsock2.h>
 #  include <ws2tcpip.h>
+#  include <mstcpip.h>
 #  include <direct.h>
 #  include <io.h>
 typedef SOCKET sock_t;
@@ -80,7 +81,8 @@ static const uint32_t MAX_ACC = 31;
 static const uint32_t MAX_CHR = 15;
 static const uint32_t MAX_PKT = 8 * 1024 * 1024;  // 8 MB
 
-enum Cmd : uint8_t {
+enum Cmd : uint8_t
+{
     CMD_SAVE_CHAR = 0x01,
     CMD_LOAD_CHAR = 0x02,
     CMD_SAVE_STASH = 0x03,
@@ -92,29 +94,34 @@ enum Cmd : uint8_t {
     CMD_REPLY = 0x80,
 };
 
-enum Result : uint8_t {
+enum Result : uint8_t
+{
     RES_OK = 0,
     RES_NOT_FOUND = 1,
     RES_ERROR = 2,
 };
 
-#pragma pack(push, 1)
-struct PacketHdr {
+#pragma pack(1)
+struct PacketHdr
+{
     uint32_t size;
     uint8_t  cmd;
     uint8_t  pad[3];
 };
-struct ReplyHdr {
+struct ReplyHdr
+{
     PacketHdr hdr;
     uint8_t   orig_cmd;
     uint8_t   result;
     uint8_t   pad[2];
     uint32_t  datalen;
 };
-#pragma pack(pop)
+#pragma pack()
 
-namespace pvpgn {
-    namespace d2dbs {
+namespace pvpgn
+{
+    namespace d2dbs
+    {
 
         // ─── Logging ──────────────────────────────────────────────────────────────────
 
@@ -131,8 +138,10 @@ namespace pvpgn {
 
         static void make_dirs(const std::string& path)
         {
-            for (size_t i = 1; i < path.size(); ++i) {
-                if (path[i] == '/' || path[i] == '\\') {
+            for (size_t i = 1; i < path.size(); ++i)
+            {
+                if (path[i] == '/' || path[i] == '\\')
+                {
                     std::string sub = path.substr(0, i);
                     if (os_access(sub.c_str()) != 0)
                         os_mkdir(sub.c_str());
@@ -190,28 +199,29 @@ namespace pvpgn {
         // ─── Path resolver ────────────────────────────────────────────────────────────
         // Mỗi cmd có thư mục và đuôi file riêng
 
-        struct FileType {
+        struct FileType
+        {
             const char* subdir;
             const char* ext;
         };
 
         static FileType get_file_type(uint8_t cmd)
         {
-            switch (cmd) {
-            case CMD_SAVE_CHAR:
-            case CMD_LOAD_CHAR:    return { "charsave",    ".d2s" };
-            case CMD_SAVE_STASH:
-            case CMD_LOAD_STASH:   return { "charstash",   ".stash" };
-            case CMD_SAVE_CUBE:
-            case CMD_LOAD_CUBE:    return { "charcube",    ".cube" };
-            case CMD_SAVE_CHAR_EX:
-            case CMD_LOAD_CHAR_EX: return { "charsave_ex", ".ex" };
-            default:               return { "",            "" };
+            switch (cmd)
+            {
+                case CMD_SAVE_CHAR:
+                case CMD_LOAD_CHAR:    return { "charsave",    ".d2s" };
+                case CMD_SAVE_STASH:
+                case CMD_LOAD_STASH:   return { "charstash",   ".stash" };
+                case CMD_SAVE_CUBE:
+                case CMD_LOAD_CUBE:    return { "charcube",    ".cube" };
+                case CMD_SAVE_CHAR_EX:
+                case CMD_LOAD_CHAR_EX: return { "charsave_ex", ".ex" };
+                default:               return { "",            "" };
             }
         }
 
-        static std::string build_path(const std::string& datadir, uint8_t cmd,
-            const std::string& acc, const std::string& chr)
+        static std::string build_path(const std::string& datadir, uint8_t cmd, const std::string& acc, const std::string& chr)
         {
             auto ft = get_file_type(cmd);
             return datadir + "/d2fs/" + ft.subdir + "/" + acc + "/" + chr + ft.ext;
@@ -219,7 +229,8 @@ namespace pvpgn {
 
         static const char* cmd_name(uint8_t cmd)
         {
-            switch (cmd) {
+            switch (cmd)
+            {
             case CMD_SAVE_CHAR:    return "SaveChar";
             case CMD_LOAD_CHAR:    return "LoadChar";
             case CMD_SAVE_STASH:   return "SaveStash";
@@ -258,9 +269,11 @@ namespace pvpgn {
 
 #ifdef WIN32
             char* ctx = nullptr;
-            while ((entry = strtok_s(tok, ",", &ctx)), tok = nullptr, entry) {
+            while ((entry = strtok_s(tok, ",", &ctx)), tok = nullptr, entry)
+            {
 #else
-            while ((entry = strsep(&tok, ","))) {
+            while ((entry = strsep(&tok, ",")))
+            {
 #endif
                 while (*entry == ' ' || *entry == '\t') entry++;
                 char* end = entry + strlen(entry) - 1;
@@ -271,12 +284,14 @@ namespace pvpgn {
                 addrinfo hints{}, * res = nullptr;
                 hints.ai_family = AF_INET;
 
-                if (getaddrinfo(entry, nullptr, &hints, &res) == 0 && res) {
+                if (getaddrinfo(entry, nullptr, &hints, &res) == 0 && res)
+                {
                     uint32_t resolved = ((sockaddr_in*)res->ai_addr)->sin_addr.s_addr;
                     freeaddrinfo(res);
                     if (resolved == ip_net) { allowed = true; break; }
                 }
-                else if (res) {
+                else if (res)
+                {
                     freeaddrinfo(res);
                 }
             }
@@ -298,19 +313,14 @@ namespace pvpgn {
         static void firewall_open(uint16_t port)
         {
             char cmd[512];
-            snprintf(cmd, sizeof(cmd),
-                "netsh advfirewall firewall add rule"
-                " name=\"d2fs_%u\" protocol=TCP dir=in action=allow localport=%u >nul 2>&1",
-                port, port);
+            snprintf(cmd, sizeof(cmd), "netsh advfirewall firewall add rule" " name=\"d2fs_%u\" protocol=TCP dir=in action=allow localport=%u >nul 2>&1", port, port);
             run_cmd(cmd);
         }
 
         static void firewall_close(uint16_t port)
         {
             char cmd[256];
-            snprintf(cmd, sizeof(cmd),
-                "netsh advfirewall firewall delete rule name=\"d2fs_%u\" >nul 2>&1",
-                port);
+            snprintf(cmd, sizeof(cmd), "netsh advfirewall firewall delete rule name=\"d2fs_%u\" >nul 2>&1", port);
             run_cmd(cmd);
         }
 
@@ -327,22 +337,20 @@ namespace pvpgn {
         {
             char cmd[512];
 
-            if (has_tool("iptables")) {
-                snprintf(cmd, sizeof(cmd),
-                    "iptables -C INPUT -p tcp --dport %u -j ACCEPT 2>/dev/null"
-                    " || iptables -I INPUT -p tcp --dport %u -j ACCEPT",
-                    port, port);
+            if (has_tool("iptables"))
+            {
+                snprintf(cmd, sizeof(cmd), "iptables -C INPUT -p tcp --dport %u -j ACCEPT 2>/dev/null" " || iptables -I INPUT -p tcp --dport %u -j ACCEPT", port, port);
             }
-            else if (has_tool("firewall-cmd")) {
-                snprintf(cmd, sizeof(cmd),
-                    "firewall-cmd --permanent --add-port=%u/tcp >/dev/null 2>&1"
-                    " && firewall-cmd --reload >/dev/null 2>&1",
-                    port);
+            else if (has_tool("firewall-cmd"))
+            {
+                snprintf(cmd, sizeof(cmd), "firewall-cmd --permanent --add-port=%u/tcp >/dev/null 2>&1" " && firewall-cmd --reload >/dev/null 2>&1", port);
             }
-            else if (has_tool("ufw")) {
+            else if (has_tool("ufw"))
+            {
                 snprintf(cmd, sizeof(cmd), "ufw allow %u/tcp >/dev/null 2>&1", port);
             }
-            else {
+            else
+            {
                 log(eventlog_level_warn, "no firewall tool found, port {} may be blocked", port);
                 return;
             }
@@ -354,22 +362,20 @@ namespace pvpgn {
         {
             char cmd[512];
 
-            if (has_tool("iptables")) {
-                snprintf(cmd, sizeof(cmd),
-                    "while iptables -C INPUT -p tcp --dport %u -j ACCEPT 2>/dev/null;"
-                    " do iptables -D INPUT -p tcp --dport %u -j ACCEPT; done",
-                    port, port);
+            if (has_tool("iptables"))
+            {
+                snprintf(cmd, sizeof(cmd), "while iptables -C INPUT -p tcp --dport %u -j ACCEPT 2>/dev/null;" " do iptables -D INPUT -p tcp --dport %u -j ACCEPT; done", port, port);
             }
-            else if (has_tool("firewall-cmd")) {
-                snprintf(cmd, sizeof(cmd),
-                    "firewall-cmd --permanent --remove-port=%u/tcp >/dev/null 2>&1"
-                    " && firewall-cmd --reload >/dev/null 2>&1",
-                    port);
+            else if (has_tool("firewall-cmd"))
+            {
+                snprintf(cmd, sizeof(cmd), "firewall-cmd --permanent --remove-port=%u/tcp >/dev/null 2>&1" " && firewall-cmd --reload >/dev/null 2>&1", port);
             }
-            else if (has_tool("ufw")) {
+            else if (has_tool("ufw"))
+            {
                 snprintf(cmd, sizeof(cmd), "ufw delete allow %u/tcp >/dev/null 2>&1", port);
             }
-            else {
+            else
+            {
                 return;
             }
 
@@ -383,7 +389,8 @@ namespace pvpgn {
         static bool tcp_recv(sock_t s, void* buf, size_t len)
         {
             char* p = (char*)buf;
-            while (len > 0) {
+            while (len > 0)
+            {
                 int n = recv(s, p, (int)len, 0);
                 if (n <= 0) return false;
                 p += n; len -= n;
@@ -394,7 +401,8 @@ namespace pvpgn {
         static bool tcp_send(sock_t s, const void* buf, size_t len)
         {
             const char* p = (const char*)buf;
-            while (len > 0) {
+            while (len > 0)
+            {
                 int n = send(s, p, (int)len, 0);
                 if (n <= 0) return false;
                 p += n; len -= n;
@@ -402,8 +410,7 @@ namespace pvpgn {
             return true;
         }
 
-        static bool send_reply(sock_t s, uint8_t cmd, uint8_t result,
-            const uint8_t * data = nullptr, uint32_t datalen = 0)
+        static bool send_reply(sock_t s, uint8_t cmd, uint8_t result, const uint8_t * data = nullptr, uint32_t datalen = 0)
         {
             std::vector<uint8_t> pkt(sizeof(ReplyHdr) + datalen, 0);
             auto* r = (ReplyHdr*)pkt.data();
@@ -417,9 +424,7 @@ namespace pvpgn {
             return tcp_send(s, pkt.data(), pkt.size());
         }
 
-        static bool parse_names(const uint8_t * p, size_t ps,
-            std::string & acc, std::string & chr,
-            size_t * consumed = nullptr)
+        static bool parse_names(const uint8_t * p, size_t ps, std::string & acc, std::string & chr, size_t * consumed = nullptr)
         {
             if (ps < 2) return false;
             uint8_t al = p[0], cl = p[1];
@@ -433,13 +438,15 @@ namespace pvpgn {
 
         // ─── Thread Pool ──────────────────────────────────────────────────────────────
 
-        struct Job {
+        struct Job
+        {
             sock_t      sd;
             uint32_t    ip_net;
             std::string peer;
         };
 
-        struct ThreadPool {
+        struct ThreadPool
+        {
             std::vector<std::thread>  workers;
             std::queue<Job>           queue;
             std::mutex                mtx;
@@ -459,7 +466,8 @@ namespace pvpgn {
             {
                 {
                     std::lock_guard<std::mutex> lk(mtx);
-                    if ((int)queue.size() >= QUEUE_MAX) {
+                    if ((int)queue.size() >= QUEUE_MAX)
+                    {
                         log(eventlog_level_warn, "queue full, dropping {}", job.peer.c_str());
                         sock_close(job.sd);
                         return;
@@ -476,7 +484,8 @@ namespace pvpgn {
                 for (auto& t : workers)
                     if (t.joinable()) t.join();
                 std::lock_guard<std::mutex> lk(mtx);
-                while (!queue.empty()) {
+                while (!queue.empty())
+                {
                     sock_close(queue.front().sd);
                     queue.pop();
                 }
@@ -485,7 +494,8 @@ namespace pvpgn {
         private:
             void worker_loop()
             {
-                for (;;) {
+                for (;;)
+                {
                     Job job;
                     {
                         std::unique_lock<std::mutex> lk(mtx);
@@ -502,7 +512,8 @@ namespace pvpgn {
             {
                 sock_t s = job.sd;
 
-                if (!verify_ip(job.ip_net)) {
+                if (!verify_ip(job.ip_net))
+                {
                     log(eventlog_level_error, "rejected: {}", job.peer.c_str());
                     sock_close(s);
                     return;
@@ -510,11 +521,13 @@ namespace pvpgn {
 
                 log(eventlog_level_info, "connected: {}", job.peer.c_str());
 
-                for (;;) {
+                for (;;)
+                {
                     PacketHdr hdr;
                     if (!tcp_recv(s, &hdr, sizeof(hdr))) break;
 
-                    if (hdr.size < HDR_SIZE || hdr.size > MAX_PKT) {
+                    if (hdr.size < HDR_SIZE || hdr.size > MAX_PKT)
+                    {
                         log(eventlog_level_error, "[{}] invalid size {}", job.peer.c_str(), hdr.size);
                         break;
                     }
@@ -526,15 +539,18 @@ namespace pvpgn {
                     size_t         ps = payload.size();
                     std::string    acc, chr;
 
-                    if (is_save_cmd(hdr.cmd)) {
+                    if (is_save_cmd(hdr.cmd))
+                    {
                         size_t   nb = 0;
                         uint32_t dlen = 0;
 
-                        if (!parse_names(p, ps, acc, chr, &nb) || ps < nb + 4) {
+                        if (!parse_names(p, ps, acc, chr, &nb) || ps < nb + 4)
+                        {
                             send_reply(s, hdr.cmd, RES_ERROR); continue;
                         }
                         memcpy(&dlen, p + nb, 4);
-                        if (ps < nb + 4 + dlen) {
+                        if (ps < nb + 4 + dlen)
+                        {
                             send_reply(s, hdr.cmd, RES_ERROR); continue;
                         }
 
@@ -544,37 +560,33 @@ namespace pvpgn {
                             make_dirs(path.substr(0, slash));
 
                         bool ok = write_file(path, p + nb + 4, dlen);
-                        log(ok ? eventlog_level_info : eventlog_level_error,
-                            "[{}] {} {}/{} len={} {}",
-                            job.peer.c_str(), cmd_name(hdr.cmd),
-                            acc.c_str(), chr.c_str(), dlen,
-                            ok ? "ok" : "FAILED");
+                        log(ok ? eventlog_level_info : eventlog_level_error, "[{}] {} {}/{} len={} {}", job.peer.c_str(), cmd_name(hdr.cmd), acc.c_str(), chr.c_str(), dlen, ok ? "ok" : "FAILED");
                         send_reply(s, hdr.cmd, ok ? RES_OK : RES_ERROR);
                     }
-                    else if (is_load_cmd(hdr.cmd)) {
-                        if (!parse_names(p, ps, acc, chr)) {
+                    else if (is_load_cmd(hdr.cmd))
+                    {
+                        if (!parse_names(p, ps, acc, chr))
+                        {
                             send_reply(s, hdr.cmd, RES_ERROR); continue;
                         }
 
                         std::string path = build_path(datadir, hdr.cmd, acc, chr);
                         auto        data = read_file(path);
 
-                        if (data.empty()) {
-                            log(eventlog_level_warn, "[{}] {} {}/{} NOT_FOUND",
-                                job.peer.c_str(), cmd_name(hdr.cmd),
-                                acc.c_str(), chr.c_str());
+                        if (data.empty())
+                        {
+                            log(eventlog_level_warn, "[{}] {} {}/{} NOT_FOUND", job.peer.c_str(), cmd_name(hdr.cmd), acc.c_str(), chr.c_str());
                             send_reply(s, hdr.cmd, RES_NOT_FOUND);
                         }
-                        else {
-                            log(eventlog_level_info, "[{}] {} {}/{} len={} ok",
-                                job.peer.c_str(), cmd_name(hdr.cmd),
-                                acc.c_str(), chr.c_str(), (unsigned)data.size());
+                        else
+                        {
+                            log(eventlog_level_info, "[{}] {} {}/{} len={} ok", job.peer.c_str(), cmd_name(hdr.cmd), acc.c_str(), chr.c_str(), (unsigned)data.size());
                             send_reply(s, hdr.cmd, RES_OK, data.data(), (uint32_t)data.size());
                         }
                     }
-                    else {
-                        log(eventlog_level_warn, "[{}] unknown cmd 0x{:02X}",
-                            job.peer.c_str(), hdr.cmd);
+                    else
+                    {
+                        log(eventlog_level_warn, "[{}] unknown cmd 0x{:02X}", job.peer.c_str(), hdr.cmd);
                         send_reply(s, hdr.cmd, RES_ERROR);
                     }
                 }
@@ -597,7 +609,8 @@ namespace pvpgn {
         static void accept_loop(uint16_t port)
         {
             g_listen = (sock_t)socket(AF_INET, SOCK_STREAM, 0);
-            if (g_listen == SOCK_INVALID) {
+            if (g_listen == SOCK_INVALID)
+            {
                 log(eventlog_level_error, "socket() failed");
                 return;
             }
@@ -605,13 +618,15 @@ namespace pvpgn {
             int yes = 1;
             setsockopt((int)g_listen, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes));
 
+            // Tắt Nagle — giảm latency cho packet nhỏ (header 8 bytes)
+            setsockopt((int)g_listen, IPPROTO_TCP, TCP_NODELAY, (const char*)&yes, sizeof(yes));
+
             sockaddr_in addr{};
             addr.sin_family = AF_INET;
             addr.sin_addr.s_addr = INADDR_ANY;
             addr.sin_port = htons(port);
 
-            if (bind((int)g_listen, (sockaddr*)&addr, sizeof(addr)) < 0 ||
-                listen((int)g_listen, QUEUE_MAX) < 0)
+            if (bind((int)g_listen, (sockaddr*)&addr, sizeof(addr)) < 0 || listen((int)g_listen, QUEUE_MAX) < 0)
             {
                 log(eventlog_level_error, "bind/listen failed on port {}", port);
                 sock_close(g_listen);
@@ -619,10 +634,10 @@ namespace pvpgn {
                 return;
             }
 
-            log(eventlog_level_info, "listening on port {} (workers={} queue={})",
-                port, WORKERS, QUEUE_MAX);
+            log(eventlog_level_info, "listening on port {} (workers={} queue={})", port, WORKERS, QUEUE_MAX);
 
-            while (g_running.load()) {
+            while (g_running.load())
+            {
                 fd_set  rset;
                 timeval tv{ 1, 0 };
                 FD_ZERO(&rset);
@@ -636,6 +651,24 @@ namespace pvpgn {
                 sock_t      cs = (sock_t)accept((int)g_listen, (sockaddr*)&caddr, &clen);
 
                 if (cs == SOCK_INVALID) continue;
+
+                // TCP_NODELAY — không gộp packet nhỏ, reply ngay lập tức
+                setsockopt((int)cs, IPPROTO_TCP, TCP_NODELAY, (const char*)&yes, sizeof(yes));
+
+                // SO_KEEPALIVE — phát hiện client chết (không gửi FIN)
+                setsockopt((int)cs, SOL_SOCKET, SO_KEEPALIVE, (const char*)&yes, sizeof(yes));
+
+#ifdef WIN32
+                // Keepalive: bắt đầu sau 60s idle, probe mỗi 10s, 3 lần thất bại thì close
+                struct tcp_keepalive ka { 1, 60000, 10000 };
+                DWORD bytes = 0;
+                WSAIoctl(cs, SIO_KEEPALIVE_VALS, &ka, sizeof(ka), nullptr, 0, &bytes, nullptr, nullptr);
+#elif defined(__linux__)
+                int ka_idle = 60, ka_interval = 10, ka_count = 3;
+                setsockopt(cs, IPPROTO_TCP, TCP_KEEPIDLE, &ka_idle, sizeof(ka_idle));
+                setsockopt(cs, IPPROTO_TCP, TCP_KEEPINTVL, &ka_interval, sizeof(ka_interval));
+                setsockopt(cs, IPPROTO_TCP, TCP_KEEPCNT, &ka_count, sizeof(ka_count));
+#endif
 
                 char ip[INET_ADDRSTRLEN];
                 inet_ntop(AF_INET, &caddr.sin_addr, ip, sizeof(ip));
@@ -687,5 +720,5 @@ namespace pvpgn {
             log(eventlog_level_info, "stopped");
         }
 
-    } // namespace d2dbs
+     } // namespace d2dbs
 } // namespace pvpgn
