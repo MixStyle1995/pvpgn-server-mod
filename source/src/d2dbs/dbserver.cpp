@@ -472,7 +472,7 @@ namespace pvpgn
 		{
 			psock_shutdown(conn->sd, PSOCK_SHUT_RDWR);
 			psock_close(conn->sd);
-			if (conn->verified && (conn->type == CONNECT_CLASS_D2GS_TO_D2DBS || conn->type == CONNECT_CLASS_D2GS_TO_D2DBS_EX))
+			if (conn->verified && conn->type == CONNECT_CLASS_D2GS_TO_D2DBS)
 			{
 				eventlog(eventlog_level_info, __FUNCTION__, "unlock all characters on gs {}({})", conn->serverip, conn->serverid);
 				eventlog_step(prefs_get_logfile_gs(), eventlog_level_info, __FUNCTION__, "unlock all characters on gs %s(%d)", conn->serverip, conn->serverid);

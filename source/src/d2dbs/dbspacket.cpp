@@ -70,15 +70,6 @@ namespace pvpgn
 		static int dbs_packet_fix_charinfo(t_d2dbs_connection * conn, char * AccountName, char * CharName, char * charsave);
 		static void dbs_packet_set_charinfo_level(char * CharName, char * charinfo);
 
-		static int dbs_packet_savedata_ex(t_d2dbs_connection* conn);
-		static int dbs_packet_getdata_ex(t_d2dbs_connection* conn);
-
-		static unsigned int dbs_packet_savedata_char_stash(t_d2dbs_connection* conn, char* AccountName, char* CharName, char* data, unsigned int datalen);
-		static unsigned int dbs_packet_getdata_char_stash(t_d2dbs_connection* conn, char* AccountName, char* CharName, char* data, long bufsize);
-
-		static int dbs_packet_stash_save(t_d2dbs_connection* conn);
-		static int dbs_packet_stash_get(t_d2dbs_connection* conn);
-		
 		static unsigned int dbs_packet_savedata_charsave(t_d2dbs_connection* conn, char * AccountName, char * CharName, char * data, unsigned int datalen)
 		{
 			char filename[MAX_PATH];
@@ -542,227 +533,6 @@ namespace pvpgn
 			return 1;
 		}
 
-		/* =================================================================
-		 * dbs_packet_savedata_ex - Extended SAVE (packet type 0x38)
-		 * Giống dbs_packet_savedata nhưng dùng t_d2gs_d2dbs_save_data_request_ex
-		 * với bn_int datalen → hỗ trợ file > 64KB
-		 * ================================================================= */
-		static int dbs_packet_savedata_ex(t_d2dbs_connection* conn)
-		{
-			unsigned int        datalen;
-			unsigned short      datatype;
-			unsigned int        result;
-			char AccountName[MAX_USERNAME_LEN];
-			char CharName[MAX_CHARNAME_LEN];
-			char RealmName[MAX_REALMNAME_LEN];
-			t_d2gs_d2dbs_save_data_request_ex* savecom;
-			t_d2dbs_d2gs_save_data_reply_ex* saveret;
-			char* readpos;
-			unsigned char* writepos;
-
-			readpos = conn->ReadBuf;
-			savecom = (t_d2gs_d2dbs_save_data_request_ex*)readpos;
-			datatype = bn_short_get(savecom->datatype);
-			datalen = bn_int_get(savecom->datalen);   /* bn_int: không bị giới hạn 64KB */
-
-			readpos += sizeof(*savecom);
-			std::strncpy(AccountName, readpos, MAX_USERNAME_LEN);
-			if (AccountName[MAX_USERNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "max account name length exceeded");
-				return -1;
-			}
-			readpos += std::strlen(AccountName) + 1;
-			std::strncpy(CharName, readpos, MAX_CHARNAME_LEN);
-			if (CharName[MAX_CHARNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "max char name length exceeded");
-				return -1;
-			}
-			readpos += std::strlen(CharName) + 1;
-			std::strncpy(RealmName, readpos, MAX_REALMNAME_LEN);
-			if (RealmName[MAX_REALMNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "max realm name length exceeded");
-				return -1;
-			}
-			readpos += std::strlen(RealmName) + 1;
-
-			if (readpos + datalen != conn->ReadBuf + bn_int_get(savecom->h.size)) {
-				eventlog(eventlog_level_error, __FUNCTION__, "EX save request packet size error");
-				return -1;
-			}
-
-			if (datatype == D2GS_DATA_CHARSAVE) {
-				if (dbs_packet_savedata_charsave(conn, AccountName, CharName, readpos, datalen) > 0 &&
-					dbs_packet_fix_charinfo(conn, AccountName, CharName, readpos)) {
-					result = D2DBS_SAVE_DATA_SUCCESS;
-				}
-				else {
-					datalen = 0;
-					result = D2DBS_SAVE_DATA_FAILED;
-				}
-			}
-			else if (datatype == D2GS_DATA_PORTRAIT) {
-				dbs_packet_set_charinfo_level(CharName, readpos);
-				if (dbs_packet_savedata_charinfo(conn, AccountName, CharName, readpos, datalen) > 0) {
-					result = D2DBS_SAVE_DATA_SUCCESS;
-				}
-				else {
-					datalen = 0;
-					result = D2DBS_SAVE_DATA_FAILED;
-				}
-			}
-			else {
-				eventlog(eventlog_level_error, __FUNCTION__, "unknown data type {}", datatype);
-				return -1;
-			}
-
-			std::size_t writelen = sizeof(*saveret) + std::strlen(CharName) + 1;
-			if (writelen > (std::size_t)(kBufferSize - conn->nCharsInWriteBuffer)) return 0;
-			writepos = (unsigned char*)(conn->WriteBuf + conn->nCharsInWriteBuffer);
-			saveret = (t_d2dbs_d2gs_save_data_reply_ex*)writepos;
-			bn_short_set(&saveret->h.type, D2DBS_D2GS_SAVE_DATA_REPLY_EX);
-			bn_int_set(&saveret->h.size, (unsigned int)writelen);
-			bn_int_set(&saveret->h.seqno, bn_int_get(savecom->h.seqno));
-			bn_short_set(&saveret->datatype, bn_short_get(savecom->datatype));
-			bn_int_set(&saveret->result, result);
-			writepos += sizeof(*saveret);
-			std::strncpy((char*)writepos, CharName, MAX_CHARNAME_LEN);
-			conn->nCharsInWriteBuffer += (int)writelen;
-			return 1;
-		}
-
-		/* =================================================================
-		 * dbs_packet_getdata_ex - Extended GET (packet type 0x39)
-		 * Giống dbs_packet_getdata nhưng dùng bn_int datalen trong reply
-		 * → hỗ trợ gửi lại file > 64KB cho client
-		 * ================================================================= */
-		static int dbs_packet_getdata_ex(t_d2dbs_connection* conn)
-		{
-			unsigned int    writelen;
-			unsigned short  datatype;
-			unsigned int    datalen;
-			unsigned int    result;
-			char            AccountName[MAX_USERNAME_LEN];
-			char            CharName[MAX_CHARNAME_LEN];
-			char            RealmName[MAX_REALMNAME_LEN];
-			t_d2gs_d2dbs_get_data_request_ex* getcom;
-			t_d2dbs_d2gs_get_data_reply_ex* getret;
-			char* readpos;
-			char* writepos;
-			char* databuf = (char*)xmalloc(kBufferSize);
-			t_d2charinfo_file charinfo;
-			unsigned int    charinfolen;
-			unsigned int    gsid;
-
-			readpos = conn->ReadBuf;
-			getcom = (t_d2gs_d2dbs_get_data_request_ex*)readpos;
-			datatype = bn_short_get(getcom->datatype);
-
-			readpos += sizeof(*getcom);
-			std::strncpy(AccountName, readpos, MAX_USERNAME_LEN);
-			if (AccountName[MAX_USERNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "max account name length exceeded");
-				xfree(databuf); return -1;
-			}
-			readpos += std::strlen(AccountName) + 1;
-			std::strncpy(CharName, readpos, MAX_CHARNAME_LEN);
-			if (CharName[MAX_CHARNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "max char name length exceeded");
-				xfree(databuf); return -1;
-			}
-			readpos += std::strlen(CharName) + 1;
-			std::strncpy(RealmName, readpos, MAX_REALMNAME_LEN);
-			if (RealmName[MAX_REALMNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "max realm name length exceeded");
-				xfree(databuf); return -1;
-			}
-			readpos += std::strlen(RealmName) + 1;
-
-			if (readpos != conn->ReadBuf + bn_int_get(getcom->h.size)) {
-				eventlog(eventlog_level_error, __FUNCTION__, "EX get request packet size error");
-				xfree(databuf); return -1;
-			}
-
-			writepos = conn->WriteBuf + conn->nCharsInWriteBuffer;
-			getret = (t_d2dbs_d2gs_get_data_reply_ex*)writepos;
-			datalen = 0;
-
-			if (datatype == D2GS_DATA_CHARSAVE) 
-			{
-				if (cl_query_charlock_status((unsigned char*)CharName, (unsigned char*)RealmName, &gsid) != 0)
-				{
-					eventlog(eventlog_level_warn, __FUNCTION__, "char {}(*{})@{} is already locked on gs {}", CharName, AccountName, RealmName, gsid);
-					result = D2DBS_GET_DATA_CHARLOCKED;
-				}
-				else if (cl_lock_char((unsigned char*)CharName, (unsigned char*)RealmName, conn->serverid) != 0) 
-				{
-					eventlog(eventlog_level_error, __FUNCTION__, "failed to lock char {}(*{})@{} for gs {}({})", CharName, AccountName, RealmName, conn->serverip, conn->serverid);
-					result = D2DBS_GET_DATA_CHARLOCKED;
-				}
-				else 
-				{
-					eventlog(eventlog_level_info, __FUNCTION__, "lock char {}(*{})@{} for gs {}({})", CharName, AccountName, RealmName, conn->serverip, conn->serverid);
-					datalen = dbs_packet_getdata_charsave(conn, AccountName, CharName, databuf, kBufferSize);
-					if (datalen > 0) 
-					{
-						result = D2DBS_GET_DATA_SUCCESS;
-						charinfolen = dbs_packet_getdata_charinfo(conn, AccountName, CharName, (char*)&charinfo, sizeof(charinfo));
-						if (charinfolen > 0) {
-							result = D2DBS_GET_DATA_SUCCESS;
-						}
-						else 
-						{
-							result = D2DBS_GET_DATA_FAILED;
-							cl_unlock_char((unsigned char*)CharName, (unsigned char*)RealmName, gsid);
-						}
-					}
-					else 
-					{
-						datalen = 0;
-						result = D2DBS_GET_DATA_FAILED;
-						cl_unlock_char((unsigned char*)CharName, (unsigned char*)RealmName, gsid);
-					}
-				}
-				if (result == D2DBS_GET_DATA_SUCCESS) 
-				{
-					bn_int_set(&getret->charcreatetime, bn_int_get(charinfo.header.create_time));
-					bn_int_set(&getret->allowladder,
-						bn_int_get(charinfo.header.create_time) >= prefs_get_ladderinit_time() ? 1 : 0);
-				}
-				else 
-				{
-					bn_int_set(&getret->charcreatetime, 0);
-					bn_int_set(&getret->allowladder, 0);
-				}
-			}
-			else if (datatype == D2GS_DATA_PORTRAIT) {
-				datalen = dbs_packet_getdata_charinfo(conn, AccountName, CharName, databuf, kBufferSize);
-				if (datalen > 0) result = D2DBS_GET_DATA_SUCCESS;
-				else { datalen = 0; result = D2DBS_GET_DATA_FAILED; }
-			}
-			else {
-				eventlog(eventlog_level_error, __FUNCTION__, "unknown data type {}", datatype);
-				xfree(databuf); return -1;
-			}
-
-			writelen = datalen + (unsigned int)sizeof(*getret) + (unsigned int)std::strlen(CharName) + 1;
-			if (writelen > (unsigned int)(kBufferSize - conn->nCharsInWriteBuffer)) {
-				xfree(databuf); return 0;
-			}
-			bn_short_set(&getret->h.type, D2DBS_D2GS_GET_DATA_REPLY_EX);
-			bn_int_set(&getret->h.size, writelen);
-			bn_int_set(&getret->h.seqno, bn_int_get(getcom->h.seqno));
-			bn_short_set(&getret->datatype, bn_short_get(getcom->datatype));
-			bn_int_set(&getret->result, result);
-			bn_int_set(&getret->datalen, datalen);
-			writepos += sizeof(*getret);
-			std::strncpy(writepos, CharName, MAX_CHARNAME_LEN);
-			writepos += std::strlen(CharName) + 1;
-			if (datalen) std::memcpy(writepos, databuf, datalen);
-			conn->nCharsInWriteBuffer += (int)writelen;
-			xfree(databuf);
-			return 1;
-		}
-
 		static int dbs_packet_updateladder(t_d2dbs_connection * conn)
 		{
 			char CharName[MAX_CHARNAME_LEN];
@@ -872,8 +642,9 @@ namespace pvpgn
 		{
 			unsigned short		readlen, writelen;
 			t_d2dbs_d2gs_header* readhead;
-			t_d2dbs_d2gs_header_ex* readhead_ex;
 			int		retval;
+
+			conn->last_active = std::time(NULL);
 
 			if (conn->stats == 0) {
 				if (conn->nCharsInReadBuffer < (signed)sizeof(t_d2gs_d2dbs_connect)) {
@@ -882,7 +653,7 @@ namespace pvpgn
 				conn->stats = 1;
 				conn->type = conn->ReadBuf[0];
 
-				if (conn->type == CONNECT_CLASS_D2GS_TO_D2DBS || conn->type == CONNECT_CLASS_D2GS_TO_D2DBS_EX)
+				if (conn->type == CONNECT_CLASS_D2GS_TO_D2DBS)
 				{
 					if (dbs_verify_ipaddr(d2dbs_prefs_get_d2gs_list(), conn) < 0) {
 						eventlog(eventlog_level_error, __FUNCTION__, "d2gs connection from unknown ip address");
@@ -929,36 +700,6 @@ namespace pvpgn
 							break;
 						default:
 							eventlog(eventlog_level_error, __FUNCTION__, "[0x65] unknown request type {}, Len: {}", bn_short_get(readhead->type), conn->nCharsInReadBuffer);
-							retval = -1;
-						}
-						if (retval != 1) return retval;
-						conn->nCharsInReadBuffer -= readlen;
-						std::memmove(conn->ReadBuf, conn->ReadBuf + readlen, conn->nCharsInReadBuffer);
-					}
-				}
-				else if (conn->type == CONNECT_CLASS_D2GS_TO_D2DBS_EX)
-				{
-					while (conn->nCharsInReadBuffer >= (signed)sizeof(*readhead_ex))
-					{
-						readhead_ex = (t_d2dbs_d2gs_header_ex*)conn->ReadBuf;
-						readlen = bn_int_get(readhead_ex->size);
-						if (conn->nCharsInReadBuffer < readlen) break;
-						switch (bn_short_get(readhead_ex->type))
-						{
-						case D2GS_D2DBS_SAVE_DATA_REQUEST_EX:
-							retval = dbs_packet_savedata_ex(conn);
-							break;
-						case D2GS_D2DBS_GET_DATA_REQUEST_EX:
-							retval = dbs_packet_getdata_ex(conn);
-							break;
-						case D2GS_D2DBS_STASH_SAVE_REQUEST:
-							retval = dbs_packet_stash_save(conn);
-							break;
-						case D2GS_D2DBS_STASH_GET_REQUEST:
-							retval = dbs_packet_stash_get(conn);
-							break;
-						default:
-							eventlog(eventlog_level_error, __FUNCTION__, "[0x66] unknown request type {}, Len: {}", bn_short_get(readhead_ex->type), conn->nCharsInReadBuffer);
 							retval = -1;
 						}
 						if (retval != 1) return retval;
@@ -1046,37 +787,26 @@ namespace pvpgn
 
 		int dbs_keepalive(void)
 		{
-			t_elem				*elem;
-			t_d2dbs_connection		*tempc;
-			unsigned char			*writepos;
+			t_elem* elem;
+			t_d2dbs_connection* tempc;
+			t_d2dbs_d2gs_echorequest* echoreq;
+			unsigned short			writelen;
+			unsigned char* writepos;
 			std::time_t				now;
 
+			writelen = sizeof(t_d2dbs_d2gs_echorequest);
 			now = std::time(NULL);
 			LIST_TRAVERSE(dbs_server_connection_list, elem)
 			{
 				if (!(tempc = (t_d2dbs_connection*)elem_get_data(elem))) continue;
-
-				if (tempc->type == CONNECT_CLASS_D2GS_TO_D2DBS_EX) {
-					/* EX connection: gui echo voi EX header (10 bytes) */
-					unsigned int writelen_ex = sizeof(t_d2dbs_d2gs_header_ex);
-					if (writelen_ex > (unsigned int)(kBufferSize - tempc->nCharsInWriteBuffer)) continue;
-					writepos = (unsigned char*)(tempc->WriteBuf + tempc->nCharsInWriteBuffer);
-					t_d2dbs_d2gs_header_ex* echoreq_ex = (t_d2dbs_d2gs_header_ex*)writepos;
-					bn_int_set(&echoreq_ex->size, writelen_ex);
-					bn_short_set(&echoreq_ex->type, D2DBS_D2GS_ECHOREQUEST);
-					bn_int_set(&echoreq_ex->seqno, 0);
-					tempc->nCharsInWriteBuffer += (int)writelen_ex;
-				} else {
-					/* OLD connection: gui echo voi OLD header (8 bytes) */
-					unsigned short writelen_old = (unsigned short)sizeof(t_d2dbs_d2gs_echorequest);
-					if (writelen_old > (unsigned short)(kBufferSize - tempc->nCharsInWriteBuffer)) continue;
-					writepos = (unsigned char*)(tempc->WriteBuf + tempc->nCharsInWriteBuffer);
-					t_d2dbs_d2gs_echorequest* echoreq = (t_d2dbs_d2gs_echorequest*)writepos;
-					bn_short_set(&echoreq->h.type, D2DBS_D2GS_ECHOREQUEST);
-					bn_short_set(&echoreq->h.size, writelen_old);
-					bn_int_set(&echoreq->h.seqno, 0);
-					tempc->nCharsInWriteBuffer += writelen_old;
-				}
+				if (writelen > kBufferSize - tempc->nCharsInWriteBuffer) continue;
+				writepos = (unsigned char*)(tempc->WriteBuf + tempc->nCharsInWriteBuffer);
+				echoreq = (t_d2dbs_d2gs_echorequest*)writepos;
+				bn_short_set(&echoreq->h.type, D2DBS_D2GS_ECHOREQUEST);
+				bn_short_set(&echoreq->h.size, writelen);
+				/* FIXME: sequence number not set */
+				bn_int_set(&echoreq->h.seqno, 0);
+				tempc->nCharsInWriteBuffer += writelen;
 			}
 			return 0;
 		}
@@ -1171,319 +901,6 @@ namespace pvpgn
 			}
 
 			return 1; /* difficulty hack not enabled */
-		}
-
-		static unsigned int dbs_packet_savedata_char_stash(t_d2dbs_connection* conn, char* AccountName, char* CharName, char* data, unsigned int datalen)
-		{
-			char filename[4096]{};
-			char savefile[4096]{};
-			std::FILE* fd;
-
-			strtolower(AccountName);
-			strtolower(CharName);
-
-			std::sprintf(filename, "%s/.%s.tmp", d2dbs_prefs_get_char_stash_dir(), CharName);
-			fd = std::fopen(filename, "wb");
-			if (!fd) 
-			{
-				eventlog(eventlog_level_error, __FUNCTION__, "open() failed : {}", filename);
-				return 0;
-			}
-
-			std::size_t curlen = 0;
-			std::size_t leftlen = datalen;
-			while (curlen < datalen)
-			{
-				std::size_t writelen = leftlen > 2000 ? 2000 : leftlen;
-
-				std::size_t readlen = std::fwrite(data + curlen, 1, writelen, fd);
-				if (readlen <= 0) 
-				{
-					std::fclose(fd);
-					eventlog(eventlog_level_error, __FUNCTION__, "write() failed error : {}", std::strerror(errno));
-					return 0;
-				}
-				curlen += readlen;
-				leftlen -= readlen;
-			}
-			std::fclose(fd);
-
-			std::sprintf(savefile, "%s/%s.stash", d2dbs_prefs_get_charsave_dir(), CharName);
-			if (p_rename(filename, savefile) == -1)
-			{
-				eventlog(eventlog_level_error, __FUNCTION__, "error std::rename {} to {}", filename, savefile);
-				return 0;
-			}
-			eventlog(eventlog_level_info, __FUNCTION__, "saved char stash {}(*{}) for gs {}({})", CharName, AccountName, conn->serverip, conn->serverid);
-			return datalen;
-		}
-
-		static unsigned int dbs_packet_getdata_char_stash(t_d2dbs_connection* conn, char* AccountName, char* CharName, char* data, long bufsize)
-		{
-			char filename[4096]{};
-			std::FILE* fd;
-
-			strtolower(AccountName);
-			strtolower(CharName);
-
-			std::sprintf(filename, "%s/%s.stash", d2dbs_prefs_get_char_stash_dir(), CharName);
-			fd = std::fopen(filename, "rb");
-			if (!fd) {
-				eventlog(eventlog_level_error, __FUNCTION__, "open() failed : {}", filename);
-				return 0;
-			}
-			std::fseek(fd, 0, SEEK_END);
-			long filesize = std::ftell(fd);
-			if (filesize == -1L)
-			{
-				std::fclose(fd);
-				eventlog(eventlog_level_error, __FUNCTION__, "ftell() failed");
-				return 0;
-			}
-			std::rewind(fd);
-
-			if (bufsize < filesize) 
-			{
-				std::fclose(fd);
-				eventlog(eventlog_level_error, __FUNCTION__, "not enough buffer");
-				return 0;
-			}
-
-			long curlen = 0;
-			std::size_t leftlen = filesize;
-			while (curlen < filesize)
-			{
-				std::size_t writelen = leftlen > 2000 ? 2000 : leftlen;
-
-				std::size_t readlen = std::fread(data + curlen, 1, writelen, fd);
-				if (readlen <= 0) {
-					std::fclose(fd);
-					eventlog(eventlog_level_error, __FUNCTION__, "read() failed error : {}", std::strerror(errno));
-					return 0;
-				}
-				leftlen -= readlen;
-				curlen += readlen;
-			}
-			std::fclose(fd);
-			eventlog(eventlog_level_info, __FUNCTION__, "loaded char stash {}(*{}) for gs {}({})", CharName, AccountName, conn->serverip, conn->serverid);
-			return filesize;
-		}
-
-		/* =================================================================
-		 * dbs_packet_stash_save (0x3A)  GS → DBS
-		 * Request:  [header_ex][bn_int datalen][AccountName\0][CharName\0][data]
-		 * Reply:    [header_ex][bn_int result][CharName\0]
-		 * File:     <charstash_dir>/<AccountName>/<CharName>.stash
-		 * ================================================================= */
-		static int dbs_packet_stash_save(t_d2dbs_connection* conn)
-		{
-			t_d2gs_d2dbs_stash_save_request* req;
-			t_d2dbs_d2gs_stash_save_reply* rep;
-			char   AccountName[MAX_USERNAME_LEN];
-			char   CharName[MAX_CHARNAME_LEN];
-			char   stashdir[MAX_PATH];
-			char   accdir[MAX_PATH];
-			char   tmpfile[MAX_PATH];
-			char   savefile[MAX_PATH];
-			char* readpos;
-			unsigned char* writepos;
-			unsigned int   datalen;
-			unsigned int   result;
-			std::FILE* fd;
-			struct stat    statbuf;
-
-			readpos = conn->ReadBuf;
-			req = (t_d2gs_d2dbs_stash_save_request*)readpos;
-			datalen = bn_int_get(req->datalen);
-
-			readpos += sizeof(*req);
-			std::strncpy(AccountName, readpos, MAX_USERNAME_LEN);
-			if (AccountName[MAX_USERNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "account name too long");
-				return -1;
-			}
-			readpos += std::strlen(AccountName) + 1;
-			std::strncpy(CharName, readpos, MAX_CHARNAME_LEN);
-			if (CharName[MAX_CHARNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "char name too long");
-				return -1;
-			}
-			readpos += std::strlen(CharName) + 1;
-
-			/* Kiem tra tong kich thuoc packet */
-			if (readpos + datalen != conn->ReadBuf + bn_int_get(req->h.size)) {
-				eventlog(eventlog_level_error, __FUNCTION__, "stash save packet size mismatch");
-				return -1;
-			}
-
-			strtolower(AccountName);
-			strtolower(CharName);
-
-			/* Tao thu muc charstash/<account>/ neu chua co */
-			std::sprintf(stashdir, "%s", d2dbs_prefs_get_char_stash_dir());
-			std::sprintf(accdir, "%s/%s", stashdir, AccountName);
-			if (stat(stashdir, &statbuf) == -1)
-				p_mkdir(stashdir, S_IRWXU | S_IRWXG | S_IRWXO);
-			if (stat(accdir, &statbuf) == -1) {
-				p_mkdir(accdir, S_IRWXU | S_IRWXG | S_IRWXO);
-				eventlog(eventlog_level_info, __FUNCTION__, "created stash dir: {}", accdir);
-			}
-
-			/* Ghi tmp → rename (atomic) */
-			std::sprintf(tmpfile, "%s/.%s.stash.tmp", accdir, CharName);
-			std::sprintf(savefile, "%s/%s.stash", accdir, CharName);
-
-			fd = std::fopen(tmpfile, "wb");
-			if (!fd) 
-			{
-				eventlog(eventlog_level_error, __FUNCTION__, "fopen failed: {}", tmpfile);
-				result = D2DBS_STASH_SAVE_FAILED;
-				goto send_reply_save;
-			}
-			{
-				std::size_t written = std::fwrite(readpos, 1, datalen, fd);
-				std::fclose(fd);
-				if (written != datalen) 
-				{
-					eventlog(eventlog_level_error, __FUNCTION__, "fwrite failed for stash {}", CharName);
-					result = D2DBS_STASH_SAVE_FAILED;
-					goto send_reply_save;
-				}
-			}
-			if (p_rename(tmpfile, savefile) != 0) 
-			{
-				eventlog(eventlog_level_error, __FUNCTION__, "rename failed: {} -> {}", tmpfile, savefile);
-				result = D2DBS_STASH_SAVE_FAILED;
-				goto send_reply_save;
-			}
-			eventlog(eventlog_level_info, __FUNCTION__, "saved stash {}(*{}) datalen={} gs {}({})", CharName, AccountName, datalen, conn->serverip, conn->serverid);
-			result = D2DBS_STASH_SAVE_SUCCESS;
-
-			send_reply_save:
-			{
-				std::size_t writelen = sizeof(*rep) + std::strlen(CharName) + 1;
-				if (writelen > (std::size_t)(kBufferSize - conn->nCharsInWriteBuffer))
-					return 0;
-				writepos = (unsigned char*)(conn->WriteBuf + conn->nCharsInWriteBuffer);
-				rep = (t_d2dbs_d2gs_stash_save_reply*)writepos;
-				bn_short_set(&rep->h.type, D2DBS_D2GS_STASH_SAVE_REPLY);
-				bn_int_set(&rep->h.size, (unsigned int)writelen);
-				bn_int_set(&rep->h.seqno, bn_int_get(req->h.seqno));
-				bn_int_set(&rep->result, result);
-				writepos += sizeof(*rep);
-				std::strncpy((char*)writepos, CharName, MAX_CHARNAME_LEN);
-				conn->nCharsInWriteBuffer += (int)writelen;
-			}
-			return 1;
-		}
-
-		/* =================================================================
-		 * dbs_packet_stash_get (0x3B)  GS → DBS
-		 * Request:  [header_ex][AccountName\0][CharName\0]
-		 * Reply:    [header_ex][bn_int result][bn_int datalen][CharName\0][data]
-		 * File:     <charstash_dir>/<AccountName>/<CharName>.stash
-		 * ================================================================= */
-		static int dbs_packet_stash_get(t_d2dbs_connection* conn)
-		{
-			t_d2gs_d2dbs_stash_get_request* req;
-			t_d2dbs_d2gs_stash_get_reply* rep;
-			char   AccountName[MAX_USERNAME_LEN];
-			char   CharName[MAX_CHARNAME_LEN];
-			char   filename[MAX_PATH];
-			char* readpos;
-			char* writepos;
-			unsigned int   datalen = 0;
-			unsigned int   result;
-			std::FILE* fd;
-			char* databuf = nullptr;
-
-			readpos = conn->ReadBuf;
-			req = (t_d2gs_d2dbs_stash_get_request*)readpos;
-
-			readpos += sizeof(*req);
-			std::strncpy(AccountName, readpos, MAX_USERNAME_LEN);
-			if (AccountName[MAX_USERNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "account name too long");
-				return -1;
-			}
-			readpos += std::strlen(AccountName) + 1;
-			std::strncpy(CharName, readpos, MAX_CHARNAME_LEN);
-			if (CharName[MAX_CHARNAME_LEN - 1] != 0) {
-				eventlog(eventlog_level_error, __FUNCTION__, "char name too long");
-				return -1;
-			}
-			readpos += std::strlen(CharName) + 1;
-
-			if (readpos != conn->ReadBuf + bn_int_get(req->h.size)) {
-				eventlog(eventlog_level_error, __FUNCTION__, "stash get packet size mismatch");
-				return -1;
-			}
-
-			strtolower(AccountName);
-			strtolower(CharName);
-
-			std::sprintf(filename, "%s/%s/%s.stash", d2dbs_prefs_get_char_stash_dir(), AccountName, CharName);
-			fd = std::fopen(filename, "rb");
-			if (!fd) {
-				eventlog(eventlog_level_error, __FUNCTION__, "fopen failed: {}", filename);
-				result = D2DBS_STASH_GET_FAILED;
-				goto send_reply_get;
-			}
-			{
-				std::fseek(fd, 0, SEEK_END);
-				long filesize = std::ftell(fd);
-				std::rewind(fd);
-				if (filesize <= 0) {
-					std::fclose(fd);
-					eventlog(eventlog_level_error, __FUNCTION__, "empty stash file: {}", filename);
-					result = D2DBS_STASH_GET_FAILED;
-					goto send_reply_get;
-				}
-				datalen = (unsigned int)filesize;
-
-				/* Kiem tra write buffer du cho */
-				unsigned int writelen = (unsigned int)sizeof(*rep) + std::strlen(CharName) + 1 + datalen;
-				if (writelen > (unsigned int)(kBufferSize - conn->nCharsInWriteBuffer)) 
-				{
-					std::fclose(fd);
-					eventlog(eventlog_level_error, __FUNCTION__, "write buffer too small for stash {} (need {})", CharName, writelen);
-					return 0;
-				}
-
-				databuf = (char*)xmalloc(datalen);
-				std::size_t readlen = std::fread(databuf, 1, datalen, fd);
-				std::fclose(fd);
-				if (readlen != datalen) 
-				{
-					xfree(databuf); databuf = nullptr;
-					datalen = 0;
-					eventlog(eventlog_level_error, __FUNCTION__, "fread failed for stash {}", CharName);
-					result = D2DBS_STASH_GET_FAILED;
-					goto send_reply_get;
-				}
-			}
-			eventlog(eventlog_level_info, __FUNCTION__, "loaded stash {}(*{}) datalen={} gs {}({})", CharName, AccountName, datalen, conn->serverip, conn->serverid);
-			result = D2DBS_STASH_GET_SUCCESS;
-
-			send_reply_get:
-			{
-				unsigned int writelen = (unsigned int)sizeof(*rep) + std::strlen(CharName) + 1 + datalen;
-				writepos = conn->WriteBuf + conn->nCharsInWriteBuffer;
-				rep = (t_d2dbs_d2gs_stash_get_reply*)writepos;
-				bn_short_set(&rep->h.type, D2DBS_D2GS_STASH_GET_REPLY);
-				bn_int_set(&rep->h.size, writelen);
-				bn_int_set(&rep->h.seqno, bn_int_get(req->h.seqno));
-				bn_int_set(&rep->result, result);
-				bn_int_set(&rep->datalen, datalen);
-				writepos += sizeof(*rep);
-				std::strncpy(writepos, CharName, MAX_CHARNAME_LEN);
-				writepos += std::strlen(CharName) + 1;
-				if (datalen && databuf)
-					std::memcpy(writepos, databuf, datalen);
-				conn->nCharsInWriteBuffer += (int)writelen;
-			}
-			if (databuf) xfree(databuf);
-			return 1;
 		}
 	}
 
