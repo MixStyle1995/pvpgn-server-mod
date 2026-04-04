@@ -89,6 +89,7 @@ namespace pvpgn
 
 #define CLIENT_CUSTOM_WAR3_VERSION  0xf1ff
 #define CLIENT_REQUEST_GAME_LIST	0xf2ff
+#define CLIENT_REQUEST_RANK_UPDATE	0xf3ff
 
 	/******************************************************/
 	/*

@@ -84,6 +84,15 @@
 #ifdef WITH_LUA
 #include "luainterface.h"
 #endif
+
+#include <direct.h>
+#include <ctime>
+
+#ifndef RANK_DATA_DIR
+#define RANK_DATA_DIR "var\\rankdata"
+#endif
+#include <compat/statmacros.h>
+
 namespace pvpgn
 {
 
@@ -180,6 +189,7 @@ namespace pvpgn
 		static int _client_extrawork(t_connection * c, t_packet const *const packet);
 		static int _client_request_game_list(t_connection* c, t_packet const* const packet);
 		static int _client_request_custom_war3_version(t_connection* c, t_packet const* const packet);
+		static int _client_rank_update(t_connection* c, t_packet const* const packet);
 
 		/* connection state connected handler table */
 		static const t_htable_row bnet_htable_con[] = {
@@ -283,6 +293,7 @@ namespace pvpgn
 			{ CLIENT_EXTRAWORK, _client_extrawork },
 			{ CLIENT_CUSTOM_WAR3_VERSION, _client_request_custom_war3_version },
 			{ CLIENT_REQUEST_GAME_LIST, _client_request_game_list },
+			{ CLIENT_REQUEST_RANK_UPDATE, _client_rank_update },
 			{ CLIENT_NULL, NULL },
 			{ -1, NULL }
 		};
@@ -5594,5 +5605,411 @@ namespace pvpgn
 
 			return 0;
 		}
+
+
+#include <windows.h>
+		// Helper: đọc rank data từ file JSON
+		// File format:
+		// {"username":"xxx","exp":1234,"games":56,"level":3,"rank":"Knight","last_update":1234567890}
+		struct RankData 
+		{
+			std::string username;
+			uint32_t    exp;
+			uint32_t    games;
+			uint32_t    level;
+			std::string rank_name;
+			time_t      last_update;
+		};
+
+		static bool rank_ensure_dir()
+		{
+			struct _stat st;
+			if (_stat(RANK_DATA_DIR, &st) == 0 && (st.st_mode & _S_IFDIR))
+				return true;
+
+			// Tạo thư mục nếu chưa có
+			if (_mkdir(RANK_DATA_DIR) == 0)
+				return true;
+
+			eventlog(eventlog_level_error, __FUNCTION__,
+				"cannot create rank data directory \"{}\" (mkdir: {})", RANK_DATA_DIR, std::strerror(errno));
+			return false;
+		}
+
+		static std::string rank_filepath(const std::string& username)
+		{
+			return std::string(RANK_DATA_DIR) + "\\" + username + ".json";
+		}
+
+		// Parse đơn giản — không cần thư viện JSON bên ngoài
+		static bool rank_read_file(const std::string& username, RankData& out)
+		{
+			std::ifstream ifs(rank_filepath(username));
+			if (!ifs.is_open())
+			{
+				// File chưa tồn tại = player mới, khởi tạo mặc định
+				out.username = username;
+				out.exp = 0;
+				out.games = 0;
+				out.level = 1;
+				out.rank_name = "Peasant";
+				out.last_update = 0;
+				return true;
+			}
+
+			std::string content((std::istreambuf_iterator<char>(ifs)),
+				std::istreambuf_iterator<char>());
+			ifs.close();
+
+			// Parse thủ công các field từ JSON đơn giản
+			auto getNumField = [&](const char* key) -> uint32_t {
+				std::string search = std::string("\"") + key + "\":";
+				size_t pos = content.find(search);
+				if (pos == std::string::npos) return 0;
+				pos += search.size();
+				return (uint32_t)std::strtoul(content.c_str() + pos, nullptr, 10);
+				};
+
+			auto getStrField = [&](const char* key) -> std::string {
+				std::string search = std::string("\"") + key + "\":\"";
+				size_t pos = content.find(search);
+				if (pos == std::string::npos) return "";
+				pos += search.size();
+				size_t end = content.find("\"", pos);
+				if (end == std::string::npos) return "";
+				return content.substr(pos, end - pos);
+				};
+
+			out.username = getStrField("username");
+			out.exp = getNumField("exp");
+			out.games = getNumField("games");
+			out.level = getNumField("level");
+			out.rank_name = getStrField("rank");
+			out.last_update = (time_t)getNumField("last_update");
+
+			if (out.username.empty()) out.username = username;
+			if (out.level == 0) out.level = 1;
+			if (out.rank_name.empty()) out.rank_name = "Peasant";
+
+			return true;
+		}
+
+		static bool rank_write_file(const RankData& data)
+		{
+			if (!rank_ensure_dir())
+				return false;
+
+			std::string path = rank_filepath(data.username);
+			std::string tmp = path + ".tmp";
+
+			std::ofstream ofs(tmp, std::ios::trunc);
+			if (!ofs.is_open())
+			{
+				eventlog(eventlog_level_error, __FUNCTION__,
+					"cannot open rank file \"{}\" for writing", tmp);
+				return false;
+			}
+
+			// Ghi JSON 1 dòng — dễ parse từ cả C++ và PHP
+			ofs << "{"
+				<< "\"username\":\"" << data.username << "\","
+				<< "\"exp\":" << data.exp << ","
+				<< "\"games\":" << data.games << ","
+				<< "\"level\":" << data.level << ","
+				<< "\"rank\":\"" << data.rank_name << "\","
+				<< "\"last_update\":" << (unsigned long)data.last_update
+				<< "}" << std::endl;
+
+			ofs.close();
+
+			// Rename .tmp -> .json (ghi đè file cũ nếu có)
+#ifdef WIN32
+	// Windows: std::rename KHÔNG ghi đè được → dùng WinAPI
+			if (!MoveFileExA(tmp.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING))
+			{
+				eventlog(eventlog_level_error, __FUNCTION__,
+					"cannot MoveFileEx \"{}\" -> \"{}\" (GetLastError: {})",
+					tmp, path, (unsigned long)GetLastError());
+				std::remove(tmp.c_str());
+				return false;
+			}
+#else
+	// Linux: std::rename tự ghi đè
+			if (std::rename(tmp.c_str(), path.c_str()) != 0)
+			{
+				eventlog(eventlog_level_error, __FUNCTION__,
+					"cannot rename \"{}\" -> \"{}\" (rename: {})", tmp, path, std::strerror(errno));
+				std::remove(tmp.c_str());
+				return false;
+			}
+#endif
+
+			return true;
+		}
+
+		static int _client_rank_update(t_connection* c, t_packet const* const packet)
+		{
+			// -- Header minimum check: 4 byte header + 4 byte duration + 4 byte count = 12
+			if (packet_get_size(packet) < 12)
+			{
+				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad RANK_UPDATE packet (too small: {} bytes)", conn_get_socket(c), packet_get_size(packet));
+				return -1;
+			}
+
+			// -- Read gameDurationSecs (offset 4, after BNET 4-byte header)
+			const unsigned char* raw = (const unsigned char*)packet_get_data_const(packet, 4, 4);
+			if (!raw)
+			{
+				return -1;
+			}
+			uint32_t gameDurationSecs = (uint32_t)raw[0]
+				| ((uint32_t)raw[1] << 8)
+				| ((uint32_t)raw[2] << 16)
+				| ((uint32_t)raw[3] << 24);
+
+			// -- Read playerCount (offset 8)
+			const unsigned char* raw2 = (const unsigned char*)packet_get_data_const(packet, 8, 4);
+			if (!raw2)
+			{
+				return -1;
+			}
+			uint32_t playerCount = (uint32_t)raw2[0]
+				| ((uint32_t)raw2[1] << 8)
+				| ((uint32_t)raw2[2] << 16)
+				| ((uint32_t)raw2[3] << 24);
+
+			if (playerCount == 0 || playerCount > 24)
+			{
+				eventlog(eventlog_level_warn, __FUNCTION__,
+					"[{}] RANK_UPDATE invalid playerCount={}", conn_get_socket(c), playerCount);
+				return 0;
+			}
+
+			// -- EXP calculation
+			if (gameDurationSecs < 600)
+			{
+				eventlog(eventlog_level_warn, __FUNCTION__, "[{}] RANK_UPDATE duration {}s < 600s, ignoring", conn_get_socket(c), gameDurationSecs);
+				return 0;
+			}
+
+			uint32_t durationMinutes = gameDurationSecs / 60;
+			// EXP mới: 100 + minutes * 10, cap 5000
+			// Game 10p=200, 30p=400, 45p=550, 1h=700, 2h=1300, 4h=2500, 8h=4900
+			uint32_t rawExp = 100 + durationMinutes * 10;
+			uint32_t expGained = (rawExp < 5000) ? rawExp : 5000;
+
+			// -- Level thresholds (100 levels, 10 rank tiers)
+			// Công thức: cost(lv) = 15 × lv²  →  level thấp rẻ, level cao CỰC ĐẮT
+			// Total EXP Lv100 = 5,075,235
+			static const uint32_t LEVEL_EXP[100] = {
+				// === Peasant (Lv 1-10) — ~10 game 45p ===
+						 0,  // Lv  1
+						60,  // Lv  2
+					   195,  // Lv  3
+					   435,  // Lv  4
+					   810,  // Lv  5
+					  1350,  // Lv  6
+					  2085,  // Lv  7
+					  3045,  // Lv  8
+					  4260,  // Lv  9
+					  5760,  // Lv 10
+					  // === Footman (Lv 11-20) — ~68 game 45p ===
+							7575,  // Lv 11
+							9735,  // Lv 12
+						   12270,  // Lv 13
+						   15210,  // Lv 14
+						   18585,  // Lv 15
+						   22425,  // Lv 16
+						   26760,  // Lv 17
+						   31620,  // Lv 18
+						   37035,  // Lv 19
+						   43035,  // Lv 20
+						   // === Knight (Lv 21-30) — ~180 game 45p ===
+								49650,  // Lv 21
+								56910,  // Lv 22
+								64845,  // Lv 23
+								73485,  // Lv 24
+								82860,  // Lv 25
+								93000,  // Lv 26
+							   103935,  // Lv 27
+							   115695,  // Lv 28
+							   128310,  // Lv 29
+							   141810,  // Lv 30
+							   // === Paladin (Lv 31-40) — ~346 game 45p ===
+								   156225,  // Lv 31
+								   171585,  // Lv 32
+								   187920,  // Lv 33
+								   205260,  // Lv 34
+								   223635,  // Lv 35
+								   243075,  // Lv 36
+								   263610,  // Lv 37
+								   285270,  // Lv 38
+								   308085,  // Lv 39
+								   332085,  // Lv 40
+								   // === Champion (Lv 41-50) — ~567 game 45p ===
+									   357300,  // Lv 41
+									   383760,  // Lv 42
+									   411495,  // Lv 43
+									   440535,  // Lv 44
+									   470910,  // Lv 45
+									   502650,  // Lv 46
+									   535785,  // Lv 47
+									   570345,  // Lv 48
+									   606360,  // Lv 49
+									   643860,  // Lv 50
+									   // === Warlord (Lv 51-60) — ~842 game 45p ===
+										   682875,  // Lv 51
+										   723435,  // Lv 52
+										   765570,  // Lv 53
+										   809310,  // Lv 54
+										   854685,  // Lv 55
+										   901725,  // Lv 56
+										   950460,  // Lv 57
+										  1000920,  // Lv 58
+										  1053135,  // Lv 59
+										  1107135,  // Lv 60
+										  // === Archmage (Lv 61-70) — ~1172 game 45p ===
+											 1162950,  // Lv 61
+											 1220610,  // Lv 62
+											 1280145,  // Lv 63
+											 1341585,  // Lv 64
+											 1404960,  // Lv 65
+											 1470300,  // Lv 66
+											 1537635,  // Lv 67
+											 1606995,  // Lv 68
+											 1678410,  // Lv 69
+											 1751910,  // Lv 70
+											 // === General (Lv 71-80) — ~1557 game 45p ===
+												1827525,  // Lv 71
+												1905285,  // Lv 72
+												1985220,  // Lv 73
+												2067360,  // Lv 74
+												2151735,  // Lv 75
+												2238375,  // Lv 76
+												2327310,  // Lv 77
+												2418570,  // Lv 78
+												2512185,  // Lv 79
+												2608185,  // Lv 80
+												// === Overlord (Lv 81-90) — ~1996 game 45p ===
+												   2706600,  // Lv 81
+												   2807460,  // Lv 82
+												   2910795,  // Lv 83
+												   3016635,  // Lv 84
+												   3125010,  // Lv 85
+												   3235950,  // Lv 86
+												   3349485,  // Lv 87
+												   3465645,  // Lv 88
+												   3584460,  // Lv 89
+												   3705960,  // Lv 90
+												   // === Legend (Lv 91-100) — ~2490 game 45p ===
+													  3830175,  // Lv 91
+													  3957135,  // Lv 92
+													  4086870,  // Lv 93
+													  4219410,  // Lv 94
+													  4354785,  // Lv 95
+													  4493025,  // Lv 96
+													  4634160,  // Lv 97
+													  4778220,  // Lv 98
+													  4925235,  // Lv 99
+													  5075235   // Lv100
+			};
+			static const int MAX_LEVEL = 100;
+
+			// Rank name = theo tier (mỗi 10 level = 1 tier)
+			static const char* RANK_TIER_NAMES[10] = {
+				"Peasant",    // Lv  1-10
+				"Footman",    // Lv 11-20
+				"Knight",     // Lv 21-30
+				"Paladin",    // Lv 31-40
+				"Champion",   // Lv 41-50
+				"Warlord",    // Lv 51-60
+				"Archmage",   // Lv 61-70
+				"General",    // Lv 71-80
+				"Overlord",   // Lv 81-90
+				"Legend"      // Lv 91-100
+			};
+
+			// -- Read player names (offset 12, null-terminated strings)
+			uint32_t offset = 12;
+			uint32_t pktSize = packet_get_size(packet);
+
+			for (uint32_t i = 0; i < playerCount; ++i)
+			{
+				if (offset >= pktSize) break;
+
+				const char* namePtr = packet_get_str_const(packet, offset, 32);
+				if (!namePtr || namePtr[0] == '\0') break;
+
+				std::string username(namePtr);
+				offset += (uint32_t)username.size() + 1;
+
+				// ============================================================
+				// ĐỌC RANK DATA TỪ FILE (thay vì account_get_numattr từ MySQL)
+				// ============================================================
+				RankData rd;
+				if (!rank_read_file(username, rd))
+				{
+					eventlog(eventlog_level_error, __FUNCTION__,
+						"[{}] RANK_UPDATE: cannot read rank file for '{}', skipping",
+						conn_get_socket(c), username);
+					continue;
+				}
+
+				// Update stats
+				uint32_t newExp = rd.exp + expGained;
+				uint32_t newGames = rd.games + 1;
+
+				// Compute new level (LEVEL_EXP index 0-based: index 0 = Lv1, index 99 = Lv100)
+				uint32_t newLevel = rd.level;
+				while (newLevel < (uint32_t)MAX_LEVEL && newExp >= LEVEL_EXP[newLevel])
+					newLevel++;
+
+				// Rank tier: mỗi 10 level = 1 tier
+				int tierIdx = ((int)newLevel - 1) / 10;
+				if (tierIdx < 0) tierIdx = 0;
+				if (tierIdx > 9) tierIdx = 9;
+				const char* rankName = RANK_TIER_NAMES[tierIdx];
+
+				// ============================================================
+				// GHI RANK DATA RA FILE (thay vì account_set_numattr vào MySQL)
+				// ============================================================
+				rd.exp = newExp;
+				rd.games = newGames;
+				rd.level = newLevel;
+				rd.rank_name = rankName;
+				rd.last_update = std::time(nullptr);
+
+				if (!rank_write_file(rd))
+				{
+					eventlog(eventlog_level_error, __FUNCTION__,
+						"[{}] RANK_UPDATE: cannot write rank file for '{}'",
+						conn_get_socket(c), username);
+					continue;
+				}
+
+				eventlog(eventlog_level_info, __FUNCTION__,
+					"[{}] RANK_UPDATE: user={} exp={}+{}={} games={} level={} rank={} duration={}s [FILE]",
+					conn_get_socket(c), username,
+					rd.exp - expGained, expGained, newExp,
+					newGames, newLevel, rankName,
+					gameDurationSecs);
+
+				// Notify player in-game via whisper if they are online
+				t_connection* target = connlist_find_connection_by_accountname(username.c_str());
+				if (target)
+				{
+					std::string msg = "[Rank] +" + std::to_string(expGained)
+						+ " EXP | Total: " + std::to_string(newExp)
+						+ " | Level: " + std::to_string(newLevel)
+						+ " (" + rankName + ")"
+						+ " | Games: " + std::to_string(newGames);
+					message_send_text(target, message_type_whisper, target, msg.c_str());
+				}
+			}
+
+			return 0;
+		}
+
 	}
 }
+
