@@ -3783,13 +3783,15 @@ namespace pvpgn
 				eventlog(eventlog_level_debug, __FUNCTION__, "[{}] not listing because game is wrong type", conn_get_socket(cbdata->c));
 				return 0;
 			}
-			if (conn_get_versioncheck(cbdata->c) &&
-				conn_get_versioncheck(game_get_owner(game)) &&
-				conn_get_versioncheck(cbdata->c)->get_version_tag() != conn_get_versioncheck(game_get_owner(game))->get_version_tag())
-			{
-				eventlog(eventlog_level_debug, __FUNCTION__, "[{}] not listing because game is wrong versiontag", conn_get_socket(cbdata->c));
-				return 0;
-			}
+
+			// [PATCHED] Removed version_tag filter so all War3 versions see all games
+			// if (conn_get_versioncheck(cbdata->c) &&
+			//     conn_get_versioncheck(game_get_owner(game)) &&
+			//     conn_get_versioncheck(cbdata->c)->get_version_tag() != conn_get_versioncheck(game_get_owner(game))->get_version_tag())
+			// {
+			//     eventlog(eventlog_level_debug, __FUNCTION__, "[{}] not listing because game is wrong versiontag", conn_get_socket(cbdata->c));
+			//     return 0;
+			// }
 
 			bn_short_set(&glgame.gametype, gtype_to_bngtype(game_get_type(game)));
 			bn_short_set(&glgame.unknown1, SERVER_GAMELISTREPLY_GAME_UNKNOWN1);
@@ -5600,6 +5602,21 @@ namespace pvpgn
 			conn_set_gameversion(c, bn_int_get(packet->u.client_custom_war3_version.gameversion));
 			std::string version = vernum_to_verstr(bn_int_get(packet->u.client_custom_war3_version.gameversion));
 			conn_set_clientver(c, version.c_str());
+
+			// Re-lookup versioncheck so version_tag reflects the new war3 version
+			// Without this, _glist_cb still uses the old version_tag from login time
+			const VersionCheck* vc = select_versioncheck(conn_get_archtag(c), conn_get_clienttag(c), conn_get_versionid(c), conn_get_gameversion(c), conn_get_checksum(c));
+			if (vc)
+			{
+				conn_set_versioncheck(c, vc);
+				eventlog(eventlog_level_info, __FUNCTION__, "[{}] CUSTOM_WAR3_VERSION updated versioncheck to tag=\"{}\"", conn_get_socket(c), vc->get_version_tag());
+			}
+			else if (prefs_get_allow_unknown_version())
+			{
+				// Unknown version but allowed - clear versioncheck so filter is skipped
+				conn_set_versioncheck(c, nullptr);
+				eventlog(eventlog_level_info, __FUNCTION__, "[{}] CUSTOM_WAR3_VERSION unknown version, cleared versioncheck (allow_unknown_version=true)", conn_get_socket(c));
+			}
 
 			eventlog(eventlog_level_info, __FUNCTION__, "[{}] CUSTOM_WAR3_VERSION verstr={} versionid=0x{:08x} gameversion=0x{:08x} checksum=0x{:08x}", conn_get_socket(c), version, conn_get_versionid(c), conn_get_gameversion(c), conn_get_checksum(c));
 
