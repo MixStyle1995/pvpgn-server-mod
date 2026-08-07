@@ -61,12 +61,12 @@ namespace pvpgn
 		static int totalcount = 0;
 
 
-		static void game_choose_host(t_game * game);
-		static void game_destroy(t_game * game);
-		static int game_report(t_game * game);
+		static void game_choose_host(t_game* game);
+		static void game_destroy(t_game* game);
+		static int game_report(t_game* game);
 
 
-		static void game_choose_host(t_game * game)
+		static void game_choose_host(t_game* game)
 		{
 			unsigned int i;
 
@@ -82,18 +82,18 @@ namespace pvpgn
 			}
 
 			for (i = 0; i < game->count; i++)
-			if (game->connections[i])
-			{
-				game->owner = game->connections[i];
-				game->addr = conn_get_game_addr(game->connections[i]);
-				game->port = conn_get_game_port(game->connections[i]);
-				return;
-			}
+				if (game->connections[i])
+				{
+					game->owner = game->connections[i];
+					game->addr = conn_get_game_addr(game->connections[i]);
+					game->port = conn_get_game_port(game->connections[i]);
+					return;
+				}
 			eventlog(eventlog_level_warn, __FUNCTION__, "no valid connections found");
 		}
 
 
-		extern char const * game_type_get_str(t_game_type type)
+		extern char const* game_type_get_str(t_game_type type)
 		{
 			switch (type)
 			{
@@ -161,7 +161,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_status_get_str(t_game_status status)
+		extern char const* game_status_get_str(t_game_status status)
 		{
 			switch (status)
 			{
@@ -186,7 +186,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_result_get_str(t_game_result result)
+		extern char const* game_result_get_str(t_game_result result)
 		{
 			switch (result)
 			{
@@ -214,7 +214,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_option_get_str(t_game_option option)
+		extern char const* game_option_get_str(t_game_option option)
 		{
 			switch (option)
 			{
@@ -291,7 +291,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_maptype_get_str(t_game_maptype maptype)
+		extern char const* game_maptype_get_str(t_game_maptype maptype)
 		{
 			switch (maptype)
 			{
@@ -313,7 +313,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_tileset_get_str(t_game_tileset tileset)
+		extern char const* game_tileset_get_str(t_game_tileset tileset)
 		{
 			switch (tileset)
 			{
@@ -339,7 +339,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_speed_get_str(t_game_speed speed)
+		extern char const* game_speed_get_str(t_game_speed speed)
 		{
 			switch (speed)
 			{
@@ -363,7 +363,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_difficulty_get_str(unsigned difficulty)
+		extern char const* game_difficulty_get_str(unsigned difficulty)
 		{
 			switch (difficulty)
 			{
@@ -384,9 +384,9 @@ namespace pvpgn
 			}
 		}
 
-		extern t_game * game_create(char const * name, char const * pass, char const * info, t_game_type type, int startver, t_clienttag clienttag, unsigned long gameversion)
+		extern t_game* game_create(char const* name, char const* pass, char const* info, t_game_type type, int startver, t_clienttag clienttag, unsigned long gameversion)
 		{
-			t_game * game;
+			t_game* game;
 
 			if (!name)
 			{
@@ -417,9 +417,9 @@ namespace pvpgn
 			if (!(game->clienttag = clienttag))
 			{
 				eventlog(eventlog_level_error, __FUNCTION__, "got UNKNOWN clienttag");
-				xfree((void *)game->info); /* avoid warning */
-				xfree((void *)game->pass); /* avoid warning */
-				xfree((void *)game->name); /* avoid warning */
+				xfree((void*)game->info); /* avoid warning */
+				xfree((void*)game->pass); /* avoid warning */
+				xfree((void*)game->name); /* avoid warning */
 				xfree(game);
 				return NULL;
 			}
@@ -470,11 +470,14 @@ namespace pvpgn
 
 			eventlog(eventlog_level_info, __FUNCTION__, "game \"{}\" (pass \"{}\") type {}({}) startver {} created", name, pass, (unsigned short)type, game_type_get_str(game->type), startver);
 
+			game_broadcast_list_to_all_connections();
+			game->last_host_info_broadcast = now;
+
 			return game;
 		}
 
 
-		static void game_destroy(t_game * game)
+		static void game_destroy(t_game* game)
 		{
 			unsigned int i;
 
@@ -483,13 +486,15 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "got NULL game");
 				return;
 			}
-			
+
 #ifdef WITH_LUA
 			lua_handle_game(game, NULL, luaevent_game_destroy);
 #endif
 
 			elist_del(&game->glist_link);
 			glist_length--;
+
+			game_broadcast_list_to_all_connections();
 
 			if (game->realmname)
 			{
@@ -501,42 +506,42 @@ namespace pvpgn
 			for (i = 0; i < game->count; i++)
 			{
 				if (game->report_bodies && game->report_bodies[i])
-					xfree((void *)game->report_bodies[i]); /* avoid warning */
+					xfree((void*)game->report_bodies[i]); /* avoid warning */
 				if (game->report_heads && game->report_heads[i])
-					xfree((void *)game->report_heads[i]); /* avoid warning */
+					xfree((void*)game->report_heads[i]); /* avoid warning */
 				if (game->reported_results && game->reported_results[i])
-					xfree((void *)game->reported_results[i]);
+					xfree((void*)game->reported_results[i]);
 			}
 			if (game->realmname)
-				xfree((void *)game->realmname); /* avoid warining */
+				xfree((void*)game->realmname); /* avoid warining */
 			if (game->report_bodies)
-				xfree((void *)game->report_bodies); /* avoid warning */
+				xfree((void*)game->report_bodies); /* avoid warning */
 			if (game->report_heads)
-				xfree((void *)game->report_heads); /* avoid warning */
+				xfree((void*)game->report_heads); /* avoid warning */
 			if (game->results)
-				xfree((void *)game->results); /* avoid warning */
+				xfree((void*)game->results); /* avoid warning */
 			if (game->reported_results)
-				xfree((void *)game->reported_results);
+				xfree((void*)game->reported_results);
 			if (game->connections)
-				xfree((void *)game->connections); /* avoid warning */
+				xfree((void*)game->connections); /* avoid warning */
 			if (game->players)
-				xfree((void *)game->players); /* avoid warning */
+				xfree((void*)game->players); /* avoid warning */
 			if (game->mapname)
-				xfree((void *)game->mapname); /* avoid warning */
+				xfree((void*)game->mapname); /* avoid warning */
 			if (game->description)
-				xfree((void *)game->description); /* avoid warning */
+				xfree((void*)game->description); /* avoid warning */
 
-			xfree((void *)game->info); /* avoid warning */
-			xfree((void *)game->pass); /* avoid warning */
-			if (game->name) xfree((void *)game->name); /* avoid warning */
-			xfree((void *)game); /* avoid warning */
+			xfree((void*)game->info); /* avoid warning */
+			xfree((void*)game->pass); /* avoid warning */
+			if (game->name) xfree((void*)game->name); /* avoid warning */
+			xfree((void*)game); /* avoid warning */
 
 			eventlog(eventlog_level_info, __FUNCTION__, "game deleted");
 
 			return;
 		}
 
-		static int game_evaluate_results(t_game * game)
+		static int game_evaluate_results(t_game* game)
 		{
 			unsigned int i, j;
 			unsigned int wins, losses, draws, disconnects, reports;
@@ -631,9 +636,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int game_match_type(t_game_type type, const char *gametypes)
+		static int game_match_type(t_game_type type, const char* gametypes)
 		{
-			char *p, *q;
+			char* p, * q;
 			int res;
 
 			if (!gametypes || !gametypes[0]) return 0;
@@ -662,7 +667,7 @@ namespace pvpgn
 			return res;
 		}
 
-		static int game_sanity_check(t_game_result * results, t_account * * players, unsigned int count, unsigned int discisloss)
+		static int game_sanity_check(t_game_result* results, t_account** players, unsigned int count, unsigned int discisloss)
 		{
 			unsigned int winners = 0;
 			unsigned int losers = 0;
@@ -707,7 +712,7 @@ namespace pvpgn
 				return 0;
 			}
 
-			if ((discisloss) && ((losers < 1) || (winners<1) || (winners>1 && (winners != losers))))
+			if ((discisloss) && ((losers < 1) || (winners < 1) || (winners > 1 && (winners != losers))))
 			{
 				eventlog(eventlog_level_info, __FUNCTION__, "missing winner or loser for count={} (winners={} losers={})", count, winners, losers);
 				return -1;
@@ -716,14 +721,14 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int game_report(t_game * game)
+		static int game_report(t_game* game)
 		{
-			std::FILE *          fp;
-			char *          realname;
-			char *          tempname;
+			std::FILE* fp;
+			char* realname;
+			char* tempname;
 			unsigned int    i;
 			unsigned int    realcount;
-			t_ladder_info * ladder_info = NULL;
+			t_ladder_info* ladder_info = NULL;
 			char            clienttag_str[5];
 
 			if (!game)
@@ -905,7 +910,7 @@ namespace pvpgn
 						ladder_update_wol(game->clienttag, id, game->players, game->results);
 					}
 					else {
-						ladder_info = (t_ladder_info*)xmalloc(sizeof(t_ladder_info)*realcount);
+						ladder_info = (t_ladder_info*)xmalloc(sizeof(t_ladder_info) * realcount);
 						if (ladder_update(game->clienttag, id,
 							realcount, game->players, game->results, ladder_info) < 0)
 						{
@@ -962,19 +967,19 @@ namespace pvpgn
 			}
 
 			{
-				struct std::tm * tmval;
+				struct std::tm* tmval;
 				char        dstr[64];
 
 				if (!(tmval = std::localtime(&now)))
 					dstr[0] = '\0';
 				else
 					std::sprintf(dstr, "%04d%02d%02d%02d%02d%02d",
-					1900 + tmval->tm_year,
-					tmval->tm_mon + 1,
-					tmval->tm_mday,
-					tmval->tm_hour,
-					tmval->tm_min,
-					tmval->tm_sec);
+						1900 + tmval->tm_year,
+						tmval->tm_mon + 1,
+						tmval->tm_mday,
+						tmval->tm_hour,
+						tmval->tm_min,
+						tmval->tm_sec);
 
 				tempname = (char*)xmalloc(std::strlen(prefs_get_reportdir()) + 1 + 1 + 5 + 1 + 2 + 1 + std::strlen(dstr) + 1 + 6 + 1);
 				std::sprintf(tempname, "%s/_bnetd-gr_%s_%06u", prefs_get_reportdir(), dstr, game->id);
@@ -1002,7 +1007,7 @@ namespace pvpgn
 				game_type_get_str(game->type),
 				game_option_get_str(game->option));
 			{
-				struct std::tm * gametime;
+				struct std::tm* gametime;
 				char        timetemp[GAME_TIME_MAXLEN];
 
 				if (!(gametime = std::localtime(&game->create_time)))
@@ -1024,7 +1029,7 @@ namespace pvpgn
 				std::fprintf(fp, "ended=\"%s\"\n", timetemp);
 			}
 			{
-				char const * mapname;
+				char const* mapname;
 
 				if (!(mapname = game_get_mapname(game)))
 					mapname = "?";
@@ -1045,24 +1050,24 @@ namespace pvpgn
 			std::fprintf(fp, "\n\n");
 
 			if (game->clienttag == CLIENTTAG_DIABLORTL_UINT)
-			for (i = 0; i < game->count; i++)
-				std::fprintf(fp, "%-16s JOINED\n", account_get_name(game->players[i]));
+				for (i = 0; i < game->count; i++)
+					std::fprintf(fp, "%-16s JOINED\n", account_get_name(game->players[i]));
 			else
-			if (ladder_info)
-			for (i = 0; i < realcount; i++)
-				std::fprintf(fp, "%-16s %-8s rating=%u [#%05u]  prob=%4.1f%%  K=%2u  adj=%+d\n",
-				account_get_name(game->players[i]),
-				game_result_get_str(game->results[i]),
-				ladder_info[i].oldrating,
-				ladder_info[i].oldrank,
-				ladder_info[i].prob*100.0,
-				ladder_info[i].k,
-				ladder_info[i].adj);
-			else
-			for (i = 0; i < realcount; i++)
-				std::fprintf(fp, "%-16s %-8s\n",
-				account_get_name(game->players[i]),
-				game_result_get_str(game->results[i]));
+				if (ladder_info)
+					for (i = 0; i < realcount; i++)
+						std::fprintf(fp, "%-16s %-8s rating=%u [#%05u]  prob=%4.1f%%  K=%2u  adj=%+d\n",
+							account_get_name(game->players[i]),
+							game_result_get_str(game->results[i]),
+							ladder_info[i].oldrating,
+							ladder_info[i].oldrank,
+							ladder_info[i].prob * 100.0,
+							ladder_info[i].k,
+							ladder_info[i].adj);
+				else
+					for (i = 0; i < realcount; i++)
+						std::fprintf(fp, "%-16s %-8s\n",
+							account_get_name(game->players[i]),
+							game_result_get_str(game->results[i]));
 			std::fprintf(fp, "\n\n");
 
 			if (ladder_info)
@@ -1088,11 +1093,11 @@ namespace pvpgn
 			{
 				for (i = 0; i < realcount; i++)
 					std::fprintf(fp, "%s's normal record is now %u/%u/%u (%u draws)\n",
-					account_get_name(game->players[i]),
-					account_get_normal_wins(game->players[i], game->clienttag),
-					account_get_normal_losses(game->players[i], game->clienttag),
-					account_get_normal_disconnects(game->players[i], game->clienttag),
-					account_get_normal_draws(game->players[i], game->clienttag));
+						account_get_name(game->players[i]),
+						account_get_normal_wins(game->players[i], game->clienttag),
+						account_get_normal_losses(game->players[i], game->clienttag),
+						account_get_normal_disconnects(game->players[i], game->clienttag),
+						account_get_normal_draws(game->players[i], game->clienttag));
 			}
 			if (game->clienttag == CLIENTTAG_STARCRAFT_UINT ||
 				game->clienttag == CLIENTTAG_BROODWARS_UINT ||
@@ -1101,30 +1106,30 @@ namespace pvpgn
 				std::fprintf(fp, "\n");
 				for (i = 0; i < realcount; i++)
 					std::fprintf(fp, "%s's standard ladder record is now %u/%u/%u (rating %u [#%05d]) (%u draws)\n",
-					account_get_name(game->players[i]),
-					account_get_ladder_wins(game->players[i], game->clienttag, ladder_id_normal),
-					account_get_ladder_losses(game->players[i], game->clienttag, ladder_id_normal),
-					account_get_ladder_disconnects(game->players[i], game->clienttag, ladder_id_normal),
-					account_get_ladder_rating(game->players[i], game->clienttag, ladder_id_normal),
-					account_get_ladder_rank(game->players[i], game->clienttag, ladder_id_normal),
-					account_get_ladder_draws(game->players[i], game->clienttag, ladder_id_normal));
+						account_get_name(game->players[i]),
+						account_get_ladder_wins(game->players[i], game->clienttag, ladder_id_normal),
+						account_get_ladder_losses(game->players[i], game->clienttag, ladder_id_normal),
+						account_get_ladder_disconnects(game->players[i], game->clienttag, ladder_id_normal),
+						account_get_ladder_rating(game->players[i], game->clienttag, ladder_id_normal),
+						account_get_ladder_rank(game->players[i], game->clienttag, ladder_id_normal),
+						account_get_ladder_draws(game->players[i], game->clienttag, ladder_id_normal));
 			}
 			if (game->clienttag == CLIENTTAG_WARCIIBNE_UINT)
 			{
 				std::fprintf(fp, "\n");
 				for (i = 0; i < realcount; i++)
 					std::fprintf(fp, "%s's ironman ladder record is now %u/%u/%u (rating %u [#%05d]) (%u draws)\n",
-					account_get_name(game->players[i]),
-					account_get_ladder_wins(game->players[i], game->clienttag, ladder_id_ironman),
-					account_get_ladder_losses(game->players[i], game->clienttag, ladder_id_ironman),
-					account_get_ladder_disconnects(game->players[i], game->clienttag, ladder_id_ironman),
-					account_get_ladder_rating(game->players[i], game->clienttag, ladder_id_ironman),
-					account_get_ladder_rank(game->players[i], game->clienttag, ladder_id_ironman),
-					account_get_ladder_draws(game->players[i], game->clienttag, ladder_id_ironman));
+						account_get_name(game->players[i]),
+						account_get_ladder_wins(game->players[i], game->clienttag, ladder_id_ironman),
+						account_get_ladder_losses(game->players[i], game->clienttag, ladder_id_ironman),
+						account_get_ladder_disconnects(game->players[i], game->clienttag, ladder_id_ironman),
+						account_get_ladder_rating(game->players[i], game->clienttag, ladder_id_ironman),
+						account_get_ladder_rank(game->players[i], game->clienttag, ladder_id_ironman),
+						account_get_ladder_draws(game->players[i], game->clienttag, ladder_id_ironman));
 			}
 
 			std::fprintf(fp, "\nThis game lasted %lu minutes (elapsed).\n", ((unsigned long int)std::difftime(now, game->start_time)) / 60);
-			
+
 #ifdef WITH_LUA
 			lua_handle_game(game, NULL, luaevent_game_report);
 #endif
@@ -1152,7 +1157,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_id(t_game const * game)
+		extern unsigned int game_get_id(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1163,7 +1168,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_get_name(t_game const * game)
+		extern char const* game_get_name(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1174,7 +1179,7 @@ namespace pvpgn
 		}
 
 
-		extern t_game_type game_get_type(t_game const * game)
+		extern t_game_type game_get_type(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1185,7 +1190,7 @@ namespace pvpgn
 		}
 
 
-		extern t_game_maptype game_get_maptype(t_game const * game)
+		extern t_game_maptype game_get_maptype(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1196,7 +1201,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_maptype(t_game * game, t_game_maptype maptype)
+		extern int game_set_maptype(t_game* game, t_game_maptype maptype)
 		{
 			if (!game)
 			{
@@ -1208,7 +1213,7 @@ namespace pvpgn
 		}
 
 
-		extern t_game_tileset game_get_tileset(t_game const * game)
+		extern t_game_tileset game_get_tileset(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1219,7 +1224,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_tileset(t_game * game, t_game_tileset tileset)
+		extern int game_set_tileset(t_game* game, t_game_tileset tileset)
 		{
 			if (!game)
 			{
@@ -1231,7 +1236,7 @@ namespace pvpgn
 		}
 
 
-		extern t_game_speed game_get_speed(t_game const * game)
+		extern t_game_speed game_get_speed(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1242,7 +1247,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_speed(t_game * game, t_game_speed speed)
+		extern int game_set_speed(t_game* game, t_game_speed speed)
 		{
 			if (!game)
 			{
@@ -1254,7 +1259,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_mapsize_x(t_game const * game)
+		extern unsigned int game_get_mapsize_x(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1265,7 +1270,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_mapsize_x(t_game * game, unsigned int x)
+		extern int game_set_mapsize_x(t_game* game, unsigned int x)
 		{
 			if (!game)
 			{
@@ -1277,7 +1282,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_mapsize_y(t_game const * game)
+		extern unsigned int game_get_mapsize_y(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1288,7 +1293,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_mapsize_y(t_game * game, unsigned int y)
+		extern int game_set_mapsize_y(t_game* game, unsigned int y)
 		{
 			if (!game)
 			{
@@ -1300,7 +1305,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_maxplayers(t_game const * game)
+		extern unsigned int game_get_maxplayers(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1311,7 +1316,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_maxplayers(t_game * game, unsigned int maxplayers)
+		extern int game_set_maxplayers(t_game* game, unsigned int maxplayers)
 		{
 			if (!game)
 			{
@@ -1323,7 +1328,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_difficulty(t_game const * game)
+		extern unsigned int game_get_difficulty(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1334,7 +1339,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_difficulty(t_game * game, unsigned int difficulty)
+		extern int game_set_difficulty(t_game* game, unsigned int difficulty)
 		{
 			if (!game)
 			{
@@ -1346,7 +1351,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_get_description(t_game const * game)
+		extern char const* game_get_description(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1357,7 +1362,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_description(t_game * game, char const * description)
+		extern int game_set_description(t_game* game, char const* description)
 		{
 			if (!game)
 			{
@@ -1370,14 +1375,14 @@ namespace pvpgn
 				return -1;
 			}
 
-			if (game->description != NULL) xfree((void *)game->description);
+			if (game->description != NULL) xfree((void*)game->description);
 			game->description = xstrdup(description);
 
 			return 0;
 		}
 
 
-		extern char const * game_get_pass(t_game const * game)
+		extern char const* game_get_pass(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1388,7 +1393,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_get_info(t_game const * game)
+		extern char const* game_get_info(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1399,7 +1404,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_get_startver(t_game const * game)
+		extern int game_get_startver(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1410,7 +1415,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned long game_get_version(t_game const * game)
+		extern unsigned long game_get_version(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1421,7 +1426,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_ref(t_game const * game)
+		extern unsigned int game_get_ref(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1432,7 +1437,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_count(t_game const * game)
+		extern unsigned int game_get_count(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1443,7 +1448,7 @@ namespace pvpgn
 		}
 
 
-		extern void game_set_status(t_game * game, t_game_status status)
+		extern void game_set_status(t_game* game, t_game_status status)
 		{
 			if (!game) {
 				eventlog(eventlog_level_error, __FUNCTION__, "got NULL game");
@@ -1477,7 +1482,7 @@ namespace pvpgn
 		}
 
 
-		extern t_game_status game_get_status(t_game const * game)
+		extern t_game_status game_get_status(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1488,7 +1493,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_addr(t_game const * game)
+		extern unsigned int game_get_addr(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1500,7 +1505,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned short game_get_port(t_game const * game)
+		extern unsigned short game_get_port(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1512,7 +1517,7 @@ namespace pvpgn
 		}
 
 
-		extern unsigned int game_get_latency(t_game const * game)
+		extern unsigned int game_get_latency(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1538,7 +1543,7 @@ namespace pvpgn
 			return 0; /* conn_get_latency(game->players[0]); */
 		}
 
-		extern t_connection * game_get_player_conn(t_game const * game, unsigned int i)
+		extern t_connection* game_get_player_conn(t_game const* game, unsigned int i)
 		{
 			if (!game)
 			{
@@ -1563,7 +1568,7 @@ namespace pvpgn
 			return game->connections[i];
 		}
 
-		extern t_clienttag game_get_clienttag(t_game const * game)
+		extern t_clienttag game_get_clienttag(t_game const* game)
 		{
 			if (!game)
 			{
@@ -1574,14 +1579,14 @@ namespace pvpgn
 		}
 
 
-		extern int game_add_player(t_game * game, char const * pass, int startver, t_connection * c)
+		extern int game_add_player(t_game* game, char const* pass, int startver, t_connection* c)
 		{
-			t_connection * * tempc;
-			t_account * *    tempp;
-			t_game_result *  tempr;
-			t_game_result ** temprr;
-			char const * *   temprh;
-			char const * *   temprb;
+			t_connection** tempc;
+			t_account** tempp;
+			t_game_result* tempr;
+			t_game_result** temprr;
+			char const** temprh;
+			char const** temprb;
 			unsigned int i = 0;
 
 			if (!game)
@@ -1653,38 +1658,38 @@ namespace pvpgn
 			{
 
 				if (!game->connections) /* some std::realloc()s are broken */
-					tempc = (t_connection**)xmalloc((game->count + 1)*sizeof(t_connection *));
+					tempc = (t_connection**)xmalloc((game->count + 1) * sizeof(t_connection*));
 				else
-					tempc = (t_connection**)xrealloc(game->connections, (game->count + 1)*sizeof(t_connection *));
+					tempc = (t_connection**)xrealloc(game->connections, (game->count + 1) * sizeof(t_connection*));
 				game->connections = tempc;
 				if (!game->players) /* some std::realloc()s are broken */
-					tempp = (t_account**)xmalloc((game->count + 1)*sizeof(t_account *));
+					tempp = (t_account**)xmalloc((game->count + 1) * sizeof(t_account*));
 				else
-					tempp = (t_account**)xrealloc(game->players, (game->count + 1)*sizeof(t_account *));
+					tempp = (t_account**)xrealloc(game->players, (game->count + 1) * sizeof(t_account*));
 				game->players = tempp;
 
 				if (!game->results) /* some std::realloc()s are broken */
-					tempr = (t_game_result*)xmalloc((game->count + 1)*sizeof(t_game_result));
+					tempr = (t_game_result*)xmalloc((game->count + 1) * sizeof(t_game_result));
 				else
-					tempr = (t_game_result*)xrealloc(game->results, (game->count + 1)*sizeof(t_game_result));
+					tempr = (t_game_result*)xrealloc(game->results, (game->count + 1) * sizeof(t_game_result));
 				game->results = tempr;
 
 				if (!game->reported_results)
-					temprr = (t_game_result**)xmalloc((game->count + 1)*sizeof(t_game_result *));
+					temprr = (t_game_result**)xmalloc((game->count + 1) * sizeof(t_game_result*));
 				else
-					temprr = (t_game_result**)xrealloc(game->reported_results, (game->count + 1)*sizeof(t_game_result *));
+					temprr = (t_game_result**)xrealloc(game->reported_results, (game->count + 1) * sizeof(t_game_result*));
 				game->reported_results = temprr;
 
 				if (!game->report_heads) /* some xrealloc()s are broken */
-					temprh = (const char**)xmalloc((game->count + 1)*sizeof(char const *));
+					temprh = (const char**)xmalloc((game->count + 1) * sizeof(char const*));
 				else
-					temprh = (const char**)xrealloc((void *)game->report_heads, (game->count + 1)*sizeof(char const *)); /* avoid compiler warning */
+					temprh = (const char**)xrealloc((void*)game->report_heads, (game->count + 1) * sizeof(char const*)); /* avoid compiler warning */
 				game->report_heads = temprh;
 
 				if (!game->report_bodies) /* some xrealloc()s are broken */
-					temprb = (const char**)xmalloc((game->count + 1)*sizeof(char const *));
+					temprb = (const char**)xmalloc((game->count + 1) * sizeof(char const*));
 				else
-					temprb = (const char**)xrealloc((void *)game->report_bodies, (game->count + 1)*sizeof(char const *)); /* avoid compiler warning */
+					temprb = (const char**)xrealloc((void*)game->report_bodies, (game->count + 1) * sizeof(char const*)); /* avoid compiler warning */
 				game->report_bodies = temprb;
 
 				game->connections[game->count] = c;
@@ -1709,11 +1714,11 @@ namespace pvpgn
 			return 0;
 		}
 
-		extern int game_del_player(t_game * game, t_connection * c)
+		extern int game_del_player(t_game* game, t_connection* c)
 		{
-			char const * tname;
+			char const* tname;
 			unsigned int i;
-			t_account *  account;
+			t_account* account;
 
 			if (!game)
 			{
@@ -1746,41 +1751,41 @@ namespace pvpgn
 			eventlog(eventlog_level_debug, __FUNCTION__, "game \"{}\" has ref={}, count={}; trying to remove player \"{}\"", game_get_name(game), game->ref, game->count, account_get_name(account));
 
 			for (i = 0; i < game->count; i++)
-			if (game->players[i] == account && game->connections[i])
-			{
-				eventlog(eventlog_level_debug, __FUNCTION__, "removing player #{} \"{}\" from \"{}\", {} players left", i, (tname = account_get_name(account)), game_get_name(game), game->ref - 1);
-				game->connections[i] = NULL;
-				if (!(game->reported_results[i]))
-					eventlog(eventlog_level_debug, __FUNCTION__, "player \"{}\" left without reporting (valid) results", tname);
-
-				eventlog(eventlog_level_debug, __FUNCTION__, "player deleted... (ref={})", game->ref);
-
-				if (game->ref < 2)
+				if (game->players[i] == account && game->connections[i])
 				{
-					eventlog(eventlog_level_debug, __FUNCTION__, "no more players, reporting game");
-					game_report(game);
-					eventlog(eventlog_level_debug, __FUNCTION__, "no more players, destroying game");
-					game_destroy(game);
-					return 0;
-				}
+					eventlog(eventlog_level_debug, __FUNCTION__, "removing player #{} \"{}\" from \"{}\", {} players left", i, (tname = account_get_name(account)), game_get_name(game), game->ref - 1);
+					game->connections[i] = NULL;
+					if (!(game->reported_results[i]))
+						eventlog(eventlog_level_debug, __FUNCTION__, "player \"{}\" left without reporting (valid) results", tname);
 
-				game->ref--;
-				game->lastaccess_time = now;
+					eventlog(eventlog_level_debug, __FUNCTION__, "player deleted... (ref={})", game->ref);
 
-				game_choose_host(game);
-				//game_broadcast_host_info(game);
+					if (game->ref < 2)
+					{
+						eventlog(eventlog_level_debug, __FUNCTION__, "no more players, reporting game");
+						game_report(game);
+						eventlog(eventlog_level_debug, __FUNCTION__, "no more players, destroying game");
+						game_destroy(game);
+						return 0;
+					}
+
+					game->ref--;
+					game->lastaccess_time = now;
+
+					game_choose_host(game);
+					//game_broadcast_host_info(game);
 
 #ifdef WITH_LUA
-				lua_handle_game(game, c, luaevent_game_userleft);
+					lua_handle_game(game, c, luaevent_game_userleft);
 #endif
-				return 0;
-			}
+					return 0;
+				}
 
 			eventlog(eventlog_level_error, __FUNCTION__, "player \"{}\" was not in the game", account_get_name(account));
 			return -1;
 		}
 
-		extern t_account * game_get_player(t_game * game, unsigned int i)
+		extern t_account* game_get_player(t_game* game, unsigned int i)
 		{
 			if (!game)
 			{
@@ -1797,7 +1802,7 @@ namespace pvpgn
 			return game->players[i];
 		}
 
-		extern int game_set_report(t_game * game, t_account * account, char const * rephead, char const * repbody)
+		extern int game_set_report(t_game* game, t_account* account, char const* rephead, char const* repbody)
 		{
 			unsigned int pos;
 
@@ -1842,8 +1847,8 @@ namespace pvpgn
 
 				pos = game->count;
 				for (i = 0; i < game->count; i++)
-				if (game->players[i] == account)
-					pos = i;
+					if (game->players[i] == account)
+						pos = i;
 			}
 			if (pos == game->count)
 			{
@@ -1857,7 +1862,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		extern int game_set_reported_results(t_game * game, t_account * account, t_game_result * results)
+		extern int game_set_reported_results(t_game* game, t_account* account, t_game_result* results)
 		{
 			unsigned int i, j;
 			t_game_result result;
@@ -1942,10 +1947,10 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_self_report(t_game * game, t_account * account, t_game_result result)
+		extern int game_set_self_report(t_game* game, t_account* account, t_game_result result)
 		{
 			unsigned int i;
-			t_game_result * results;
+			t_game_result* results;
 
 			if (!game)
 			{
@@ -1971,7 +1976,7 @@ namespace pvpgn
 				return -1;
 			}
 
-			results = (t_game_result*)xmalloc(sizeof(t_game_result)*game->count);
+			results = (t_game_result*)xmalloc(sizeof(t_game_result) * game->count);
 
 			for (i = 0; i < game->count; i++)
 			{
@@ -1986,7 +1991,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		extern t_game_result * game_get_reported_results(t_game * game, t_account * account)
+		extern t_game_result* game_get_reported_results(t_game* game, t_account* account)
 		{
 			unsigned int i;
 
@@ -2035,7 +2040,7 @@ namespace pvpgn
 		}
 
 
-		extern char const * game_get_mapname(t_game const * game)
+		extern char const* game_get_mapname(t_game const* game)
 		{
 			if (!game)
 			{
@@ -2047,7 +2052,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_mapname(t_game * game, char const * mapname)
+		extern int game_set_mapname(t_game* game, char const* mapname)
 		{
 			if (!game)
 			{
@@ -2060,14 +2065,14 @@ namespace pvpgn
 				return -1;
 			}
 
-			if (game->mapname != NULL) xfree((void *)game->mapname);
+			if (game->mapname != NULL) xfree((void*)game->mapname);
 
 			game->mapname = xstrdup(mapname);
 
 			return 0;
 		}
 
-		extern t_connection * game_get_owner(t_game const * game)
+		extern t_connection* game_get_owner(t_game const* game)
 		{
 			if (!game)
 			{
@@ -2078,7 +2083,7 @@ namespace pvpgn
 		}
 
 
-		extern std::time_t game_get_create_time(t_game const * game)
+		extern std::time_t game_get_create_time(t_game const* game)
 		{
 			if (!game)
 			{
@@ -2090,7 +2095,7 @@ namespace pvpgn
 		}
 
 
-		extern std::time_t game_get_start_time(t_game const * game)
+		extern std::time_t game_get_start_time(t_game const* game)
 		{
 			if (!game)
 			{
@@ -2102,7 +2107,7 @@ namespace pvpgn
 		}
 
 
-		extern int game_set_option(t_game * game, t_game_option option)
+		extern int game_set_option(t_game* game, t_game_option option)
 		{
 			if (!game)
 			{
@@ -2115,7 +2120,7 @@ namespace pvpgn
 		}
 
 
-		extern t_game_option game_get_option(t_game const * game)
+		extern t_game_option game_get_option(t_game const* game)
 		{
 			if (!game)
 			{
@@ -2144,7 +2149,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		extern t_elist * gamelist(void)
+		extern t_elist* gamelist(void)
 		{
 			return &gamelist_head;
 		}
@@ -2155,10 +2160,10 @@ namespace pvpgn
 		}
 
 
-		extern t_game * gamelist_find_game(char const * name, t_clienttag ctag, t_game_type type)
+		extern t_game* gamelist_find_game(char const* name, t_clienttag ctag, t_game_type type)
 		{
-			t_elist *curr;
-			t_game *game;
+			t_elist* curr;
+			t_game* game;
 
 			elist_for_each(curr, &gamelist_head)
 			{
@@ -2173,10 +2178,10 @@ namespace pvpgn
 		}
 
 
-		extern t_game * gamelist_find_game_available(char const * name, t_clienttag ctag, t_game_type type)
+		extern t_game* gamelist_find_game_available(char const* name, t_clienttag ctag, t_game_type type)
 		{
-			t_elist *curr;
-			t_game *game;
+			t_elist* curr;
+			t_game* game;
 			t_game_status status;
 
 			elist_for_each(curr, &gamelist_head)
@@ -2193,10 +2198,10 @@ namespace pvpgn
 			return NULL;
 		}
 
-		extern t_game * gamelist_find_game_byid(unsigned int id)
+		extern t_game* gamelist_find_game_byid(unsigned int id)
 		{
-			t_elist *curr;
-			t_game *game;
+			t_elist* curr;
+			t_game* game;
 
 			elist_for_each(curr, &gamelist_head)
 			{
@@ -2209,16 +2214,16 @@ namespace pvpgn
 		}
 
 
-		extern void gamelist_traverse(t_glist_func cb, void *data, t_gamelist_source_type gamelist_source)
+		extern void gamelist_traverse(t_glist_func cb, void* data, t_gamelist_source_type gamelist_source)
 		{
-			t_elist *curr;
+			t_elist* curr;
 
 #ifdef WITH_LUA
-			t_game *game;
+			t_game* game;
 
 			if (gamelist_source == gamelist_source_joinbutton)
 			{
-				struct glist_cbdata *cbdata = (struct glist_cbdata*)data;
+				struct glist_cbdata* cbdata = (struct glist_cbdata*)data;
 				// get gamelist from Lua script: pair(gameid=gamename)
 				std::vector<t_game*> gamelist = lua_handle_game_list(cbdata->c);
 				if (gamelist.size() > 0)
@@ -2250,7 +2255,7 @@ namespace pvpgn
 			return totalcount;
 		}
 
-		extern int game_set_realm(t_game * game, unsigned int realm)
+		extern int game_set_realm(t_game* game, unsigned int realm)
 		{
 			if (!game)
 			{
@@ -2261,7 +2266,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		extern unsigned int game_get_realm(t_game const * game)
+		extern unsigned int game_get_realm(t_game const* game)
 		{
 			if (!game)
 			{
@@ -2271,9 +2276,9 @@ namespace pvpgn
 			return game->realm;
 		}
 
-		extern int game_set_realmname(t_game * game, char const * realmname)
+		extern int game_set_realmname(t_game* game, char const* realmname)
 		{
-			char const * temp;
+			char const* temp;
 
 			if (!game)
 			{
@@ -2287,12 +2292,12 @@ namespace pvpgn
 				temp = NULL;
 
 			if (game->realmname)
-				xfree((void *)game->realmname); /* avoid warning */
+				xfree((void*)game->realmname); /* avoid warning */
 			game->realmname = temp;
 			return 0;
 		}
 
-		extern  char const * game_get_realmname(t_game const * game)
+		extern  char const* game_get_realmname(t_game const* game)
 		{
 			if (!game)
 			{
@@ -2305,8 +2310,8 @@ namespace pvpgn
 
 		extern void gamelist_check_voidgame(void)
 		{
-			t_elist *curr, *save;
-			t_game *game;
+			t_elist* curr, * save;
+			t_game* game;
 
 			elist_for_each_safe(curr, &gamelist_head, save)
 			{
@@ -2320,7 +2325,7 @@ namespace pvpgn
 			}
 		}
 
-		extern void game_set_flag(t_game * game, t_game_flag flag)
+		extern void game_set_flag(t_game* game, t_game_flag flag)
 		{
 			if (!game)
 			{
@@ -2331,7 +2336,7 @@ namespace pvpgn
 		}
 
 
-		extern t_game_flag game_get_flag(t_game const * game)
+		extern t_game_flag game_get_flag(t_game const* game)
 		{
 			if (!game)
 			{
@@ -2343,8 +2348,8 @@ namespace pvpgn
 
 		extern int game_get_count_by_clienttag(t_clienttag ct)
 		{
-			t_game *game;
-			t_elist *curr;
+			t_game* game;
+			t_elist* curr;
 			int clienttaggames = 0;
 
 			if (!ct) {
@@ -2363,7 +2368,7 @@ namespace pvpgn
 			return clienttaggames;
 		}
 
-		static int game_match_name(const char *name, const char *prefix)
+		static int game_match_name(const char* name, const char* prefix)
 		{
 			/* the easy cases */
 			if (!name || !*name) return 1;
@@ -2374,7 +2379,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		extern int game_is_ladder(t_game *game)
+		extern int game_is_ladder(t_game* game)
 		{
 			assert(game);
 
@@ -2389,7 +2394,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		extern int game_discisloss(t_game *game)
+		extern int game_discisloss(t_game* game)
 		{
 			assert(game);
 
@@ -2408,7 +2413,7 @@ namespace pvpgn
 			return  game->option == game_option_ladder_countasloss;
 		}
 
-		extern int game_set_channel(t_game * game, t_channel * channel)
+		extern int game_set_channel(t_game* game, t_channel* channel)
 		{
 			if (!game) {
 				eventlog(eventlog_level_error, __FUNCTION__, "got NULL game");
@@ -2424,7 +2429,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		extern t_channel * game_get_channel(t_game * game)
+		extern t_channel* game_get_channel(t_game* game)
 		{
 			if (!game) {
 				eventlog(eventlog_level_error, __FUNCTION__, "got NULL game");
@@ -2551,13 +2556,18 @@ namespace pvpgn
 					strcpy(game_data.host_name, game_get_hostName(game));
 					strcpy(game_data.owner_host_name, game_get_owner_name(game));
 					strcpy(game_data.game_name, game_get_name(game));
-					strcpy(game_data.game_password, game_get_pass(game)); 
-					strcpy(game_data.map_name, game_get_mapname(game)); 
+					strcpy(game_data.game_password, game_get_pass(game));
+					strcpy(game_data.map_name, game_get_mapname(game));
 					strcpy(game_data.IP_Port, addr_num_to_addr_str(game_get_addr(game), game_get_port(game)));
 					strcpy(game_data.version, vernum_to_verstr(game_get_version(game)));
 					bn_byte_set(&game_data.current_players, game_get_ref(game));
 					bn_byte_set(&game_data.max_players, game_get_maxplayersmap(game));
 					bn_byte_set(&game_data.game_status, game_get_status(game));
+					{
+						std::time_t startTime = game_get_start_time(game);
+						unsigned int elapsedSec = (startTime != (std::time_t)0) ? (unsigned int)(now - startTime) : 0;
+						bn_int_set(&game_data.elapsed_time, elapsedSec);
+					}
 
 					// Append game data to packet
 					packet_append_data(rpacket, &game_data, sizeof(t_game_info_data));
@@ -2569,6 +2579,71 @@ namespace pvpgn
 			packet_del_ref(rpacket);
 
 			eventlog(eventlog_level_info, __FUNCTION__, "sent game list with {} games", count);
+
+			return 0;
+		}
+
+		extern int game_broadcast_list_to_all_connections()
+		{
+			t_packet* rpacket;
+			t_elist* pos;
+			t_game* game;
+			t_connection* c;
+			t_elem const* pos_conn;
+
+			int count = gamelist_get_length();
+
+			if (!(rpacket = packet_create(packet_class_bnet)))
+				return -1;
+
+			packet_set_size(rpacket, sizeof(t_server_game_list_packet_header));
+			packet_set_type(rpacket, SERVER_GAME_HOST_INFO);
+
+			bn_int_set(&rpacket->u.server_game_list_packet_header.total_games, count);
+
+			elist_for_each(pos, gamelist())
+			{
+				game = elist_entry(pos, t_game, glist_link);
+				if (game)
+				{
+					t_game_info_data game_data = {};
+					std::memset(&game_data, 0, sizeof(game_data));
+
+					bn_int_set(&game_data.game_id, game_get_id(game));
+
+					strcpy(game_data.host_name, game_get_hostName(game));
+					strcpy(game_data.owner_host_name, game_get_owner_name(game));
+					strcpy(game_data.game_name, game_get_name(game));
+					strcpy(game_data.game_password, game_get_pass(game));
+					strcpy(game_data.map_name, game_get_mapname(game));
+					strcpy(game_data.IP_Port, addr_num_to_addr_str(game_get_addr(game), game_get_port(game)));
+					strcpy(game_data.version, vernum_to_verstr(game_get_version(game)));
+					bn_byte_set(&game_data.current_players, game_get_ref(game));
+					bn_byte_set(&game_data.max_players, game_get_maxplayersmap(game));
+					bn_byte_set(&game_data.game_status, game_get_status(game));
+					{
+						std::time_t startTime = game_get_start_time(game);
+						unsigned int elapsedSec = (startTime != (std::time_t)0) ? (unsigned int)(now - startTime) : 0;
+						bn_int_set(&game_data.elapsed_time, elapsedSec);
+					}
+
+					packet_append_data(rpacket, &game_data, sizeof(t_game_info_data));
+				}
+			}
+
+			LIST_TRAVERSE_CONST(connlist(), pos_conn)
+			{
+				c = (t_connection*)elem_get_data(pos_conn);
+				if (c)
+				{
+					packet_add_ref(rpacket);
+					conn_push_outqueue(c, rpacket);
+				}
+			}
+
+			packet_del_ref(rpacket);
+
+			eventlog(eventlog_level_info, __FUNCTION__, "broadcasted game list ({} games) to {} connections", count, connlist_get_length());
 
 			return 0;
 		}

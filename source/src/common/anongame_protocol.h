@@ -45,6 +45,7 @@ namespace pvpgn
 		bn_byte			current_players;
 		bn_byte			max_players;
 		bn_byte			game_status;
+		bn_int			elapsed_time;
 	} t_game_info_data;
 
 	typedef struct
@@ -289,8 +290,8 @@ namespace pvpgn
 						 * for TY - set to 0
 						 * from TYPE
 						 */
-		/* char *		mapname */
-		/* t_saf_pt2 * 	pt2 */
+						 /* char *		mapname */
+						 /* t_saf_pt2 * 	pt2 */
 	} PACKED_ATTR() t_server_anongame_found;
 
 	/* MISC PACKET APPEND DATA's */
@@ -442,7 +443,7 @@ namespace pvpgn
 	/***********************************************************************************/
 	/* option 9 - icon request */
 #define SERVER_FINDANONGAME_ICONREPLY           0x44ff
-	typedef struct{
+	typedef struct {
 		t_bnet_header         h;
 		bn_byte               option;                 /* as received from client */
 		bn_int                count;                  /* as received from client */

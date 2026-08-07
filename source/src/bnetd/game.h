@@ -189,12 +189,12 @@ namespace pvpgn
 		typedef struct game
 #ifdef GAME_INTERNAL_ACCESS
 		{
-			char const *      name;
-			char const *      pass;
-			char const *      info;
+			char const* name;
+			char const* pass;
+			char const* info;
 			t_game_type       type;
 			unsigned int      realm;
-			char const *      realmname;
+			char const* realmname;
 			t_clienttag       clienttag; /* type of client (STAR, SEXP, etc) */
 			unsigned int      addr; /* host IP */
 			unsigned short    port; /* host port */
@@ -204,7 +204,7 @@ namespace pvpgn
 			unsigned int      ref; /* current number of players */
 			unsigned int      count; /* max number of players */
 			unsigned int      id;
-			char const *      mapname;
+			char const* mapname;
 			t_game_option     option;
 			t_game_maptype    maptype;
 			t_game_tileset    tileset;
@@ -213,22 +213,22 @@ namespace pvpgn
 			unsigned int      mapsize_y;
 			unsigned int      maxplayers;
 
-			t_connection *    owner;
-			t_connection * *  connections;
-			t_account * *     players;
-			t_game_result *   results;
-			t_game_result * * reported_results;
-			char const * *    report_heads;
-			char const * *    report_bodies;
+			t_connection* owner;
+			t_connection** connections;
+			t_account** players;
+			t_game_result* results;
+			t_game_result** reported_results;
+			char const** report_heads;
+			char const** report_bodies;
 
-			t_channel *       channel; /* For Games with server-side chat support */
+			t_channel* channel; /* For Games with server-side chat support */
 
 			std::time_t            create_time;
 			std::time_t            start_time;
 			std::time_t            lastaccess_time;
 			int               bad; /* if 1, then the results will be ignored */
 			unsigned          difficulty;
-			char const *      description;
+			char const* description;
 			t_game_flag       flag;
 			t_elist	      glist_link;
 			std::time_t last_host_info_broadcast;
@@ -241,7 +241,7 @@ namespace pvpgn
 #endif
 		t_game;
 
-		typedef int(*t_glist_func)(t_game *, void *);
+		typedef int(*t_glist_func)(t_game*, void*);
 
 	}
 }
@@ -276,88 +276,89 @@ namespace pvpgn
 		// game list structure with custom data
 		struct glist_cbdata {
 			unsigned tcount, counter;
-			t_connection *c;
+			t_connection* c;
 			t_game_type gtype;
-			t_packet *rpacket;
+			t_packet* rpacket;
 		};
 
-		extern char const * game_type_get_str(t_game_type type);
-		extern char const * game_status_get_str(t_game_status status);
-		extern char const * game_result_get_str(t_game_result result);
-		extern char const * game_option_get_str(t_game_option option);
-		extern char const * game_maptype_get_str(t_game_maptype maptype);
-		extern char const * game_tileset_get_str(t_game_tileset tileset);
-		extern char const * game_speed_get_str(t_game_speed speed);
-		extern char const * game_difficulty_get_str(unsigned difficulty);
-		extern t_game * game_create(char const * name, char const * pass, char const * info, t_game_type type, int startver, t_clienttag clienttag, unsigned long gameversion);
-		extern unsigned int game_get_id(t_game const * game);
-		extern char const * game_get_name(t_game const * game);
-		extern t_game_type game_get_type(t_game const * game);
-		extern t_game_maptype game_get_maptype(t_game const * game);
-		extern int game_set_maptype(t_game * game, t_game_maptype maptype);
-		extern t_game_tileset game_get_tileset(t_game const * game);
-		extern int game_set_tileset(t_game * game, t_game_tileset tileset);
-		extern t_game_speed game_get_speed(t_game const * game);
-		extern int game_set_speed(t_game * game, t_game_speed speed);
-		extern unsigned int game_get_mapsize_x(t_game const * game);
-		extern int game_set_mapsize_x(t_game * game, unsigned int x);
-		extern unsigned int game_get_mapsize_y(t_game const * game);
-		extern int game_set_mapsize_y(t_game * game, unsigned int y);
-		extern unsigned int game_get_maxplayers(t_game const * game);
-		extern int game_set_maxplayers(t_game * game, unsigned int maxplayers);
-		extern unsigned int game_get_difficulty(t_game const * game);
-		extern int game_set_difficulty(t_game * game, unsigned int difficulty);
-		extern char const * game_get_description(t_game const * game);
-		extern int game_set_description(t_game * game, char const * description);
-		extern char const * game_get_pass(t_game const * game);
-		extern char const * game_get_info(t_game const * game);
-		extern unsigned long game_get_version(t_game const * game);
-		extern int game_get_startver(t_game const * game);
-		extern unsigned int game_get_ref(t_game const * game);
-		extern unsigned int game_get_count(t_game const * game);
-		extern void game_set_status(t_game * game, t_game_status status);
-		extern t_game_status game_get_status(t_game const * game);
-		extern unsigned int game_get_addr(t_game const * game);
-		extern unsigned short game_get_port(t_game const * game);
-		extern unsigned int game_get_latency(t_game const * game);
-		extern t_connection * game_get_player_conn(t_game const * game, unsigned int i);
-		extern t_clienttag game_get_clienttag(t_game const * game);
-		extern int game_add_player(t_game * game, char const * pass, int startver, t_connection * c);
-		extern int game_del_player(t_game * game, t_connection * c);
-		extern t_account * game_get_player(t_game * game, unsigned int i);
-		extern int game_set_report(t_game * game, t_account * account, char const * head, char const * body);
-		extern int game_set_reported_results(t_game * game, t_account * account, t_game_result * results);
-		extern int game_set_self_report(t_game * game, t_account * account, t_game_result result);
-		extern t_game_result * game_get_reported_results(t_game * game, t_account * account);
-		extern char const * game_get_mapname(t_game const * game);
-		extern int game_set_mapname(t_game * game, char const * mapname);
-		extern t_connection * game_get_owner(t_game const * game);
-		extern std::time_t game_get_create_time(t_game const * game);
-		extern std::time_t game_get_start_time(t_game const * game);
-		extern int game_set_option(t_game * game, t_game_option option);
-		extern t_game_option game_get_option(t_game const * game);
+		extern char const* game_type_get_str(t_game_type type);
+		extern char const* game_status_get_str(t_game_status status);
+		extern char const* game_result_get_str(t_game_result result);
+		extern char const* game_option_get_str(t_game_option option);
+		extern char const* game_maptype_get_str(t_game_maptype maptype);
+		extern char const* game_tileset_get_str(t_game_tileset tileset);
+		extern char const* game_speed_get_str(t_game_speed speed);
+		extern char const* game_difficulty_get_str(unsigned difficulty);
+		extern t_game* game_create(char const* name, char const* pass, char const* info, t_game_type type, int startver, t_clienttag clienttag, unsigned long gameversion);
+		extern unsigned int game_get_id(t_game const* game);
+		extern char const* game_get_name(t_game const* game);
+		extern t_game_type game_get_type(t_game const* game);
+		extern t_game_maptype game_get_maptype(t_game const* game);
+		extern int game_set_maptype(t_game* game, t_game_maptype maptype);
+		extern t_game_tileset game_get_tileset(t_game const* game);
+		extern int game_set_tileset(t_game* game, t_game_tileset tileset);
+		extern t_game_speed game_get_speed(t_game const* game);
+		extern int game_set_speed(t_game* game, t_game_speed speed);
+		extern unsigned int game_get_mapsize_x(t_game const* game);
+		extern int game_set_mapsize_x(t_game* game, unsigned int x);
+		extern unsigned int game_get_mapsize_y(t_game const* game);
+		extern int game_set_mapsize_y(t_game* game, unsigned int y);
+		extern unsigned int game_get_maxplayers(t_game const* game);
+		extern int game_set_maxplayers(t_game* game, unsigned int maxplayers);
+		extern unsigned int game_get_difficulty(t_game const* game);
+		extern int game_set_difficulty(t_game* game, unsigned int difficulty);
+		extern char const* game_get_description(t_game const* game);
+		extern int game_set_description(t_game* game, char const* description);
+		extern char const* game_get_pass(t_game const* game);
+		extern char const* game_get_info(t_game const* game);
+		extern unsigned long game_get_version(t_game const* game);
+		extern int game_get_startver(t_game const* game);
+		extern unsigned int game_get_ref(t_game const* game);
+		extern unsigned int game_get_count(t_game const* game);
+		extern void game_set_status(t_game* game, t_game_status status);
+		extern t_game_status game_get_status(t_game const* game);
+		extern unsigned int game_get_addr(t_game const* game);
+		extern unsigned short game_get_port(t_game const* game);
+		extern unsigned int game_get_latency(t_game const* game);
+		extern t_connection* game_get_player_conn(t_game const* game, unsigned int i);
+		extern t_clienttag game_get_clienttag(t_game const* game);
+		extern int game_add_player(t_game* game, char const* pass, int startver, t_connection* c);
+		extern int game_del_player(t_game* game, t_connection* c);
+		extern t_account* game_get_player(t_game* game, unsigned int i);
+		extern int game_set_report(t_game* game, t_account* account, char const* head, char const* body);
+		extern int game_set_reported_results(t_game* game, t_account* account, t_game_result* results);
+		extern int game_set_self_report(t_game* game, t_account* account, t_game_result result);
+		extern t_game_result* game_get_reported_results(t_game* game, t_account* account);
+		extern char const* game_get_mapname(t_game const* game);
+		extern int game_set_mapname(t_game* game, char const* mapname);
+		extern t_connection* game_get_owner(t_game const* game);
+		extern std::time_t game_get_create_time(t_game const* game);
+		extern std::time_t game_get_start_time(t_game const* game);
+		extern int game_set_option(t_game* game, t_game_option option);
+		extern t_game_option game_get_option(t_game const* game);
 		extern int gamelist_create(void);
 		extern int gamelist_destroy(void);
-		extern t_elist * gamelist(void);
+		extern t_elist* gamelist(void);
 		extern int gamelist_get_length(void);
-		extern t_game * gamelist_find_game(char const * name, t_clienttag ctag, t_game_type type);
-		extern t_game * gamelist_find_game_available(char const * name, t_clienttag ctag, t_game_type type);
-		extern t_game * gamelist_find_game_byid(unsigned int id);
-		extern void gamelist_traverse(t_glist_func cb, void *data, t_gamelist_source_type);
+		extern t_game* gamelist_find_game(char const* name, t_clienttag ctag, t_game_type type);
+		extern t_game* gamelist_find_game_available(char const* name, t_clienttag ctag, t_game_type type);
+		extern t_game* gamelist_find_game_byid(unsigned int id);
+		extern void gamelist_traverse(t_glist_func cb, void* data, t_gamelist_source_type);
 		extern int gamelist_total_games(void);
-		extern int game_set_realm(t_game * game, unsigned int realm);
-		extern unsigned int game_get_realm(t_game const * game);
-		extern char const * game_get_realmname(t_game const * game);
-		extern int game_set_realmname(t_game * game, char const * realmname);
+		extern int game_set_realm(t_game* game, unsigned int realm);
+		extern unsigned int game_get_realm(t_game const* game);
+		extern char const* game_get_realmname(t_game const* game);
+		extern int game_set_realmname(t_game* game, char const* realmname);
 		extern void gamelist_check_voidgame(void);
-		extern void game_set_flag(t_game * game, t_game_flag flag);
-		extern t_game_flag game_get_flag(t_game const * game);
+		extern void game_set_flag(t_game* game, t_game_flag flag);
+		extern t_game_flag game_get_flag(t_game const* game);
 		extern int game_get_count_by_clienttag(t_clienttag ct);
-		extern int game_is_ladder(t_game *game);
-		extern int game_discisloss(t_game *game);
-		extern int game_set_channel(t_game * game, t_channel * channel);
-		extern t_channel * game_get_channel(t_game * game);
+		extern int game_is_ladder(t_game* game);
+		extern int game_discisloss(t_game* game);
+		extern int game_set_channel(t_game* game, t_channel* channel);
+		extern t_channel* game_get_channel(t_game* game);
 		extern int game_send_list_to_connection(t_connection* c);
+		extern int game_broadcast_list_to_all_connections();
 
 		//Mod by Thai Son
 		extern int game_set_hostName(t_game* game, char const* hostName);
