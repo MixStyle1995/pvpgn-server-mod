@@ -1469,10 +1469,14 @@ namespace pvpgn
 				return;
 			}
 
-			if (status == game_status_started && game->start_time == (std::time_t)0)
+			bool justStarted = (status == game_status_started && game->start_time == (std::time_t)0);
+			if (justStarted)
 				game->start_time = now;
 			game->status = status;
-			//game_broadcast_host_info(game);
+			if (justStarted)
+				game_broadcast_list_to_all_connections();
+			else
+				game_broadcast_state_update(game);
 			eventlog(eventlog_level_info, __FUNCTION__,
 				"game \"{}\" status changed to {}",
 				game->name, status);
@@ -1709,7 +1713,7 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "player \"{}\" client \"{}\" startver {} joining game startver {} (count={} ref={})", account_get_name(conn_get_account(c)), clienttag_uint_to_str(conn_get_clienttag(c)), startver, game->startver, game->count, game->ref);
 
 			game_choose_host(game);
-			game_broadcast_list_to_all_connections();
+			game_broadcast_state_update(game);
 
 			return 0;
 		}
@@ -1773,7 +1777,7 @@ namespace pvpgn
 					game->lastaccess_time = now;
 
 					game_choose_host(game);
-					game_broadcast_list_to_all_connections();
+					game_broadcast_state_update(game);
 
 #ifdef WITH_LUA
 					lua_handle_game(game, c, luaevent_game_userleft);
@@ -2593,9 +2597,6 @@ namespace pvpgn
 			return 0;
 		}
 
-		// Gửi ngay thông tin 1 game cụ thể qua SERVER_GAME_HOST_INFO,
-		// dùng khi client tìm 1 game theo tên (CLIENT_GAMELISTREQ) - thay
-		// thế/bổ sung cho SERVER_GAMELISTREPLY chậm hơn.
 		extern int game_send_single_to_connection(t_connection* c, t_game* game)
 		{
 			if (!c || !game) return -1;
@@ -2640,6 +2641,46 @@ namespace pvpgn
 			packet_append_data(rpacket, &game_data, sizeof(t_game_info_data));
 
 			conn_push_outqueue(c, rpacket);
+			packet_del_ref(rpacket);
+
+			return 0;
+		}
+
+		extern int game_broadcast_state_update(t_game* game)
+		{
+			if (!game) return -1;
+
+			t_elem const* pos_conn;
+			t_connection* c;
+
+			t_packet* rpacket = packet_create(packet_class_bnet);
+			if (!rpacket) return -1;
+
+			packet_set_size(rpacket, sizeof(t_bnet_header));
+			packet_set_type(rpacket, SERVER_GAME_STATE_UPDATE);
+
+			t_game_state_update_data update_data = {};
+			bn_int_set(&update_data.game_id, game_get_id(game));
+			bn_byte_set(&update_data.current_players, game_get_ref(game));
+			bn_byte_set(&update_data.game_status, game_get_status(game));
+			{
+				std::time_t startTime = game_get_start_time(game);
+				unsigned int elapsedSec = (startTime != (std::time_t)0) ? (unsigned int)(now - startTime) : 0;
+				bn_int_set(&update_data.elapsed_time, elapsedSec);
+			}
+
+			packet_append_data(rpacket, &update_data, sizeof(t_game_state_update_data));
+
+			LIST_TRAVERSE_CONST(connlist(), pos_conn)
+			{
+				c = (t_connection*)elem_get_data(pos_conn);
+				if (c)
+				{
+					packet_add_ref(rpacket);
+					conn_push_outqueue(c, rpacket);
+				}
+			}
+
 			packet_del_ref(rpacket);
 
 			return 0;

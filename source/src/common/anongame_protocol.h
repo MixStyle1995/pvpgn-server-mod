@@ -54,12 +54,27 @@ namespace pvpgn
 
 	typedef struct
 	{
+		bn_int			game_id;
+		bn_byte			current_players;
+		bn_byte			game_status;
+		bn_int			elapsed_time;
+	} t_game_state_update_data;
+
+	typedef struct
+	{
+		t_bnet_header	header;
+		t_game_state_update_data data;
+	} PACKED_ATTR() t_server_game_state_update_packet;
+
+	typedef struct
+	{
 		t_bnet_header	header;
 		bn_int			total_games;
 	} PACKED_ATTR() t_server_game_list_packet_header;
 #pragma pack()
 
 #define SERVER_GAME_HOST_INFO			0xf0ff
+#define SERVER_GAME_STATE_UPDATE		0xf4ff
 	/***********************************************************************************/
 	/* first packet recieved from client - option decides which struct to use next */
 #define CLIENT_FINDANONGAME 			0x44ff
