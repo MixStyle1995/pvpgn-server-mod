@@ -2,7 +2,9 @@
 - Sử dụng mã nguồn mới nhất PvPGN-PRO 1.99.7.2.1.
 - Thông tin thay đổi:
   - Mởi giới hạn Packet Send/Recv
-  - Thêm 3 gói tin mới:
-	- SERVER_GAME_HOST_INFO (S -> C), CLIENT_REQUEST_GAME_LIST (C -> S) để đồng bộ thông tin Game trong war3 cho chuẩn.
+  - Thêm 4 gói tin mới:
+	- SERVER_GAME_HOST_INFO (S -> C) : để đồng bộ thông tin Game trong war3 cho chuẩn tới toàn bộ Client.
+	- CLIENT_REQUEST_GAME_LIST (C -> S) : nhận đồng bộ Game List từ Client tới Server.
+	- SERVER_GAME_HOST_UPDATE_PLAYER (S -> C) : đồng bộ người chơi ra vào Game tới toàn bộ Client.
 	- CLIENT_CUSTOM_WAR3_VERSION (C -> S) thay đổi phiên bản linh hoạt cho GProxy++, AuraBot.
   - Sửa lại gói tin SID_STARTADVEX3 thêm 2 biến mới.
