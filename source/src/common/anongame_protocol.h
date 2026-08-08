@@ -46,7 +46,20 @@ namespace pvpgn
 		bn_byte			max_players;
 		bn_byte			game_status;
 		bn_int			elapsed_time;
+		bn_byte			slots_total;
+		bn_short		stat_string_len;
+		char			stat_string[256];
 	} t_game_info_data;
+
+	typedef struct
+	{
+		bn_int			game_id;
+		char			host_name[32];
+		char			owner_host_name[32];
+		char			game_name[32];
+		bn_byte			current_players;
+		bn_byte			max_players;
+	} t_game_update_player;
 
 	typedef struct
 	{
@@ -56,6 +69,7 @@ namespace pvpgn
 #pragma pack()
 
 #define SERVER_GAME_HOST_INFO			0xf0ff
+#define SERVER_GAME_HOST_UPDATE_PLAYER	0xf3ff
 	/***********************************************************************************/
 	/* first packet recieved from client - option decides which struct to use next */
 #define CLIENT_FINDANONGAME 			0x44ff

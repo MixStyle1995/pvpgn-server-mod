@@ -358,6 +358,8 @@ namespace pvpgn
 		extern int game_set_channel(t_game* game, t_channel* channel);
 		extern t_channel* game_get_channel(t_game* game);
 		extern int game_send_list_to_connection(t_connection* c);
+		extern int game_broadcast_update_player_connections(t_game* game, t_connection* c);
+		extern int game_send_single_to_connection(t_connection* c, t_game* game);
 		extern int game_broadcast_list_to_all_connections();
 
 		//Mod by Thai Son

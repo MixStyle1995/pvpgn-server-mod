@@ -1709,6 +1709,7 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "player \"{}\" client \"{}\" startver {} joining game startver {} (count={} ref={})", account_get_name(conn_get_account(c)), clienttag_uint_to_str(conn_get_clienttag(c)), startver, game->startver, game->count, game->ref);
 
 			game_choose_host(game);
+			game_broadcast_update_player_connections(game, c);
 			//game_broadcast_host_info(game, c);
 
 			return 0;
@@ -1773,6 +1774,7 @@ namespace pvpgn
 					game->lastaccess_time = now;
 
 					game_choose_host(game);
+					game_broadcast_update_player_connections(game, c);
 					//game_broadcast_host_info(game);
 
 #ifdef WITH_LUA
@@ -2568,6 +2570,15 @@ namespace pvpgn
 						unsigned int elapsedSec = (startTime != (std::time_t)0) ? (unsigned int)(now - startTime) : 0;
 						bn_int_set(&game_data.elapsed_time, elapsedSec);
 					}
+					bn_byte_set(&game_data.slots_total, game_get_maxplayers(game));
+					{
+						char const* info = game_get_info(game);
+						size_t infoLen = info ? std::strlen(info) : 0;
+						if (infoLen >= sizeof(game_data.stat_string))
+							infoLen = sizeof(game_data.stat_string) - 1;
+						if (info) std::memcpy(game_data.stat_string, info, infoLen);
+						bn_short_set(&game_data.stat_string_len, (unsigned short)infoLen);
+					}
 
 					// Append game data to packet
 					packet_append_data(rpacket, &game_data, sizeof(t_game_info_data));
@@ -2579,6 +2590,94 @@ namespace pvpgn
 			packet_del_ref(rpacket);
 
 			eventlog(eventlog_level_info, __FUNCTION__, "sent game list with {} games", count);
+
+			return 0;
+		}
+
+		extern int game_broadcast_update_player_connections(t_game* game, t_connection* c)
+		{
+			if (!c || !game) return -1;
+
+			t_packet* rpacket = packet_create(packet_class_bnet);
+			if (!rpacket) return -1;
+
+			packet_set_size(rpacket, sizeof(t_server_game_list_packet_header));
+			packet_set_type(rpacket, SERVER_GAME_HOST_UPDATE_PLAYER);
+			bn_int_set(&rpacket->u.server_game_list_packet_header.total_games, 1);
+
+			t_game_update_player game_data = {};
+			std::memset(&game_data, 0, sizeof(game_data));
+
+			bn_int_set(&game_data.game_id, game_get_id(game));
+			strcpy(game_data.host_name, game_get_hostName(game));
+			strcpy(game_data.owner_host_name, game_get_owner_name(game));
+			strcpy(game_data.game_name, game_get_name(game));
+			bn_byte_set(&game_data.current_players, game_get_ref(game));
+			bn_byte_set(&game_data.max_players, game_get_maxplayersmap(game));
+			packet_append_data(rpacket, &game_data, sizeof(t_game_update_player));
+
+			t_elem const* pos_conn;
+			LIST_TRAVERSE_CONST(connlist(), pos_conn)
+			{
+				c = (t_connection*)elem_get_data(pos_conn);
+				if (c)
+				{
+					packet_add_ref(rpacket);
+					conn_push_outqueue(c, rpacket);
+				}
+			}
+
+			packet_del_ref(rpacket);
+
+			eventlog(eventlog_level_info, __FUNCTION__, "broadcasted update player (game_id={} / game_name={}) to {} connections", game_get_id(game), game_get_name(game), connlist_get_length());
+
+			return 0;
+		}
+
+		extern int game_send_single_to_connection(t_connection* c, t_game* game)
+		{
+			if (!c || !game) return -1;
+
+			t_packet* rpacket = packet_create(packet_class_bnet);
+			if (!rpacket) return -1;
+
+			packet_set_size(rpacket, sizeof(t_server_game_list_packet_header));
+			packet_set_type(rpacket, SERVER_GAME_HOST_INFO);
+			bn_int_set(&rpacket->u.server_game_list_packet_header.total_games, 1);
+
+			t_game_info_data game_data = {};
+			std::memset(&game_data, 0, sizeof(game_data));
+
+			bn_int_set(&game_data.game_id, game_get_id(game));
+			strcpy(game_data.host_name, game_get_hostName(game));
+			strcpy(game_data.owner_host_name, game_get_owner_name(game));
+			strcpy(game_data.game_name, game_get_name(game));
+			strcpy(game_data.game_password, game_get_pass(game));
+			strcpy(game_data.map_name, game_get_mapname(game));
+			strcpy(game_data.IP_Port, addr_num_to_addr_str(game_get_addr(game), game_get_port(game)));
+			strcpy(game_data.version, vernum_to_verstr(game_get_version(game)));
+			bn_byte_set(&game_data.current_players, game_get_ref(game));
+			bn_byte_set(&game_data.max_players, game_get_maxplayersmap(game));
+			bn_byte_set(&game_data.game_status, game_get_status(game));
+			{
+				std::time_t startTime = game_get_start_time(game);
+				unsigned int elapsedSec = (startTime != (std::time_t)0) ? (unsigned int)(now - startTime) : 0;
+				bn_int_set(&game_data.elapsed_time, elapsedSec);
+			}
+			bn_byte_set(&game_data.slots_total, game_get_maxplayers(game));
+			{
+				char const* info = game_get_info(game);
+				size_t infoLen = info ? std::strlen(info) : 0;
+				if (infoLen >= sizeof(game_data.stat_string))
+					infoLen = sizeof(game_data.stat_string) - 1;
+				if (info) std::memcpy(game_data.stat_string, info, infoLen);
+				bn_short_set(&game_data.stat_string_len, (unsigned short)infoLen);
+			}
+
+			packet_append_data(rpacket, &game_data, sizeof(t_game_info_data));
+
+			conn_push_outqueue(c, rpacket);
+			packet_del_ref(rpacket);
 
 			return 0;
 		}
@@ -2625,6 +2724,15 @@ namespace pvpgn
 						std::time_t startTime = game_get_start_time(game);
 						unsigned int elapsedSec = (startTime != (std::time_t)0) ? (unsigned int)(now - startTime) : 0;
 						bn_int_set(&game_data.elapsed_time, elapsedSec);
+					}
+					bn_byte_set(&game_data.slots_total, game_get_maxplayers(game));
+					{
+						char const* info = game_get_info(game);
+						size_t infoLen = info ? std::strlen(info) : 0;
+						if (infoLen >= sizeof(game_data.stat_string))
+							infoLen = sizeof(game_data.stat_string) - 1;
+						if (info) std::memcpy(game_data.stat_string, info, infoLen);
+						bn_short_set(&game_data.stat_string_len, (unsigned short)infoLen);
 					}
 
 					packet_append_data(rpacket, &game_data, sizeof(t_game_info_data));

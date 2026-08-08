@@ -103,90 +103,90 @@ namespace pvpgn
 		extern int first_news;
 
 		/* handlers prototypes */
-		static int _client_unknown_1b(t_connection * c, t_packet const *const packet);
-		static int _client_compinfo1(t_connection * c, t_packet const *const packet);
-		static int _client_compinfo2(t_connection * c, t_packet const *const packet);
-		static int _client_countryinfo1(t_connection * c, t_packet const *const packet);
-		static int _client_auth_info(t_connection * c, t_packet const *const packet);
-		static int _client_unknown2b(t_connection * c, t_packet const *const packet);
-		static int _client_progident(t_connection * c, t_packet const *const packet);
-		static int _client_createaccountw3(t_connection * c, t_packet const *const packet);
-		static int _client_createacctreq1(t_connection * c, t_packet const *const packet);
-		static int _client_createacctreq2(t_connection * c, t_packet const *const packet);
-		static int _client_changepassreq(t_connection * c, t_packet const *const packet);
-		static int _client_echoreply(t_connection * c, t_packet const *const packet);
-		static int _client_authreq1(t_connection * c, t_packet const *const packet);
-		static int _client_authreq109(t_connection * c, t_packet const *const packet);
-		static int _client_regsnoopreply(t_connection * c, t_packet const *const packet);
-		static int _client_iconreq(t_connection * c, t_packet const *const packet);
-		static int _client_cdkey(t_connection * c, t_packet const *const packet);
-		static int _client_cdkey2(t_connection * c, t_packet const *const packet);
-		static int _client_cdkey3(t_connection * c, t_packet const *const packet);
-		static int _client_udpok(t_connection * c, t_packet const *const packet);
-		static int _client_fileinforeq(t_connection * c, t_packet const *const packet);
-		static int _client_statsreq(t_connection * c, t_packet const *const packet);
-		static int _client_loginreq1(t_connection * c, t_packet const *const packet);
-		static int _client_loginreq2(t_connection * c, t_packet const *const packet);
-		static int _client_loginreqw3(t_connection * c, t_packet const *const packet);
-		static int _client_passchangereq(t_connection * c, t_packet const *const packet);
-		static int _client_passchangeproofreq(t_connection * c, t_packet const *const packet);
-		static int _client_pingreq(t_connection * c, t_packet const *const packet);
-		static int _client_logonproofreq(t_connection * c, t_packet const *const packet);
-		static int _client_changegameport(t_connection * c, t_packet const *const packet);
-		static int _client_friendslistreq(t_connection * c, t_packet const *const packet);
-		static int _client_friendinforeq(t_connection * c, t_packet const *const packet);
-		static int _client_atfriendscreen(t_connection * c, t_packet const *const packet);
-		static int _client_atinvitefriend(t_connection * c, t_packet const *const packet);
-		static int _client_atacceptinvite(t_connection * c, t_packet const *const packet);
-		static int _client_atacceptdeclineinvite(t_connection * c, t_packet const *const packet);
-		static int _client_motdw3(t_connection * c, t_packet const *const packet);
-		static int _client_realmlistreq(t_connection * c, t_packet const *const packet);
-		static int _client_realmlistreq110(t_connection * c, t_packet const *const packet);
-		static int _client_profilereq(t_connection * c, t_packet const *const packet);
-		static int _client_realmjoinreq109(t_connection * c, t_packet const *const packet);
-		static int _client_unknown39(t_connection * c, t_packet const *const packet);
-		static int _client_charlistreq(t_connection * c, t_packet const *const packet);
-		static int _client_adreq(t_connection * c, t_packet const *const packet);
-		static int _client_adack(t_connection * c, t_packet const *const packet);
-		static int _client_adclick(t_connection * c, t_packet const *const packet);
-		static int _client_adclick2(t_connection * c, t_packet const *const packet);
-		static int _client_readmemory(t_connection * c, t_packet const *const packet);
-		static int _client_statsupdate(t_connection * c, t_packet const *const packet);
-		static int _client_playerinforeq(t_connection * c, t_packet const *const packet);
-		static int _client_progident2(t_connection * c, t_packet const *const packet);
-		static int _client_joinchannel(t_connection * c, t_packet const *const packet);
-		static int _client_message(t_connection * c, t_packet const *const packet);
-		static int _client_gamelistreq(t_connection * c, t_packet const *const packet);
-		static int _client_joingame(t_connection * c, t_packet const *const packet);
-		static int _client_startgame1(t_connection * c, t_packet const *const packet);
-		static int _client_startgame3(t_connection * c, t_packet const *const packet);
-		static int _client_startgame4(t_connection * c, t_packet const *const packet);
-		static int _client_closegame(t_connection * c, t_packet const *const packet);
-		static int _client_gamereport(t_connection * c, t_packet const *const packet);
-		static int _client_leavechannel(t_connection * c, t_packet const *const packet);
-		static int _client_ladderreq(t_connection * c, t_packet const *const packet);
-		static int _client_laddersearchreq(t_connection * c, t_packet const *const packet);
-		static int _client_mapauthreq1(t_connection * c, t_packet const *const packet);
-		static int _client_mapauthreq2(t_connection * c, t_packet const *const packet);
-		static int _client_changeclient(t_connection * c, t_packet const *const packet);
-		static int _client_clanmemberlistreq(t_connection * c, t_packet const *const packet);
-		static int _client_clan_motdreq(t_connection * c, t_packet const *const packet);
-		static int _client_clan_motdchg(t_connection * c, t_packet const *const packet);
-		static int _client_clan_createreq(t_connection * c, t_packet const *const packet);
-		static int _client_clan_createinvitereq(t_connection * c, t_packet const *const packet);
-		static int _client_clan_createinvitereply(t_connection * c, t_packet const *const packet);
-		static int _client_clan_disbandreq(t_connection * c, t_packet const *const packet);
-		static int _client_clanmember_rankupdatereq(t_connection * c, t_packet const *const packet);
-		static int _client_clanmember_removereq(t_connection * c, t_packet const *const packet);
-		static int _client_clan_membernewchiefreq(t_connection * c, t_packet const *const packet);
-		static int _client_clan_invitereq(t_connection * c, t_packet const *const packet);
-		static int _client_clan_invitereply(t_connection * c, t_packet const *const packet);
-		static int _client_crashdump(t_connection * c, t_packet const *const packet);
-		static int _client_setemailreply(t_connection * c, t_packet const *const packet);
-		static int _client_changeemailreq(t_connection * c, t_packet const *const packet);
-		static int _client_getpasswordreq(t_connection * c, t_packet const *const packet);
-		static int _client_claninforeq(t_connection * c, t_packet const *const packet);
-		static int _client_extrawork(t_connection * c, t_packet const *const packet);
+		static int _client_unknown_1b(t_connection* c, t_packet const* const packet);
+		static int _client_compinfo1(t_connection* c, t_packet const* const packet);
+		static int _client_compinfo2(t_connection* c, t_packet const* const packet);
+		static int _client_countryinfo1(t_connection* c, t_packet const* const packet);
+		static int _client_auth_info(t_connection* c, t_packet const* const packet);
+		static int _client_unknown2b(t_connection* c, t_packet const* const packet);
+		static int _client_progident(t_connection* c, t_packet const* const packet);
+		static int _client_createaccountw3(t_connection* c, t_packet const* const packet);
+		static int _client_createacctreq1(t_connection* c, t_packet const* const packet);
+		static int _client_createacctreq2(t_connection* c, t_packet const* const packet);
+		static int _client_changepassreq(t_connection* c, t_packet const* const packet);
+		static int _client_echoreply(t_connection* c, t_packet const* const packet);
+		static int _client_authreq1(t_connection* c, t_packet const* const packet);
+		static int _client_authreq109(t_connection* c, t_packet const* const packet);
+		static int _client_regsnoopreply(t_connection* c, t_packet const* const packet);
+		static int _client_iconreq(t_connection* c, t_packet const* const packet);
+		static int _client_cdkey(t_connection* c, t_packet const* const packet);
+		static int _client_cdkey2(t_connection* c, t_packet const* const packet);
+		static int _client_cdkey3(t_connection* c, t_packet const* const packet);
+		static int _client_udpok(t_connection* c, t_packet const* const packet);
+		static int _client_fileinforeq(t_connection* c, t_packet const* const packet);
+		static int _client_statsreq(t_connection* c, t_packet const* const packet);
+		static int _client_loginreq1(t_connection* c, t_packet const* const packet);
+		static int _client_loginreq2(t_connection* c, t_packet const* const packet);
+		static int _client_loginreqw3(t_connection* c, t_packet const* const packet);
+		static int _client_passchangereq(t_connection* c, t_packet const* const packet);
+		static int _client_passchangeproofreq(t_connection* c, t_packet const* const packet);
+		static int _client_pingreq(t_connection* c, t_packet const* const packet);
+		static int _client_logonproofreq(t_connection* c, t_packet const* const packet);
+		static int _client_changegameport(t_connection* c, t_packet const* const packet);
+		static int _client_friendslistreq(t_connection* c, t_packet const* const packet);
+		static int _client_friendinforeq(t_connection* c, t_packet const* const packet);
+		static int _client_atfriendscreen(t_connection* c, t_packet const* const packet);
+		static int _client_atinvitefriend(t_connection* c, t_packet const* const packet);
+		static int _client_atacceptinvite(t_connection* c, t_packet const* const packet);
+		static int _client_atacceptdeclineinvite(t_connection* c, t_packet const* const packet);
+		static int _client_motdw3(t_connection* c, t_packet const* const packet);
+		static int _client_realmlistreq(t_connection* c, t_packet const* const packet);
+		static int _client_realmlistreq110(t_connection* c, t_packet const* const packet);
+		static int _client_profilereq(t_connection* c, t_packet const* const packet);
+		static int _client_realmjoinreq109(t_connection* c, t_packet const* const packet);
+		static int _client_unknown39(t_connection* c, t_packet const* const packet);
+		static int _client_charlistreq(t_connection* c, t_packet const* const packet);
+		static int _client_adreq(t_connection* c, t_packet const* const packet);
+		static int _client_adack(t_connection* c, t_packet const* const packet);
+		static int _client_adclick(t_connection* c, t_packet const* const packet);
+		static int _client_adclick2(t_connection* c, t_packet const* const packet);
+		static int _client_readmemory(t_connection* c, t_packet const* const packet);
+		static int _client_statsupdate(t_connection* c, t_packet const* const packet);
+		static int _client_playerinforeq(t_connection* c, t_packet const* const packet);
+		static int _client_progident2(t_connection* c, t_packet const* const packet);
+		static int _client_joinchannel(t_connection* c, t_packet const* const packet);
+		static int _client_message(t_connection* c, t_packet const* const packet);
+		static int _client_gamelistreq(t_connection* c, t_packet const* const packet);
+		static int _client_joingame(t_connection* c, t_packet const* const packet);
+		static int _client_startgame1(t_connection* c, t_packet const* const packet);
+		static int _client_startgame3(t_connection* c, t_packet const* const packet);
+		static int _client_startgame4(t_connection* c, t_packet const* const packet);
+		static int _client_closegame(t_connection* c, t_packet const* const packet);
+		static int _client_gamereport(t_connection* c, t_packet const* const packet);
+		static int _client_leavechannel(t_connection* c, t_packet const* const packet);
+		static int _client_ladderreq(t_connection* c, t_packet const* const packet);
+		static int _client_laddersearchreq(t_connection* c, t_packet const* const packet);
+		static int _client_mapauthreq1(t_connection* c, t_packet const* const packet);
+		static int _client_mapauthreq2(t_connection* c, t_packet const* const packet);
+		static int _client_changeclient(t_connection* c, t_packet const* const packet);
+		static int _client_clanmemberlistreq(t_connection* c, t_packet const* const packet);
+		static int _client_clan_motdreq(t_connection* c, t_packet const* const packet);
+		static int _client_clan_motdchg(t_connection* c, t_packet const* const packet);
+		static int _client_clan_createreq(t_connection* c, t_packet const* const packet);
+		static int _client_clan_createinvitereq(t_connection* c, t_packet const* const packet);
+		static int _client_clan_createinvitereply(t_connection* c, t_packet const* const packet);
+		static int _client_clan_disbandreq(t_connection* c, t_packet const* const packet);
+		static int _client_clanmember_rankupdatereq(t_connection* c, t_packet const* const packet);
+		static int _client_clanmember_removereq(t_connection* c, t_packet const* const packet);
+		static int _client_clan_membernewchiefreq(t_connection* c, t_packet const* const packet);
+		static int _client_clan_invitereq(t_connection* c, t_packet const* const packet);
+		static int _client_clan_invitereply(t_connection* c, t_packet const* const packet);
+		static int _client_crashdump(t_connection* c, t_packet const* const packet);
+		static int _client_setemailreply(t_connection* c, t_packet const* const packet);
+		static int _client_changeemailreq(t_connection* c, t_packet const* const packet);
+		static int _client_getpasswordreq(t_connection* c, t_packet const* const packet);
+		static int _client_claninforeq(t_connection* c, t_packet const* const packet);
+		static int _client_extrawork(t_connection* c, t_packet const* const packet);
 		static int _client_request_game_list(t_connection* c, t_packet const* const packet);
 		static int _client_request_custom_war3_version(t_connection* c, t_packet const* const packet);
 		static int _client_rank_update(t_connection* c, t_packet const* const packet);
@@ -299,9 +299,9 @@ namespace pvpgn
 		};
 
 		/* main handler function */
-		static int handle(const t_htable_row * htable, int type, t_connection * c, t_packet const *const packet);
+		static int handle(const t_htable_row* htable, int type, t_connection* c, t_packet const* const packet);
 
-		extern int handle_bnet_packet(t_connection * c, t_packet const *const packet)
+		extern int handle_bnet_packet(t_connection* c, t_packet const* const packet)
 		{
 			if (!c) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got NULL connection", conn_get_socket(c));
@@ -350,25 +350,25 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int handle(const t_htable_row * htable, int type, t_connection * c, t_packet const *const packet)
+		static int handle(const t_htable_row* htable, int type, t_connection* c, t_packet const* const packet)
 		{
-			t_htable_row const *p;
+			t_htable_row const* p;
 			int res = 1;
 
 			for (p = htable; p->type != -1; p++)
-			if (p->type == type) {
-				res = 0;
-				if (p->handler != NULL)
-					res = p->handler(c, packet);
-				if (res != 2)
-					break;		/* return 2 means we want to continue parsing */
-			}
+				if (p->type == type) {
+					res = 0;
+					if (p->handler != NULL)
+						res = p->handler(c, packet);
+					if (res != 2)
+						break;		/* return 2 means we want to continue parsing */
+				}
 
 			return res;
 		}
 
 		/* handlers for bnet packets */
-		static int _client_unknown_1b(t_connection * c, t_packet const *const packet)
+		static int _client_unknown_1b(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_unknown_1b)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad UNKNOWN_1B packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_unknown_1b), packet_get_size(packet));
@@ -393,9 +393,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_compinfo1(t_connection * c, t_packet const *const packet)
+		static int _client_compinfo1(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_compinfo1)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COMPINFO1 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_compinfo1), packet_get_size(packet));
@@ -403,14 +403,14 @@ namespace pvpgn
 			}
 
 			{
-				char const *host;
-				char const *user;
+				char const* host;
+				char const* user;
 
 				if (!(host = packet_get_str_const(packet, sizeof(t_client_compinfo1), MAX_WINHOST_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COMPINFO1 packet (missing or too long host)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(user = packet_get_str_const(packet, sizeof(t_client_compinfo1)+std::strlen(host) + 1, MAX_WINUSER_STR))) {
+				if (!(user = packet_get_str_const(packet, sizeof(t_client_compinfo1) + std::strlen(host) + 1, MAX_WINUSER_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COMPINFO1 packet (missing or too long user)", conn_get_socket(c));
 					return -1;
 				}
@@ -439,9 +439,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_compinfo2(t_connection * c, t_packet const *const packet)
+		static int _client_compinfo2(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_compinfo2)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COMPINFO2 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_compinfo2), packet_get_size(packet));
@@ -449,14 +449,14 @@ namespace pvpgn
 			}
 
 			{
-				char const *host;
-				char const *user;
+				char const* host;
+				char const* user;
 
 				if (!(host = packet_get_str_const(packet, sizeof(t_client_compinfo2), MAX_WINHOST_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COMPINFO2 packet (missing or too long host)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(user = packet_get_str_const(packet, sizeof(t_client_compinfo2)+std::strlen(host) + 1, MAX_WINUSER_STR))) {
+				if (!(user = packet_get_str_const(packet, sizeof(t_client_compinfo2) + std::strlen(host) + 1, MAX_WINUSER_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COMPINFO2 packet (missing or too long user)", conn_get_socket(c));
 					return -1;
 				}
@@ -488,16 +488,16 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_countryinfo1(t_connection * c, t_packet const *const packet)
+		static int _client_countryinfo1(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_countryinfo1)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COUNTRYINFO1 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_countryinfo1), packet_get_size(packet));
 				return -1;
 			}
 			{
-				char const *langstr;
-				char const *countrycode;
-				char const *country;
+				char const* langstr;
+				char const* countrycode;
+				char const* country;
 				unsigned int tzbias;
 
 				if (!(langstr = packet_get_str_const(packet, sizeof(t_client_countryinfo1), MAX_LANG_STR))) {
@@ -505,17 +505,17 @@ namespace pvpgn
 					return -1;
 				}
 
-				if (!(countrycode = packet_get_str_const(packet, sizeof(t_client_countryinfo1)+std::strlen(langstr) + 1, MAX_COUNTRYCODE_STR))) {
+				if (!(countrycode = packet_get_str_const(packet, sizeof(t_client_countryinfo1) + std::strlen(langstr) + 1, MAX_COUNTRYCODE_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COUNTRYINFO1 packet (missing or too long countrycode)", conn_get_socket(c));
 					return -1;
 				}
 
-				if (!(country = packet_get_str_const(packet, sizeof(t_client_countryinfo1)+std::strlen(langstr) + 1 + std::strlen(countrycode) + 1, MAX_COUNTRY_STR))) {
+				if (!(country = packet_get_str_const(packet, sizeof(t_client_countryinfo1) + std::strlen(langstr) + 1 + std::strlen(countrycode) + 1, MAX_COUNTRY_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COUNTRYINFO1 packet (missing or too long country)", conn_get_socket(c));
 					return -1;
 				}
 
-				if (!(packet_get_str_const(packet, sizeof(t_client_countryinfo1)+std::strlen(langstr) + 1 + std::strlen(countrycode) + 1 + std::strlen(country) + 1, MAX_COUNTRYNAME_STR))) {
+				if (!(packet_get_str_const(packet, sizeof(t_client_countryinfo1) + std::strlen(langstr) + 1 + std::strlen(countrycode) + 1 + std::strlen(country) + 1, MAX_COUNTRYNAME_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad COUNTRYINFO1 packet (missing or too long countryname)", conn_get_socket(c));
 					return -1;
 				}
@@ -528,9 +528,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_auth_info(t_connection * c, t_packet const *const packet)
+		static int _client_auth_info(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_auth_info)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad AUTH_INFO packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_auth_info), packet_get_size(packet));
@@ -538,8 +538,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *langstr;
-				char const *countryname;
+				char const* langstr;
+				char const* countryname;
 				unsigned int tzbias;
 				char archtag_str[5];
 				char clienttag_str[5];
@@ -550,7 +550,7 @@ namespace pvpgn
 					return -1;
 				}
 
-				if (!(countryname = packet_get_str_const(packet, sizeof(t_client_auth_info)+std::strlen(langstr) + 1, MAX_COUNTRYNAME_STR))) {
+				if (!(countryname = packet_get_str_const(packet, sizeof(t_client_auth_info) + std::strlen(langstr) + 1, MAX_COUNTRYNAME_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad AUTH_INFO packet (missing or too long countryname)", conn_get_socket(c));
 					return -1;
 				}
@@ -560,7 +560,7 @@ namespace pvpgn
 					conn_set_state(c, conn_state_destroy);
 					return 0;
 				}
-				
+
 				tzbias = bn_int_get(packet->u.client_auth_info.bias);
 
 				eventlog(eventlog_level_debug, __FUNCTION__, "[{}] AUTH_INFO packet {{ protocol={:#02x}, platform={}, product={}, versionid={:#02x}, language={}, localip={:#04x}, tzbias={:04x}, locale={}, language={}, country={}.{} }}",
@@ -619,7 +619,7 @@ namespace pvpgn
 					packet_append_string(rpacket, std::get<0>(checkrevision).c_str()); // CheckRevision filename
 					packet_append_string(rpacket, std::get<1>(checkrevision).c_str()); // CheckRevision equation
 					eventlog(eventlog_level_debug, __FUNCTION__, "[{}] selected \"{}\" \"{}\"", conn_get_socket(c), std::get<0>(checkrevision), std::get<1>(checkrevision));
-					
+
 
 					// WarCraft 3 Server Signature
 					if ((conn_get_clienttag(c) == CLIENTTAG_WARCRAFT3_UINT)
@@ -637,7 +637,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_unknown2b(t_connection * c, t_packet const *const packet)
+		static int _client_unknown2b(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_unknown_2b)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad UNKNOWN_2B packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_unknown_2b), packet_get_size(packet));
@@ -646,9 +646,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_progident(t_connection * c, t_packet const *const packet)
+		static int _client_progident(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_progident)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad PROGIDENT packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_progident), packet_get_size(packet));
@@ -678,7 +678,7 @@ namespace pvpgn
 				packet_append_string(rpacket, std::get<0>(checkrevision).c_str()); // CheckRevision filename
 				packet_append_string(rpacket, std::get<1>(checkrevision).c_str()); // CheckRevision equation
 				eventlog(eventlog_level_debug, __FUNCTION__, "[{}] selected \"{}\" \"{}\"", conn_get_socket(c), std::get<0>(checkrevision), std::get<1>(checkrevision));
-					
+
 
 				conn_push_outqueue(c, rpacket);
 				packet_del_ref(rpacket);
@@ -687,15 +687,15 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_createaccountw3(t_connection * c, t_packet const *const packet)
+		static int _client_createaccountw3(t_connection* c, t_packet const* const packet)
 		{
-			char const *username;
-			char const *plainpass;
+			char const* username;
+			char const* plainpass;
 			t_hash sc_hash;
 			unsigned int i;
-			const char *account_salt;
-			const char *account_verifier;
-			t_account *account;
+			const char* account_salt;
+			const char* account_verifier;
+			t_account* account;
 			bool presume_plainpass = true;
 
 			if (packet_get_size(packet) < sizeof(t_client_createaccount_w3)) {
@@ -711,17 +711,17 @@ namespace pvpgn
 
 			/* PELISH: We are testing if username missing and if packetsize is good
 					   so we does not need to test if salt and verifier are present */
-			account_salt = (const char *)packet_get_data_const(packet, offsetof(t_client_createaccount_w3, salt), 32);
-			account_verifier = (const char *)packet_get_data_const(packet, offsetof(t_client_createaccount_w3, password_verifier), 32);
+			account_salt = (const char*)packet_get_data_const(packet, offsetof(t_client_createaccount_w3, salt), 32);
+			account_verifier = (const char*)packet_get_data_const(packet, offsetof(t_client_createaccount_w3, password_verifier), 32);
 
-			for (i = 0; i<16; i++){
+			for (i = 0; i < 16; i++) {
 				int value = (unsigned char)account_verifier[i];
 				if (value == 0)
 					break;
-				presume_plainpass &= (std::isprint(value)>0);
+				presume_plainpass &= (std::isprint(value) > 0);
 			}
 
-			for (i = 16; (i < 32) && presume_plainpass; i++){
+			for (i = 16; (i < 32) && presume_plainpass; i++) {
 				int value = account_verifier[i];
 				presume_plainpass &= (value == 0);
 			}
@@ -801,10 +801,10 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_createacctreq1(t_connection * c, t_packet const *const packet)
+		static int _client_createacctreq1(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
-			char const *username;
+			t_packet* rpacket;
+			char const* username;
 			t_hash newpasshash1;
 
 			if (packet_get_size(packet) < sizeof(t_client_createacctreq1)) {
@@ -848,10 +848,10 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_createacctreq2(t_connection * c, t_packet const *const packet)
+		static int _client_createacctreq2(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
-			char const *username;
+			t_packet* rpacket;
+			char const* username;
 			t_hash newpasshash1;
 
 			if (packet_get_size(packet) < sizeof(t_client_createacctreq2)) {
@@ -902,9 +902,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_changepassreq(t_connection * c, t_packet const *const packet)
+		static int _client_changepassreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_changepassreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CHANGEPASSREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_changepassreq), packet_get_size(packet));
@@ -912,8 +912,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *username;
-				t_account *account;
+				char const* username;
+				t_account* account;
 
 				if (!(username = packet_get_str_const(packet, sizeof(t_client_changepassreq), UNCHECKED_NAME_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CHANGEPASSREQ (missing or too long username)", conn_get_socket(c));
@@ -946,7 +946,7 @@ namespace pvpgn
 						bn_int sessionkey;
 						bn_int passhash1[5];
 					} temp;
-					char const *oldstrhash1;
+					char const* oldstrhash1;
 					t_hash oldpasshash1;
 					t_hash oldpasshash2;
 					t_hash trypasshash2;
@@ -963,7 +963,7 @@ namespace pvpgn
 							bn_int_set(&rpacket->u.server_changepassack.message, SERVER_CHANGEPASSACK_MESSAGE_SUCCESS);
 						}
 						else {
-							hash_to_bnhash((t_hash const *)&oldpasshash1, temp.passhash1);	/* avoid warning */
+							hash_to_bnhash((t_hash const*)&oldpasshash1, temp.passhash1);	/* avoid warning */
 							bnet_hash(&oldpasshash2, sizeof(temp), &temp);	/* do the double hash */
 							bnhash_to_hash(packet->u.client_changepassreq.oldpassword_hash2, &trypasshash2);
 
@@ -996,7 +996,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_echoreply(t_connection * c, t_packet const *const packet)
+		static int _client_echoreply(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_echoreply)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad ECHOREPLY packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_echoreply), packet_get_size(packet));
@@ -1018,7 +1018,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_authreq1(t_connection * c, t_packet const *const packet)
+		static int _client_authreq1(t_connection* c, t_packet const* const packet)
 		{
 			eventlog(eventlog_level_trace, __FUNCTION__, "[{}] received AUTHREQ1(0x07) packet", conn_get_socket(c));
 
@@ -1028,24 +1028,24 @@ namespace pvpgn
 				return -1;
 			}
 
-			auto send_failed_packet = [](t_connection *c)
-			{
-				t_packet *rpacket = packet_create(packet_class_bnet);
-				if (rpacket)
+			auto send_failed_packet = [](t_connection* c)
 				{
-					packet_set_size(rpacket, sizeof(t_server_authreply1));
-					packet_set_type(rpacket, SERVER_AUTHREPLY1);
-					conn_set_state(c, conn_state_untrusted);
+					t_packet* rpacket = packet_create(packet_class_bnet);
+					if (rpacket)
+					{
+						packet_set_size(rpacket, sizeof(t_server_authreply1));
+						packet_set_type(rpacket, SERVER_AUTHREPLY1);
+						conn_set_state(c, conn_state_untrusted);
 
-					bn_int_set(&rpacket->u.server_authreply1.message, SERVER_AUTHREPLY1_MESSAGE_BADVERSION);
-					packet_append_string(rpacket, "");
-					packet_append_string(rpacket, ""); // undocumented extra null terminator
+						bn_int_set(&rpacket->u.server_authreply1.message, SERVER_AUTHREPLY1_MESSAGE_BADVERSION);
+						packet_append_string(rpacket, "");
+						packet_append_string(rpacket, ""); // undocumented extra null terminator
 
-					conn_push_outqueue(c, rpacket);
-					
-					packet_del_ref(rpacket);
-				}
-			};
+						conn_push_outqueue(c, rpacket);
+
+						packet_del_ref(rpacket);
+					}
+				};
 
 			// The following if statements are sanity checks
 			// The client should have already sent this information in a previous packet and is resending it again in this packet
@@ -1071,7 +1071,7 @@ namespace pvpgn
 			}
 
 
-			const char *exeinfo = packet_get_str_const(packet, sizeof(t_client_authreq1), MAX_EXEINFO_STR);
+			const char* exeinfo = packet_get_str_const(packet, sizeof(t_client_authreq1), MAX_EXEINFO_STR);
 			if (exeinfo)
 			{
 				conn_set_clientexe(c, exeinfo);
@@ -1091,7 +1091,7 @@ namespace pvpgn
 			conn_set_checksum(c, bn_int_get(packet->u.client_authreq1.checksum));
 			conn_set_gameversion(c, bn_int_get(packet->u.client_authreq1.gameversion));
 
-			
+
 			const VersionCheck* vc = select_versioncheck(conn_get_archtag(c), conn_get_clienttag(c), conn_get_versionid(c), conn_get_gameversion(c), conn_get_checksum(c));
 			conn_set_versioncheck(c, vc);
 			if (vc)
@@ -1113,13 +1113,13 @@ namespace pvpgn
 			}
 
 
-			t_packet *rpacket = packet_create(packet_class_bnet);
+			t_packet* rpacket = packet_create(packet_class_bnet);
 			if (rpacket)
 			{
 				packet_set_size(rpacket, sizeof(t_server_authreply1));
 				packet_set_type(rpacket, SERVER_AUTHREPLY1);
 
-				char *mpqfilename = nullptr;
+				char* mpqfilename = nullptr;
 				if (vc)
 				{
 					mpqfilename = autoupdate_check(conn_get_archtag(c), conn_get_clienttag(c), conn_get_gamelang(c), vc->get_version_tag().c_str(), nullptr);
@@ -1131,8 +1131,8 @@ namespace pvpgn
 					eventlog(eventlog_level_info, __FUNCTION__, "[{}] an upgrade for version {} is available \"{}\"", conn_get_socket(c), conn_get_versioncheck(c)->get_version_tag(), mpqfilename);
 					bn_int_set(&rpacket->u.server_authreply1.message, SERVER_AUTHREPLY1_MESSAGE_UPDATE);
 					packet_append_string(rpacket, mpqfilename);
-					
-					xfree(static_cast<void *>(mpqfilename));
+
+					xfree(static_cast<void*>(mpqfilename));
 				}
 				else
 				{
@@ -1151,7 +1151,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_authreq109(t_connection * c, t_packet const *const packet)
+		static int _client_authreq109(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_authreq_109))
 			{
@@ -1159,29 +1159,29 @@ namespace pvpgn
 				return 0;
 			}
 
-			auto send_failed_packet = [](t_connection *c)
-			{
-				t_packet *rpacket = packet_create(packet_class_bnet);
-				if (rpacket)
+			auto send_failed_packet = [](t_connection* c)
 				{
-					packet_set_size(rpacket, sizeof(t_server_authreply_109));
-					packet_set_type(rpacket, SERVER_AUTHREPLY_109);
-					conn_set_state(c, conn_state_untrusted);
+					t_packet* rpacket = packet_create(packet_class_bnet);
+					if (rpacket)
+					{
+						packet_set_size(rpacket, sizeof(t_server_authreply_109));
+						packet_set_type(rpacket, SERVER_AUTHREPLY_109);
+						conn_set_state(c, conn_state_untrusted);
 
-					bn_int_set(&rpacket->u.server_authreply_109.message, SERVER_AUTHREPLY_109_MESSAGE_BADVERSION);
-					packet_append_string(rpacket, "");
+						bn_int_set(&rpacket->u.server_authreply_109.message, SERVER_AUTHREPLY_109_MESSAGE_BADVERSION);
+						packet_append_string(rpacket, "");
 
-					conn_push_outqueue(c, rpacket);
+						conn_push_outqueue(c, rpacket);
 
-					packet_del_ref(rpacket);
-				}
-			};
+						packet_del_ref(rpacket);
+					}
+				};
 
 
 			std::uint32_t count = bn_int_get(packet->u.client_authreq_109.cdkey_number);
 			std::size_t position = sizeof(t_client_authreq_109) + (count * sizeof(t_cdkey_info));
 
-			const char *const exeinfo = packet_get_str_const(packet, position, MAX_EXEINFO_STR);
+			const char* const exeinfo = packet_get_str_const(packet, position, MAX_EXEINFO_STR);
 			if (exeinfo)
 			{
 				conn_set_clientexe(c, exeinfo);
@@ -1195,7 +1195,7 @@ namespace pvpgn
 
 			position += std::strlen(exeinfo) + 1;
 
-			const char *const owner = packet_get_str_const(packet, position, MAX_OWNER_STR);
+			const char* const owner = packet_get_str_const(packet, position, MAX_OWNER_STR);
 			if (owner)
 			{
 				conn_set_owner(c, owner);
@@ -1213,7 +1213,7 @@ namespace pvpgn
 
 			eventlog(eventlog_level_info, __FUNCTION__, "[{}] CLIENT_AUTHREQ_109 ticks=0x{:08x}, verstr={} exeinfo=\"{}\" versionid=0x{:08x} gameversion=0x{:08x} checksum=0x{:08x}", conn_get_socket(c), bn_int_get(packet->u.client_authreq_109.ticks), version, exeinfo, conn_get_versionid(c), conn_get_gameversion(c), conn_get_checksum(c));
 
-			t_packet *rpacket;
+			t_packet* rpacket;
 			if ((rpacket = packet_create(packet_class_bnet)))
 			{
 				packet_set_size(rpacket, sizeof(t_server_authreply_109));
@@ -1242,7 +1242,7 @@ namespace pvpgn
 				}
 
 
-				char *mpqfilename = nullptr;
+				char* mpqfilename = nullptr;
 				if (vc)
 				{
 					mpqfilename = autoupdate_check(conn_get_archtag(c), conn_get_clienttag(c), conn_get_gamelang(c), conn_get_versioncheck(c)->get_version_tag().c_str(), NULL);
@@ -1255,7 +1255,7 @@ namespace pvpgn
 					bn_int_set(&rpacket->u.server_authreply_109.message, SERVER_AUTHREPLY_109_MESSAGE_UPDATE);
 					packet_append_string(rpacket, mpqfilename);
 
-					xfree(static_cast<void *>(mpqfilename));
+					xfree(static_cast<void*>(mpqfilename));
 				}
 				else
 				{
@@ -1273,7 +1273,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_regsnoopreply(t_connection * c, t_packet const *const packet)
+		static int _client_regsnoopreply(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_regsnoopreply)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad REGSNOOPREPLY packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_regsnoopreply), packet_get_size(packet));
@@ -1282,9 +1282,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_iconreq(t_connection * c, t_packet const *const packet)
+		static int _client_iconreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_iconreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad ICONREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_iconreq), packet_get_size(packet));
@@ -1301,11 +1301,11 @@ namespace pvpgn
 					packet_append_string(rpacket, prefs_get_war3_iconfile());
 				/* battle.net still sends "icons.bni" to sc/bw clients
 				 * clients request icons_STAR.bni seperatly */
-				/*	else if (std::strcmp(conn_get_clienttag(c),CLIENTTAG_STARCRAFT)==0)
-						packet_append_string(rpacket,prefs_get_star_iconfile());
-						else if (std::strcmp(conn_get_clienttag(c),CLIENTTAG_BROODWARS)==0)
-						packet_append_string(rpacket,prefs_get_star_iconfile());
-						*/
+				 /*	else if (std::strcmp(conn_get_clienttag(c),CLIENTTAG_STARCRAFT)==0)
+						 packet_append_string(rpacket,prefs_get_star_iconfile());
+						 else if (std::strcmp(conn_get_clienttag(c),CLIENTTAG_BROODWARS)==0)
+						 packet_append_string(rpacket,prefs_get_star_iconfile());
+						 */
 				else
 					packet_append_string(rpacket, prefs_get_iconfile());
 
@@ -1316,9 +1316,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_cdkey(t_connection * c, t_packet const *const packet)
+		static int _client_cdkey(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_cdkey)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CDKEY packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_cdkey), packet_get_size(packet));
@@ -1326,14 +1326,14 @@ namespace pvpgn
 			}
 
 			{
-				char const *cdkey;
-				char const *owner;
+				char const* cdkey;
+				char const* owner;
 
 				if (!(cdkey = packet_get_str_const(packet, sizeof(t_client_cdkey), MAX_CDKEY_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CDKEY packet (missing or too long cdkey)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(owner = packet_get_str_const(packet, sizeof(t_client_cdkey)+std::strlen(cdkey) + 1, MAX_OWNER_STR))) {
+				if (!(owner = packet_get_str_const(packet, sizeof(t_client_cdkey) + std::strlen(cdkey) + 1, MAX_OWNER_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CDKEY packet (missing or too long owner)", conn_get_socket(c));
 					return -1;
 				}
@@ -1365,9 +1365,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_cdkey2(t_connection * c, t_packet const *const packet)
+		static int _client_cdkey2(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_cdkey2)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CDKEY2 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_cdkey2), packet_get_size(packet));
@@ -1375,7 +1375,7 @@ namespace pvpgn
 			}
 
 			{
-				char const *owner;
+				char const* owner;
 
 				if (!(owner = packet_get_str_const(packet, sizeof(t_client_cdkey2), MAX_OWNER_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CDKEY2 packet (missing or too long owner)", conn_get_socket(c));
@@ -1397,9 +1397,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_cdkey3(t_connection * c, t_packet const *const packet)
+		static int _client_cdkey3(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_cdkey3)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CDKEY3 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_cdkey2), packet_get_size(packet));
@@ -1407,7 +1407,7 @@ namespace pvpgn
 			}
 
 			{
-				char const *owner;
+				char const* owner;
 
 				if (!(owner = packet_get_str_const(packet, sizeof(t_client_cdkey3), MAX_OWNER_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CDKEY3 packet (missing or too long owner)", conn_get_socket(c));
@@ -1429,7 +1429,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_udpok(t_connection * c, t_packet const *const packet)
+		static int _client_udpok(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_udpok)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad UDPOK packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_udpok), packet_get_size(packet));
@@ -1441,9 +1441,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_fileinforeq(t_connection * c, t_packet const *const packet)
+		static int _client_fileinforeq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_fileinforeq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad FILEINFOREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_fileinforeq), packet_get_size(packet));
@@ -1451,7 +1451,7 @@ namespace pvpgn
 			}
 
 			{
-				char const *filename;
+				char const* filename;
 
 				if (!(filename = packet_get_str_const(packet, sizeof(t_client_fileinforeq), MAX_FILENAME_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad FILEINFOREQ packet (missing or too long tosfile)", conn_get_socket(c));
@@ -1482,10 +1482,10 @@ namespace pvpgn
 			return 0;
 		}
 
-		static const char *_attribute_req(t_account * reqacc, t_account * myacc, const char *key)
+		static const char* _attribute_req(t_account* reqacc, t_account* myacc, const char* key)
 		{
-			const char *result = "";
-			const char *tval;
+			const char* result = "";
+			const char* tval;
 
 			if (!reqacc)
 				goto out;
@@ -1500,18 +1500,18 @@ namespace pvpgn
 			return result;
 		}
 
-		static int _client_statsreq(t_connection * c, t_packet const *const packet)
+		static int _client_statsreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
-			char const *name;
-			char const *key;
+			t_packet* rpacket;
+			char const* name;
+			char const* key;
 			unsigned int name_count;
 			unsigned int key_count;
 			unsigned int i, j;
 			unsigned int name_off;
 			unsigned int keys_off;
 			unsigned int key_off;
-			t_account *reqacc, *myacc;
+			t_account* reqacc, * myacc;
 
 			if (packet_get_size(packet) < sizeof(t_client_statsreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STATSREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_statsreq), packet_get_size(packet));
@@ -1558,7 +1558,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_loginreq1(t_connection * c, t_packet const *const packet)
+		static int _client_loginreq1(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_loginreq1)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad LOGINREQ1 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_loginreq1), packet_get_size(packet));
@@ -1566,8 +1566,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *username;
-				t_account *account;
+				char const* username;
+				t_account* account;
 
 				if (!(username = packet_get_str_const(packet, sizeof(t_client_loginreq1), MAX_USERNAME_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad LOGINREQ1 (missing or too long username)", conn_get_socket(c));
@@ -1603,78 +1603,78 @@ namespace pvpgn
 				}
 				else
 					/* already logged in */
-				if (connlist_find_connection_by_account(account) && prefs_get_kick_old_login() == 0) {
-					eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (already logged in)", conn_get_socket(c), username);
-					bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
-				}
-				else if (account_get_auth_bnetlogin(account) == 0) {	/* default to true */
-					eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (no bnet access)", conn_get_socket(c), username);
-					bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
-				}
-				else if (account_get_auth_lock(account) == 1) {	/* default to false */
-					eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (this account is locked)", conn_get_socket(c), username);
-					bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
-				}
-				else if (conn_get_sessionkey(c) != bn_int_get(packet->u.client_loginreq1.sessionkey)) {
-					eventlog(eventlog_level_error, __FUNCTION__, "[{}] login for \"{}\" refused (expected session key 0x{:08x}, got 0x{:08x})", conn_get_socket(c), username, conn_get_sessionkey(c), bn_int_get(packet->u.client_loginreq1.sessionkey));
-					bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
-				}
-				else {
-					struct {
-						bn_int ticks;
-						bn_int sessionkey;
-						bn_int passhash1[5];
-					} temp;
-					char const *oldstrhash1;
-					t_hash oldpasshash1;
-					t_hash oldpasshash2;
-					t_hash trypasshash2;
-
-					if ((oldstrhash1 = account_get_pass(account))) {
-						bn_int_set(&temp.ticks, bn_int_get(packet->u.client_loginreq1.ticks));
-						bn_int_set(&temp.sessionkey, bn_int_get(packet->u.client_loginreq1.sessionkey));
-						if (hash_set_str(&oldpasshash1, oldstrhash1) < 0) {
-							eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (corrupted passhash1?)", conn_get_socket(c), username);
-							bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
-						}
-						else {
-							hash_to_bnhash((t_hash const *)&oldpasshash1, temp.passhash1);	/* avoid warning */
-
-							bnet_hash(&oldpasshash2, sizeof(temp), &temp);	/* do the double hash */
-							bnhash_to_hash(packet->u.client_loginreq1.password_hash2, &trypasshash2);
-
-							if (hash_eq(trypasshash2, oldpasshash2) == 1) {
-								conn_login(c, account, username);
-								eventlog(eventlog_level_info, __FUNCTION__, "[{}] \"{}\" logged in (correct password)", conn_get_socket(c), username);
-								bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_SUCCESS);
-#ifdef WITH_LUA
-								if (lua_handle_user(c, NULL, NULL, luaevent_user_login) == 1)
-								{
-									// feature to break login from Lua
-									conn_set_state(c, conn_state_destroy);
-									return -1;
-								}
-#endif
-#ifdef WIN32_GUI
-								guiOnUpdateUserList();
-#endif
-							}
-							else {
-								eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (wrong password)", conn_get_socket(c), username);
-								conn_increment_passfail_count(c);
-								bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
-							}
-						}
+					if (connlist_find_connection_by_account(account) && prefs_get_kick_old_login() == 0) {
+						eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (already logged in)", conn_get_socket(c), username);
+						bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
+					}
+					else if (account_get_auth_bnetlogin(account) == 0) {	/* default to true */
+						eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (no bnet access)", conn_get_socket(c), username);
+						bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
+					}
+					else if (account_get_auth_lock(account) == 1) {	/* default to false */
+						eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (this account is locked)", conn_get_socket(c), username);
+						bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
+					}
+					else if (conn_get_sessionkey(c) != bn_int_get(packet->u.client_loginreq1.sessionkey)) {
+						eventlog(eventlog_level_error, __FUNCTION__, "[{}] login for \"{}\" refused (expected session key 0x{:08x}, got 0x{:08x})", conn_get_socket(c), username, conn_get_sessionkey(c), bn_int_get(packet->u.client_loginreq1.sessionkey));
+						bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
 					}
 					else {
-						conn_login(c, account, username);
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] \"{}\" logged in (no password)", conn_get_socket(c), username);
-						bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_SUCCESS);
-#ifdef WIN32_GUI
-						guiOnUpdateUserList();
+						struct {
+							bn_int ticks;
+							bn_int sessionkey;
+							bn_int passhash1[5];
+						} temp;
+						char const* oldstrhash1;
+						t_hash oldpasshash1;
+						t_hash oldpasshash2;
+						t_hash trypasshash2;
+
+						if ((oldstrhash1 = account_get_pass(account))) {
+							bn_int_set(&temp.ticks, bn_int_get(packet->u.client_loginreq1.ticks));
+							bn_int_set(&temp.sessionkey, bn_int_get(packet->u.client_loginreq1.sessionkey));
+							if (hash_set_str(&oldpasshash1, oldstrhash1) < 0) {
+								eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (corrupted passhash1?)", conn_get_socket(c), username);
+								bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
+							}
+							else {
+								hash_to_bnhash((t_hash const*)&oldpasshash1, temp.passhash1);	/* avoid warning */
+
+								bnet_hash(&oldpasshash2, sizeof(temp), &temp);	/* do the double hash */
+								bnhash_to_hash(packet->u.client_loginreq1.password_hash2, &trypasshash2);
+
+								if (hash_eq(trypasshash2, oldpasshash2) == 1) {
+									conn_login(c, account, username);
+									eventlog(eventlog_level_info, __FUNCTION__, "[{}] \"{}\" logged in (correct password)", conn_get_socket(c), username);
+									bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_SUCCESS);
+#ifdef WITH_LUA
+									if (lua_handle_user(c, NULL, NULL, luaevent_user_login) == 1)
+									{
+										// feature to break login from Lua
+										conn_set_state(c, conn_state_destroy);
+										return -1;
+									}
 #endif
+#ifdef WIN32_GUI
+									guiOnUpdateUserList();
+#endif
+								}
+								else {
+									eventlog(eventlog_level_info, __FUNCTION__, "[{}] login for \"{}\" refused (wrong password)", conn_get_socket(c), username);
+									conn_increment_passfail_count(c);
+									bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_FAIL);
+								}
+							}
+						}
+						else {
+							conn_login(c, account, username);
+							eventlog(eventlog_level_info, __FUNCTION__, "[{}] \"{}\" logged in (no password)", conn_get_socket(c), username);
+							bn_int_set(&rpacket->u.server_loginreply1.message, SERVER_LOGINREPLY1_MESSAGE_SUCCESS);
+#ifdef WIN32_GUI
+							guiOnUpdateUserList();
+#endif
+						}
 					}
-				}
 				conn_push_outqueue(c, rpacket);
 				packet_del_ref(rpacket);
 			}
@@ -1682,10 +1682,10 @@ namespace pvpgn
 			return 0;
 		}
 
-		void client_init_email(t_connection * c, t_account * account)
+		void client_init_email(t_connection* c, t_account* account)
 		{
-			t_packet *packet;
-			char const *email;
+			t_packet* packet;
+			char const* email;
 
 			if (!c || !account)
 				return;
@@ -1700,9 +1700,9 @@ namespace pvpgn
 			return;
 		}
 
-		static int _client_loginreq2(t_connection * c, t_packet const *const packet)
+		static int _client_loginreq2(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 			int success = 0;
 
 			if (packet_get_size(packet) < sizeof(t_client_loginreq2)) {
@@ -1711,15 +1711,15 @@ namespace pvpgn
 			}
 
 			{
-				char const *username;
-				t_account *account;
+				char const* username;
+				t_account* account;
 				char supports_locked_reply = 0;
 				t_clienttag clienttag = conn_get_clienttag(c);
 
-				if (clienttag == CLIENTTAG_STARCRAFT_UINT || clienttag == CLIENTTAG_BROODWARS_UINT || clienttag == CLIENTTAG_SHAREWARE_UINT || 
-					clienttag == CLIENTTAG_DIABLORTL_UINT || clienttag == CLIENTTAG_DIABLOSHR_UINT || clienttag == CLIENTTAG_WARCIIBNE_UINT || 
+				if (clienttag == CLIENTTAG_STARCRAFT_UINT || clienttag == CLIENTTAG_BROODWARS_UINT || clienttag == CLIENTTAG_SHAREWARE_UINT ||
+					clienttag == CLIENTTAG_DIABLORTL_UINT || clienttag == CLIENTTAG_DIABLOSHR_UINT || clienttag == CLIENTTAG_WARCIIBNE_UINT ||
 					clienttag == CLIENTTAG_DIABLO2DV_UINT || clienttag == CLIENTTAG_STARJAPAN_UINT || clienttag == CLIENTTAG_DIABLO2ST_UINT ||
-					clienttag == CLIENTTAG_DIABLO2XP_UINT || clienttag == CLIENTTAG_WARCRAFT3_UINT || clienttag == CLIENTTAG_WAR3XP_UINT )
+					clienttag == CLIENTTAG_DIABLO2XP_UINT || clienttag == CLIENTTAG_WARCRAFT3_UINT || clienttag == CLIENTTAG_WAR3XP_UINT)
 				{
 					if (conn_get_versionid(c) >= 0x0000000b)
 						supports_locked_reply = 1;
@@ -1801,7 +1801,7 @@ namespace pvpgn
 						bn_int sessionkey;
 						bn_int passhash1[5];
 					} temp;
-					char const *oldstrhash1;
+					char const* oldstrhash1;
 					t_hash oldpasshash1;
 					t_hash oldpasshash2;
 					t_hash trypasshash2;
@@ -1814,7 +1814,7 @@ namespace pvpgn
 							bn_int_set(&rpacket->u.server_loginreply2.message, SERVER_LOGINREPLY2_MESSAGE_BADPASS);
 						}
 						else {
-							hash_to_bnhash((t_hash const *)&oldpasshash1, temp.passhash1);	/* avoid warning */
+							hash_to_bnhash((t_hash const*)&oldpasshash1, temp.passhash1);	/* avoid warning */
 
 							bnet_hash(&oldpasshash2, sizeof(temp), &temp);	/* do the double hash */
 							bnhash_to_hash(packet->u.client_loginreq2.password_hash2, &trypasshash2);
@@ -1864,9 +1864,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_loginreqw3(t_connection * c, t_packet const *const packet)
+		static int _client_loginreqw3(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_loginreq_w3)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLIENT_LOGINREQ_W3 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_loginreq_w3), packet_get_size(packet));
@@ -1874,15 +1874,15 @@ namespace pvpgn
 			}
 
 			{
-				char const *username;
-				t_account *account;
-				char const *account_salt;
-				char const *account_verifier;
-				const char *conn_client_public_key;
+				char const* username;
+				t_account* account;
+				char const* account_salt;
+				char const* account_verifier;
+				const char* conn_client_public_key;
 				int i;
 
 				/* PELISH: Does not need to check conn_client_public_key != NULL because we testing packet size */
-				conn_client_public_key = (char *)packet_get_data_const(packet, offsetof(t_client_loginreq_w3, client_public_key), 32);
+				conn_client_public_key = (char*)packet_get_data_const(packet, offsetof(t_client_loginreq_w3, client_public_key), 32);
 
 
 				if (!(username = packet_get_str_const(packet, sizeof(t_client_loginreq_w3), MAX_USERNAME_LEN))) {
@@ -1909,65 +1909,65 @@ namespace pvpgn
 					}
 					else
 						/* fail if no account */
-					if (!(account = accountlist_find_account(username))) {
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) login for \"{}\" refused (no such account)", conn_get_socket(c), username);
-						bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_BADACCT);
-					}
-					else
-						/* already logged in */
-					if (connlist_find_connection_by_account(account) && prefs_get_kick_old_login() == 0) {
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) login for \"{}\" refused (already logged in)", conn_get_socket(c), username);
-						bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_ALREADY);
-					}
-					else if (account_get_auth_bnetlogin(account) == 0) {	/* default to true */
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) login for \"{}\" refused (no bnet access)", conn_get_socket(c), username);
-						bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_BADACCT);
-					}
-					else if (!(account_salt = account_get_salt(account)))  {
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) \"{}\" passed account check (even though account has no salt)", conn_get_socket(c), username);
-						conn_set_loggeduser(c, username);
-						bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_SUCCESS);
-					}
-					else if (!(account_verifier = account_get_verifier(account)))  {
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) \"{}\" passed account check (even though account has no verifier)", conn_get_socket(c), username);
-						conn_set_loggeduser(c, username);
-						bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_SUCCESS);
-						xfree((void*)account_salt);
-					}
-					else {
-
-						for (i = 0; i < 32; i++){
-							bn_byte_set(&rpacket->u.server_loginreply_w3.salt[i], account_salt[i]);
+						if (!(account = accountlist_find_account(username))) {
+							eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) login for \"{}\" refused (no such account)", conn_get_socket(c), username);
+							bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_BADACCT);
 						}
+						else
+							/* already logged in */
+							if (connlist_find_connection_by_account(account) && prefs_get_kick_old_login() == 0) {
+								eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) login for \"{}\" refused (already logged in)", conn_get_socket(c), username);
+								bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_ALREADY);
+							}
+							else if (account_get_auth_bnetlogin(account) == 0) {	/* default to true */
+								eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) login for \"{}\" refused (no bnet access)", conn_get_socket(c), username);
+								bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_BADACCT);
+							}
+							else if (!(account_salt = account_get_salt(account))) {
+								eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) \"{}\" passed account check (even though account has no salt)", conn_get_socket(c), username);
+								conn_set_loggeduser(c, username);
+								bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_SUCCESS);
+							}
+							else if (!(account_verifier = account_get_verifier(account))) {
+								eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) \"{}\" passed account check (even though account has no verifier)", conn_get_socket(c), username);
+								conn_set_loggeduser(c, username);
+								bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_SUCCESS);
+								xfree((void*)account_salt);
+							}
+							else {
 
-						BigInt salt = BigInt((unsigned char*)account_salt, 32, 4, false);
-						BigInt verifier = BigInt((unsigned char*)account_verifier, 32, 1, false);
-						BnetSRP3 srp3 = BnetSRP3(username, salt);
+								for (i = 0; i < 32; i++) {
+									bn_byte_set(&rpacket->u.server_loginreply_w3.salt[i], account_salt[i]);
+								}
 
-						BigInt client_public_key = BigInt((unsigned char*)conn_client_public_key, 32, 1, false);
-						BigInt server_public_key = srp3.getServerSessionPublicKey(verifier);
+								BigInt salt = BigInt((unsigned char*)account_salt, 32, 4, false);
+								BigInt verifier = BigInt((unsigned char*)account_verifier, 32, 1, false);
+								BnetSRP3 srp3 = BnetSRP3(username, salt);
 
-						server_public_key.getData((unsigned char*)&rpacket->u.server_loginreply_w3.server_public_key, 32, 4, false);
+								BigInt client_public_key = BigInt((unsigned char*)conn_client_public_key, 32, 1, false);
+								BigInt server_public_key = srp3.getServerSessionPublicKey(verifier);
 
-						BigInt hashed_server_secret_ = srp3.getHashedServerSecret(client_public_key, verifier);
-						BigInt client_proof = srp3.getClientPasswordProof(client_public_key, server_public_key, hashed_server_secret_);
-						BigInt server_proof = srp3.getServerPasswordProof(client_public_key, client_proof, hashed_server_secret_);
+								server_public_key.getData((unsigned char*)&rpacket->u.server_loginreply_w3.server_public_key, 32, 4, false);
 
-						char * conn_client_proof = (char*)client_proof.getData(20, 4, false);
-						char * conn_server_proof = (char*)server_proof.getData(20, 4, false);
+								BigInt hashed_server_secret_ = srp3.getHashedServerSecret(client_public_key, verifier);
+								BigInt client_proof = srp3.getClientPasswordProof(client_public_key, server_public_key, hashed_server_secret_);
+								BigInt server_proof = srp3.getServerPasswordProof(client_public_key, client_proof, hashed_server_secret_);
 
-						conn_set_client_proof(c, conn_client_proof);
-						conn_set_server_proof(c, conn_server_proof);
+								char* conn_client_proof = (char*)client_proof.getData(20, 4, false);
+								char* conn_server_proof = (char*)server_proof.getData(20, 4, false);
 
-						xfree((void*)account_verifier);
-						xfree((void*)account_salt);
-						xfree(conn_client_proof);
-						xfree(conn_server_proof);
+								conn_set_client_proof(c, conn_client_proof);
+								conn_set_server_proof(c, conn_server_proof);
 
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) \"{}\" passed account check", conn_get_socket(c), username);
-						conn_set_loggeduser(c, username);
-						bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_SUCCESS);
-					}
+								xfree((void*)account_verifier);
+								xfree((void*)account_salt);
+								xfree(conn_client_proof);
+								xfree(conn_server_proof);
+
+								eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) \"{}\" passed account check", conn_get_socket(c), username);
+								conn_set_loggeduser(c, username);
+								bn_int_set(&rpacket->u.server_loginreply_w3.message, SERVER_LOGINREPLY_W3_MESSAGE_SUCCESS);
+							}
 				}
 
 				conn_push_outqueue(c, rpacket);
@@ -1978,9 +1978,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_passchangereq(t_connection * c, t_packet const *const packet)
+		static int _client_passchangereq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_passchangereq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLIENT_PASSCHANGEREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_passchangereq), packet_get_size(packet));
@@ -1988,15 +1988,15 @@ namespace pvpgn
 			}
 
 			{
-				char const *username;
-				t_account *account;
-				char const *account_salt;
-				char const *account_verifier;
-				const char *conn_client_public_key;
+				char const* username;
+				t_account* account;
+				char const* account_salt;
+				char const* account_verifier;
+				const char* conn_client_public_key;
 				int i;
 
 				/* PELISH: Does not need to check conn_client_public_key != NULL because we testing packet size */
-				conn_client_public_key = (char *)packet_get_data_const(packet, offsetof(t_client_loginreq_w3, client_public_key), 32);
+				conn_client_public_key = (char*)packet_get_data_const(packet, offsetof(t_client_loginreq_w3, client_public_key), 32);
 
 
 				if (!(username = packet_get_str_const(packet, sizeof(t_client_passchangereq), MAX_USERNAME_LEN))) {
@@ -2024,54 +2024,54 @@ namespace pvpgn
 					}
 					else
 						/* fail if bnetlogin is disallowed */
-					if (account_get_auth_bnetlogin(account) == 0) {	/* default to true */
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) passchange for \"{}\" refused (no bnet access)", conn_get_socket(c), username);
-					}
-					else
-						/* fail if no salt */
-					if ((account_salt = account_get_salt(account)) == NULL)  {
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) passchange for \"{}\" refused (no SALT)", conn_get_socket(c), username);
-					}
-					else
-						/* fail if no verifier */
-					if ((account_verifier = account_get_verifier(account)) == NULL)  {
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) passchange for \"{}\" refused (no VERIFIER)", conn_get_socket(c), username);
-						xfree((void*)account_salt);
-					}
-					else {
-
-						for (i = 0; i < 32; i++){
-							bn_byte_set(&rpacket->u.server_passchangereply.salt[i], account_salt[i]);
+						if (account_get_auth_bnetlogin(account) == 0) {	/* default to true */
+							eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) passchange for \"{}\" refused (no bnet access)", conn_get_socket(c), username);
 						}
+						else
+							/* fail if no salt */
+							if ((account_salt = account_get_salt(account)) == NULL) {
+								eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) passchange for \"{}\" refused (no SALT)", conn_get_socket(c), username);
+							}
+							else
+								/* fail if no verifier */
+								if ((account_verifier = account_get_verifier(account)) == NULL) {
+									eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) passchange for \"{}\" refused (no VERIFIER)", conn_get_socket(c), username);
+									xfree((void*)account_salt);
+								}
+								else {
 
-						BigInt salt = BigInt((unsigned char*)account_salt, 32, 4, false);
-						BigInt verifier = BigInt((unsigned char*)account_verifier, 32, 1, false);
-						BnetSRP3 srp3 = BnetSRP3(username, salt);
+									for (i = 0; i < 32; i++) {
+										bn_byte_set(&rpacket->u.server_passchangereply.salt[i], account_salt[i]);
+									}
 
-						BigInt client_public_key = BigInt((unsigned char*)conn_client_public_key, 32, 1, false);
-						BigInt server_public_key = srp3.getServerSessionPublicKey(verifier);
+									BigInt salt = BigInt((unsigned char*)account_salt, 32, 4, false);
+									BigInt verifier = BigInt((unsigned char*)account_verifier, 32, 1, false);
+									BnetSRP3 srp3 = BnetSRP3(username, salt);
 
-						server_public_key.getData((unsigned char*)&rpacket->u.server_loginreply_w3.server_public_key, 32, 4, false);
+									BigInt client_public_key = BigInt((unsigned char*)conn_client_public_key, 32, 1, false);
+									BigInt server_public_key = srp3.getServerSessionPublicKey(verifier);
 
-						BigInt hashed_server_secret_ = srp3.getHashedServerSecret(client_public_key, verifier);
-						BigInt client_proof = srp3.getClientPasswordProof(client_public_key, server_public_key, hashed_server_secret_);
-						BigInt server_proof = srp3.getServerPasswordProof(client_public_key, client_proof, hashed_server_secret_);
+									server_public_key.getData((unsigned char*)&rpacket->u.server_loginreply_w3.server_public_key, 32, 4, false);
 
-						char * conn_client_proof = (char*)client_proof.getData(20, 4, false);
-						char * conn_server_proof = (char*)server_proof.getData(20, 4, false);
+									BigInt hashed_server_secret_ = srp3.getHashedServerSecret(client_public_key, verifier);
+									BigInt client_proof = srp3.getClientPasswordProof(client_public_key, server_public_key, hashed_server_secret_);
+									BigInt server_proof = srp3.getServerPasswordProof(client_public_key, client_proof, hashed_server_secret_);
 
-						conn_set_client_proof(c, conn_client_proof);
-						conn_set_server_proof(c, conn_server_proof);
+									char* conn_client_proof = (char*)client_proof.getData(20, 4, false);
+									char* conn_server_proof = (char*)server_proof.getData(20, 4, false);
 
-						xfree((void*)account_verifier);
-						xfree((void*)account_salt);
-						xfree(conn_client_proof);
-						xfree(conn_server_proof);
+									conn_set_client_proof(c, conn_client_proof);
+									conn_set_server_proof(c, conn_server_proof);
 
-						eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) \"{}\" passed account passchange check", conn_get_socket(c), username);
-						conn_set_loggeduser(c, username);
-						bn_int_set(&rpacket->u.server_passchangereply.message, SERVER_PASSCHANGEREPLY_MESSAGE_ACCEPT);
-					}
+									xfree((void*)account_verifier);
+									xfree((void*)account_salt);
+									xfree(conn_client_proof);
+									xfree(conn_server_proof);
+
+									eventlog(eventlog_level_info, __FUNCTION__, "[{}] (W3) \"{}\" passed account passchange check", conn_get_socket(c), username);
+									conn_set_loggeduser(c, username);
+									bn_int_set(&rpacket->u.server_passchangereply.message, SERVER_PASSCHANGEREPLY_MESSAGE_ACCEPT);
+								}
 				}
 
 				conn_push_outqueue(c, rpacket);
@@ -2082,9 +2082,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_passchangeproofreq(t_connection * c, t_packet const *const packet)
+		static int _client_passchangeproofreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_passchangeproofreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad PASSCHANGEPROOFREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_passchangeproofreq), packet_get_size(packet));
@@ -2092,10 +2092,10 @@ namespace pvpgn
 			}
 
 			{
-				char const *username;
-				t_account *account;
-				const char *salt;
-				const char *verifier;
+				char const* username;
+				t_account* account;
+				const char* salt;
+				const char* verifier;
 
 				eventlog(eventlog_level_info, __FUNCTION__, "[{}] passchange proof requested", conn_get_socket(c));
 
@@ -2119,7 +2119,7 @@ namespace pvpgn
 				}
 				else {
 					int i;
-					const char * client_password_proof;
+					const char* client_password_proof;
 
 					if (!(client_password_proof = (const char*)packet_get_data_const(packet, offsetof(t_client_passchangeproofreq, client_password_proof), 20))) {
 						eventlog(eventlog_level_error, __FUNCTION__, "[{}] (W3) got bad PASSCHANGEPROOFREQ packet (missing hash)", conn_get_socket(c));
@@ -2128,14 +2128,14 @@ namespace pvpgn
 					}
 
 					if (std::memcmp(client_password_proof, conn_get_client_proof(c), 20) == 0) {
-						const char * server_proof = conn_get_server_proof(c);
+						const char* server_proof = conn_get_server_proof(c);
 
-						for (i = 0; i < 20; i++){
+						for (i = 0; i < 20; i++) {
 							bn_byte_set(&rpacket->u.server_passchangeproofreply.server_password_proof[i], server_proof[i]);
 						}
 
-						salt = (const char *)packet_get_data_const(packet, offsetof(t_client_passchangeproofreq, salt), 32);
-						verifier = (const char *)packet_get_data_const(packet, offsetof(t_client_passchangeproofreq, password_verifier), 32);
+						salt = (const char*)packet_get_data_const(packet, offsetof(t_client_passchangeproofreq, salt), 32);
+						verifier = (const char*)packet_get_data_const(packet, offsetof(t_client_passchangeproofreq, password_verifier), 32);
 						account_set_salt(account, salt);
 						account_set_verifier(account, verifier);
 
@@ -2156,9 +2156,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_pingreq(t_connection * c, t_packet const *const packet)
+		static int _client_pingreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_pingreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad PINGREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_pingreq), packet_get_size(packet));
@@ -2175,9 +2175,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_logonproofreq(t_connection * c, t_packet const *const packet)
+		static int _client_logonproofreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_logonproofreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad LOGONPROOFREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_logonproofreq), packet_get_size(packet));
@@ -2185,8 +2185,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *username;
-				t_account *account;
+				char const* username;
+				t_account* account;
 
 				eventlog(eventlog_level_info, __FUNCTION__, "[{}] logon proof requested", conn_get_socket(c));
 
@@ -2216,7 +2216,7 @@ namespace pvpgn
 					t_hash serverhash;
 					t_hash clienthash;
 					int i;
-					const char * client_password_proof;
+					const char* client_password_proof;
 
 					/* PELISH: This can not occur - We already tested packet size which must be wrong firstly.
 					   Also pvpgn will crash when will dereferencing NULL pointer (so we cant got this errorlog message)
@@ -2236,9 +2236,9 @@ namespace pvpgn
 					hash_set_str(&serverhash, account_get_pass(account));
 
 					if (conn_get_client_proof(c) && std::memcmp(client_password_proof, conn_get_client_proof(c), 20) == 0) {
-						const char * server_proof = conn_get_server_proof(c);
+						const char* server_proof = conn_get_server_proof(c);
 
-						for (i = 0; i < 20; i++){
+						for (i = 0; i < 20; i++) {
 							bn_byte_set(&rpacket->u.server_logonproofreply.server_password_proof[i], server_proof[i]);
 						}
 
@@ -2291,7 +2291,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_changegameport(t_connection * c, t_packet const *const packet)
+		static int _client_changegameport(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_changegameport)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad changegameport packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_changegameport), packet_get_size(packet));
@@ -2310,9 +2310,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_friendslistreq(t_connection * c, t_packet const *const packet)
+		static int _client_friendslistreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_friendslistreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad FRIENDSLISTREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_friendslistreq), packet_get_size(packet));
@@ -2320,16 +2320,16 @@ namespace pvpgn
 			}
 			{
 				int frienduid;
-				t_list *flist;
-				t_friend *fr;
-				t_account *account = conn_get_account(c);
+				t_list* flist;
+				t_friend* fr;
+				t_account* account = conn_get_account(c);
 				int i;
 				int n = account_get_friendcount(account);
 				int friendcount = 0;
 				t_server_friendslistreply_status status;
-				t_connection *dest_c;
-				t_game *game;
-				t_channel *channel;
+				t_connection* dest_c;
+				t_game* game;
+				t_channel* channel;
 				char stat;
 
 				if (!(rpacket = packet_create(packet_class_bnet)))
@@ -2402,9 +2402,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_friendinforeq(t_connection * c, t_packet const *const packet)
+		static int _client_friendinforeq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_friendinforeq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad FRIENDINFOREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_friendinforeq), packet_get_size(packet));
@@ -2412,13 +2412,13 @@ namespace pvpgn
 			}
 
 			{
-				t_connection const *dest_c;
-				t_game const *game;
-				t_channel const *channel;
-				t_account *account = conn_get_account(c);
+				t_connection const* dest_c;
+				t_game const* game;
+				t_channel const* channel;
+				t_account* account = conn_get_account(c);
 				int frienduid;
-				t_friend *fr;
-				t_list *flist;
+				t_friend* fr;
+				t_list* flist;
 				int n = account_get_friendcount(account);
 				char type;
 
@@ -2491,17 +2491,17 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_atfriendscreen(t_connection * c, t_packet const *const packet)
+		static int _client_atfriendscreen(t_connection* c, t_packet const* const packet)
 		{
 			eventlog(eventlog_level_debug, __FUNCTION__, "[{}] got CLIENT_ARRANGEDTEAM_FRIENDSCREEN packet", conn_get_socket(c));
 
-			const char *my_username = conn_get_username(c);
+			const char* my_username = conn_get_username(c);
 			if (!my_username)
 			{
 				return -1;
 			}
 
-			t_channel *my_channel = conn_get_channel(c);
+			t_channel* my_channel = conn_get_channel(c);
 			int my_channel_is_public = 1;
 			if (my_channel)
 			{
@@ -2509,7 +2509,7 @@ namespace pvpgn
 			}
 
 
-			t_packet *rpacket = packet_create(packet_class_bnet);
+			t_packet* rpacket = packet_create(packet_class_bnet);
 			if (!rpacket)
 			{
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] could not create friendscreen server packet", conn_get_socket(c));
@@ -2522,11 +2522,11 @@ namespace pvpgn
 			std::uint8_t available_players = 0;
 
 			// begin search for mutual and available friends
-			t_list *my_friend_list = account_get_friends(conn_get_account(c));
-			t_elem *entry;
+			t_list* my_friend_list = account_get_friends(conn_get_account(c));
+			t_elem* entry;
 			LIST_TRAVERSE(my_friend_list, entry)
 			{
-				t_friend *_friend = static_cast<t_friend *>(elem_get_data(entry));
+				t_friend* _friend = static_cast<t_friend*>(elem_get_data(entry));
 				if (!_friend)
 				{
 					eventlog(eventlog_level_error, __FUNCTION__, "found NULL entry in list");
@@ -2545,8 +2545,8 @@ namespace pvpgn
 					continue;
 				}
 
-				t_account *friend_account = friend_get_account(_friend);
-				t_connection *friend_connection = connlist_find_connection_by_account(friend_account);
+				t_account* friend_account = friend_get_account(_friend);
+				t_connection* friend_connection = connlist_find_connection_by_account(friend_account);
 				// if user is offline, then continue to next friend
 				if (!friend_connection)
 				{
@@ -2574,7 +2574,7 @@ namespace pvpgn
 				}
 
 				// friend is not in a channel
-				t_channel *friend_channel = conn_get_channel(friend_connection);
+				t_channel* friend_channel = conn_get_channel(friend_connection);
 				if (!friend_channel)
 				{
 					continue;
@@ -2586,7 +2586,7 @@ namespace pvpgn
 					continue;
 				}
 
-				const char *friend_name = account_get_name(friend_account);
+				const char* friend_name = account_get_name(friend_account);
 				eventlog(eventlog_level_trace, __FUNCTION__, "Friend {} is available for an AT Game.", friend_name);
 				available_players += 1;
 				packet_append_string(rpacket, friend_name);
@@ -2596,7 +2596,7 @@ namespace pvpgn
 			// now list matching users in same private chan
 			if (!my_channel_is_public)
 			{
-				for (t_connection *user_connection = channel_get_first(my_channel); user_connection; user_connection = channel_get_next())
+				for (t_connection* user_connection = channel_get_first(my_channel); user_connection; user_connection = channel_get_next())
 				{
 					if (available_players == std::numeric_limits<decltype(available_players)>::max())
 					{
@@ -2629,8 +2629,8 @@ namespace pvpgn
 					{
 						continue;
 					}
-					
-					const char *username = account_get_name(conn_get_account(user_connection));
+
+					const char* username = account_get_name(conn_get_account(user_connection));
 					if (!username)
 					{
 						continue;
@@ -2655,9 +2655,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_atinvitefriend(t_connection * c, t_packet const *const packet)
+		static int _client_atinvitefriend(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 			t_clienttag ctag;
 
 			if (packet_get_size(packet) < sizeof(t_client_arrangedteam_invite_friend)) {
@@ -2669,11 +2669,11 @@ namespace pvpgn
 
 			{
 				int count_to_invite, count, id;
-				char const *invited_usernames[8];
-				t_account *members[MAX_TEAMSIZE];
+				char const* invited_usernames[8];
+				t_account* members[MAX_TEAMSIZE];
 				int i, n, offset, teammemcount;
-				t_connection *dest_c;
-				t_team *team;
+				t_connection* dest_c;
+				t_team* team;
 				unsigned int teamid;
 
 				count_to_invite = bn_byte_get(packet->u.client_arrangedteam_invite_friend.numfriends);
@@ -2805,9 +2805,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_atacceptdeclineinvite(t_connection * c, t_packet const *const packet)
+		static int _client_atacceptdeclineinvite(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 			t_clienttag ctag;
 
 			if (packet_get_size(packet) < sizeof(t_client_arrangedteam_accept_decline_invite)) {
@@ -2818,8 +2818,8 @@ namespace pvpgn
 			ctag = conn_get_clienttag(c);
 
 			{
-				char const *inviter;
-				t_connection *dest_c;
+				char const* inviter;
+				t_connection* dest_c;
 
 				//if user declined the invitation then
 				if (bn_int_get(packet->u.client_arrangedteam_accept_decline_invite.option) == CLIENT_ARRANGEDTEAM_DECLINE) {
@@ -2845,7 +2845,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_atacceptinvite(t_connection * c, t_packet const *const packet)
+		static int _client_atacceptinvite(t_connection* c, t_packet const* const packet)
 		{
 			// t_packet * rpacket;
 
@@ -2858,15 +2858,15 @@ namespace pvpgn
 		}
 
 		typedef struct {
-			t_connection *c;
+			t_connection* c;
 			unsigned lnews;
 			unsigned fnews;
 		} t_motd_data;
 
-		static int _news_cb(std::time_t date, t_lstr * lstr, void *data)
+		static int _news_cb(std::time_t date, t_lstr* lstr, void* data)
 		{
-			t_packet *rpacket;
-			t_motd_data *motdd = (t_motd_data *)data;
+			t_packet* rpacket;
+			t_motd_data* motdd = (t_motd_data*)data;
 
 			if (date < motdd->lnews)
 				return -1;		/* exit traversing */
@@ -2896,9 +2896,9 @@ namespace pvpgn
 		}
 
 		// motd for warcraft 3 (http://img21.imageshack.us/img21/1808/j2py.png)
-		static int _client_motdw3(t_connection * c, t_packet const *const packet)
+		static int _client_motdw3(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 			t_clienttag ctag;
 			t_motd_data motdd;
 
@@ -2965,9 +2965,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_realmlistreq(t_connection * c, t_packet const *const packet)
+		static int _client_realmlistreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_realmlistreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad REALMLISTREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_realmlistreq), packet_get_size(packet));
@@ -2975,8 +2975,8 @@ namespace pvpgn
 			}
 
 			if ((rpacket = packet_create(packet_class_bnet))) {
-				t_elem const *curr;
-				t_realm const *realm;
+				t_elem const* curr;
+				t_realm const* realm;
 				t_server_realmlistreply_data realmdata;
 				unsigned int count;
 
@@ -3008,9 +3008,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_realmlistreq110(t_connection * c, t_packet const *const packet)
+		static int _client_realmlistreq110(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_realmlistreq_110)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad REALMLISTREQ_110 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_realmlistreq), packet_get_size(packet));
@@ -3018,8 +3018,8 @@ namespace pvpgn
 			}
 
 			if ((rpacket = packet_create(packet_class_bnet))) {
-				t_elem const *curr;
-				t_realm const *realm;
+				t_elem const* curr;
+				t_realm const* realm;
 				t_server_realmlistreply_110_data realmdata;
 				unsigned int count;
 
@@ -3045,14 +3045,14 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_claninforeq(t_connection * c, t_packet const *const packet)
+		static int _client_claninforeq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 			int count;
-			char const *username;
-			t_account *account;
-			t_clanmember *clanmember;
-			t_clan *clan;
+			char const* username;
+			t_account* account;
+			t_clanmember* clanmember;
+			t_clan* clan;
 			t_clantag clantag1, clantag2;
 
 			if (packet_get_size(packet) < sizeof(t_client_claninforeq)) {
@@ -3109,14 +3109,14 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_profilereq(t_connection * c, t_packet const *const packet)
+		static int _client_profilereq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 			int count;
-			char const *username;
-			t_account *account;
-			t_clanmember *clanmember;
-			t_clan *clan;
+			char const* username;
+			t_account* account;
+			t_clanmember* clanmember;
+			t_clan* clan;
 			bn_int clanTAG;
 
 			if (packet_get_size(packet) < sizeof(t_client_profilereq)) {
@@ -3156,9 +3156,9 @@ namespace pvpgn
 		}
 
 
-		static int _client_realmjoinreq109(t_connection * c, t_packet const *const packet)
+		static int _client_realmjoinreq109(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_realmjoinreq_109)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad REALMJOINREQ_109 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_realmjoinreq_109), packet_get_size(packet));
@@ -3166,8 +3166,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *realmname;
-				t_realm *realm;
+				char const* realmname;
+				t_realm* realm;
 
 				if (!(realmname = packet_get_str_const(packet, sizeof(t_client_realmjoinreq_109), MAX_REALMNAME_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad REALMJOINREQ_109 (missing or too long realmname)", conn_get_socket(c));
@@ -3183,10 +3183,10 @@ namespace pvpgn
 						bn_int secret;
 						bn_int passhash[5];
 					} temp;
-					char const *pass_str;
+					char const* pass_str;
 					t_hash secret_hash;
 					t_hash passhash;
-					t_realm *prev_realm;
+					t_realm* prev_realm;
 
 					/* FIXME: should we only set this after they log in to the realm server? */
 					prev_realm = conn_get_realm(c);
@@ -3204,7 +3204,7 @@ namespace pvpgn
 
 					if ((pass_str = account_get_pass(conn_get_account(c)))) {
 						if (hash_set_str(&passhash, pass_str) == 0) {
-							hash_to_bnhash((t_hash const *)&passhash, temp.passhash);
+							hash_to_bnhash((t_hash const*)&passhash, temp.passhash);
 							salt = bn_int_get(packet->u.client_realmjoinreq_109.seqno);
 							bn_int_set(&temp.salt, salt);
 							bn_int_set(&temp.sessionkey, conn_get_sessionkey(c));
@@ -3236,7 +3236,7 @@ namespace pvpgn
 								bn_int_set(&rpacket->u.server_realmjoinreply_109.u7, 0);
 								bn_int_set(&rpacket->u.server_realmjoinreply_109.versionid, conn_get_versionid(c));
 								bn_int_set(&rpacket->u.server_realmjoinreply_109.clienttag, conn_get_clienttag(c));
-								hash_to_bnhash((t_hash const *)&secret_hash, rpacket->u.server_realmjoinreply_109.secret_hash);	/* avoid warning */
+								hash_to_bnhash((t_hash const*)&secret_hash, rpacket->u.server_realmjoinreply_109.secret_hash);	/* avoid warning */
 								packet_append_string(rpacket, conn_get_username(c));
 								conn_push_outqueue(c, rpacket);
 								packet_del_ref(rpacket);
@@ -3284,9 +3284,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_charlistreq(t_connection * c, t_packet const *const packet)
+		static int _client_charlistreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_unknown_37)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad UNKNOWN_37 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_unknown_37), packet_get_size(packet));
@@ -3299,8 +3299,8 @@ namespace pvpgn
 			   0x00a0: ff ff ff 00
 			   */
 			if ((rpacket = packet_create(packet_class_bnet))) {
-				char const *charlist;
-				char *temp;
+				char const* charlist;
+				char* temp;
 
 				packet_set_size(rpacket, sizeof(t_server_unknown_37));
 				packet_set_type(rpacket, SERVER_UNKNOWN_37);
@@ -3316,13 +3316,13 @@ namespace pvpgn
 				temp = xstrdup(charlist);
 
 				{
-					char const *tok1;
-					char const *tok2;
-					t_character const *ch;
+					char const* tok1;
+					char const* tok2;
+					t_character const* ch;
 					unsigned int count;
 
 					count = 0;
-					tok1 = (char const *)std::strtok(temp, ",");	/* std::strtok modifies the string it is passed */
+					tok1 = (char const*)std::strtok(temp, ",");	/* std::strtok modifies the string it is passed */
 					tok2 = std::strtok(NULL, ",");
 					while (tok1) {
 						if (!tok2) {
@@ -3354,7 +3354,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_unknown39(t_connection * c, t_packet const *const packet)
+		static int _client_unknown39(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_unknown_39)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad UNKNOWN_39 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_unknown_39), packet_get_size(packet));
@@ -3363,14 +3363,14 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_adreq(t_connection * c, t_packet const *const packet)
+		static int _client_adreq(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_adreq))
 			{
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad ADREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_adreq), packet_get_size(packet));
 				return -1;
 			}
-			
+
 			/*
 			eventlog(eventlog_level_debug, __FUNCTION__, "[%d] SID_CHECKAD { %d %d %d %d }", conn_get_socket(c), bn_int_get(packet->u.client_adreq.archtag),
 				bn_int_get(packet->u.client_adreq.clienttag), bn_int_get(packet->u.client_adreq.prev_adid), bn_int_get(packet->u.client_adreq.ticks));
@@ -3381,7 +3381,7 @@ namespace pvpgn
 			{
 				return 0;
 			}
-		
+
 			t_packet* const rpacket = packet_create(packet_class_bnet);
 			if (!rpacket)
 			{
@@ -3401,7 +3401,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_adack(t_connection * c, t_packet const *const packet)
+		static int _client_adack(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_adack)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad ADACK packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_adack), packet_get_size(packet));
@@ -3419,7 +3419,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_adclick(t_connection * c, t_packet const *const packet)
+		static int _client_adclick(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_adclick)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad ADCLICK packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_adclick), packet_get_size(packet));
@@ -3431,7 +3431,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_adclick2(t_connection * c, t_packet const *const packet)
+		static int _client_adclick2(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_adclick2))
 			{
@@ -3462,8 +3462,8 @@ namespace pvpgn
 
 			return 0;
 		}
-		
-		static int _client_readmemory(t_connection * c, t_packet const *const packet)
+
+		static int _client_readmemory(t_connection* c, t_packet const* const packet)
 		{
 			unsigned int size, offset, request_id;
 
@@ -3471,7 +3471,7 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad READMEMORY packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_readmemory), packet_get_size(packet));
 				return -1;
 			}
- 
+
 			request_id = bn_int_get(packet->u.client_readmemory.request_id);
 
 			size = (unsigned int)packet_get_size(packet);
@@ -3491,7 +3491,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_statsupdate(t_connection * c, t_packet const *const packet)
+		static int _client_statsupdate(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_statsupdate)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STATSUPDATE packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_statsupdate), packet_get_size(packet));
@@ -3499,9 +3499,9 @@ namespace pvpgn
 			}
 
 			{
-				char const *name;
-				char const *key;
-				char const *val;
+				char const* name;
+				char const* key;
+				char const* val;
 				unsigned int name_count;
 				unsigned int key_count;
 				unsigned int i, j;
@@ -3510,7 +3510,7 @@ namespace pvpgn
 				unsigned int key_off;
 				unsigned int vals_off;
 				unsigned int val_off;
-				t_account *account;
+				t_account* account;
 
 				name_count = bn_int_get(packet->u.client_statsupdate.name_count);
 				key_count = bn_int_get(packet->u.client_statsupdate.key_count);
@@ -3540,20 +3540,20 @@ namespace pvpgn
 					eventlog(eventlog_level_info, __FUNCTION__, "[{}] updating player profile for \"{}\"", conn_get_socket(c), conn_get_username(c));
 
 					for (i = 0, name_off = sizeof(t_client_statsupdate); i < name_count && (name = packet_get_str_const(packet, name_off, UNCHECKED_NAME_STR)); i++, name_off += std::strlen(name) + 1)
-					for (j = 0, key_off = keys_off, val_off = vals_off; j < key_count && (key = packet_get_str_const(packet, key_off, MAX_ATTRKEY_STR)) && (val = packet_get_str_const(packet, val_off, MAX_ATTRVAL_STR)); j++, key_off += std::strlen(key) + 1, val_off += std::strlen(val) + 1)
-					if (std::strlen(key) < 9 || strncasecmp(key, "profile\\", 8) != 0)
-						eventlog(eventlog_level_error, __FUNCTION__, "[{}] got STATSUPDATE with suspicious key \"{}\" value \"{}\"", conn_get_socket(c), key, val);
-					else
-						account_set_strattr(account, key, val);
+						for (j = 0, key_off = keys_off, val_off = vals_off; j < key_count && (key = packet_get_str_const(packet, key_off, MAX_ATTRKEY_STR)) && (val = packet_get_str_const(packet, val_off, MAX_ATTRVAL_STR)); j++, key_off += std::strlen(key) + 1, val_off += std::strlen(val) + 1)
+							if (std::strlen(key) < 9 || strncasecmp(key, "profile\\", 8) != 0)
+								eventlog(eventlog_level_error, __FUNCTION__, "[{}] got STATSUPDATE with suspicious key \"{}\" value \"{}\"", conn_get_socket(c), key, val);
+							else
+								account_set_strattr(account, key, val);
 				}
 			}
 
 			return 0;
 		}
 
-		static int _client_playerinforeq(t_connection * c, t_packet const *const packet)
+		static int _client_playerinforeq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_playerinforeq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad PLAYERINFOREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_playerinforeq), packet_get_size(packet));
@@ -3561,15 +3561,15 @@ namespace pvpgn
 			}
 
 			{
-				char const *username;
-				char const *info;
-				t_account *account;
+				char const* username;
+				char const* info;
+				t_account* account;
 
 				if (!(username = packet_get_str_const(packet, sizeof(t_client_playerinforeq), MAX_USERNAME_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad PLAYERINFOREQ (missing or too long username)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(info = packet_get_str_const(packet, sizeof(t_client_playerinforeq)+std::strlen(username) + 1, MAX_PLAYERINFO_STR))) {
+				if (!(info = packet_get_str_const(packet, sizeof(t_client_playerinforeq) + std::strlen(username) + 1, MAX_PLAYERINFO_STR))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad PLAYERINFOREQ (missing or too long info)", conn_get_socket(c));
 					return -1;
 				}
@@ -3603,9 +3603,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_progident2(t_connection * c, t_packet const *const packet)
+		static int _client_progident2(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_progident2)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad PROGIDENT2 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_progident2), packet_get_size(packet));
@@ -3629,8 +3629,8 @@ namespace pvpgn
 				packet_set_size(rpacket, sizeof(t_server_channellist));
 				packet_set_type(rpacket, SERVER_CHANNELLIST);
 				{
-					t_channel *ch;
-					t_elem const *curr;
+					t_channel* ch;
+					t_elem const* curr;
 
 					LIST_TRAVERSE_CONST(channellist(), curr) {
 						ch = (t_channel*)elem_get_data(curr);
@@ -3647,15 +3647,15 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_joinchannel(t_connection * c, t_packet const *const packet)
+		static int _client_joinchannel(t_connection* c, t_packet const* const packet)
 		{
-			t_account *account;
-			char const *cname;
+			t_account* account;
+			char const* cname;
 			int found = 1;
-			t_clan *user_clan;
+			t_clan* user_clan;
 			t_clantag clantag;
 			std::uint32_t clienttag;
-			t_channel *channel;
+			t_channel* channel;
 
 			if (packet_get_size(packet) < sizeof(t_client_joinchannel)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad JOINCHANNEL packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_joinchannel), packet_get_size(packet));
@@ -3721,7 +3721,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_message(t_connection * c, t_packet const *const packet)
+		static int _client_message(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_message)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad MESSAGE packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_message), packet_get_size(packet));
@@ -3729,8 +3729,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *text;
-				t_channel const *channel;
+				char const* text;
+				t_channel const* channel;
 
 				if (!(text = packet_get_str_const(packet, sizeof(t_client_message), MAX_MESSAGE_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad MESSAGE (missing or too long text)", conn_get_socket(c));
@@ -3755,9 +3755,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _glist_cb(t_game * game, void *data)
+		static int _glist_cb(t_game* game, void* data)
 		{
-			struct glist_cbdata *cbdata = (struct glist_cbdata*)data;
+			struct glist_cbdata* cbdata = (struct glist_cbdata*)data;
 			char clienttag_str[5];
 			t_server_gamelistreply_game glgame;
 			unsigned int addr;
@@ -3822,7 +3822,7 @@ namespace pvpgn
 			}
 			bn_int_set(&glgame.unknown6, SERVER_GAMELISTREPLY_GAME_UNKNOWN6);
 
-			if (packet_get_size(cbdata->rpacket) + sizeof(glgame)+std::strlen(game_get_name(game)) + 1 + std::strlen(game_get_pass(game)) + 1 + std::strlen(game_get_info(game)) + 1 > MAX_PACKET_SIZE) {
+			if (packet_get_size(cbdata->rpacket) + sizeof(glgame) + std::strlen(game_get_name(game)) + 1 + std::strlen(game_get_pass(game)) + 1 + std::strlen(game_get_info(game)) + 1 > MAX_PACKET_SIZE) {
 				eventlog(eventlog_level_debug, __FUNCTION__, "[{}] out of room for games", conn_get_socket(cbdata->c));
 				return -1;			/* no more room */
 			}
@@ -3840,15 +3840,15 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_gamelistreq(t_connection * c, t_packet const *const packet)
+		static int _client_gamelistreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
-			char const *gamename;
-			char const *gamepass;
+			t_packet* rpacket;
+			char const* gamename;
+			char const* gamepass;
 			unsigned short bngtype;
 			t_game_type gtype;
 			t_clienttag clienttag;
-			t_game *game;
+			t_game* game;
 			t_server_gamelistreply_game glgame;
 			unsigned int addr;
 			unsigned short port;
@@ -3864,7 +3864,7 @@ namespace pvpgn
 				return -1;
 			}
 
-			if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_gamelistreq)+std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
+			if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_gamelistreq) + std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad GAMELISTREQ (missing or too long password)", conn_get_socket(c));
 				return -1;
 			}
@@ -3883,6 +3883,11 @@ namespace pvpgn
 			if (gamename[0] != '\0') {
 				eventlog(eventlog_level_debug, __FUNCTION__, "[{}] GAMELISTREPLY looking for specific game tag=\"{}\" bngtype=0x{:08x} gtype={} name=\"{}\" pass=\"{}\"", conn_get_socket(c), tag_uint_to_str(clienttag_str, clienttag), bngtype, (int)gtype, gamename, gamepass);
 				if ((game = gamelist_find_game(gamename, clienttag, gtype))) {
+					// Gui ngay SERVER_GAME_HOST_INFO song song, dong bo
+					// nhanh vao m_Games phia GProxy thay vi doi
+					// SERVER_GAMELISTREPLY (SID_GETADVLISTEX) cham hon.
+					//game_send_single_to_connection(c, game);
+
 					/* game found but first we need to make sure everything is OK */
 					bn_int_set(&rpacket->u.server_gamelistreply.gamecount, 0);
 					switch (game_get_status(game)) {
@@ -3966,11 +3971,11 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_joingame(t_connection * c, t_packet const *const packet)
+		static int _client_joingame(t_connection* c, t_packet const* const packet)
 		{
-			char const *gamename;
-			char const *gamepass;
-			t_game *game;
+			char const* gamename;
+			char const* gamepass;
+			t_game* game;
 			t_game_type gtype;
 
 			if (packet_get_size(packet) < sizeof(t_client_join_game)) {
@@ -3983,7 +3988,7 @@ namespace pvpgn
 				return -1;
 			}
 
-			if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_join_game)+std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
+			if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_join_game) + std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLIENT_JOIN_GAME packet (missing or too long gamepass)", conn_get_socket(c));
 				return -1;
 			}
@@ -4032,9 +4037,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_startgame1(t_connection * c, t_packet const *const packet)
+		static int _client_startgame1(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_startgame1)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME1 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_startgame1), packet_get_size(packet));
@@ -4042,22 +4047,22 @@ namespace pvpgn
 			}
 
 			{
-				char const *gamename;
-				char const *gamepass;
-				char const *gameinfo;
+				char const* gamename;
+				char const* gamepass;
+				char const* gameinfo;
 				unsigned short bngtype;
 				unsigned int status;
-				t_game *currgame;
+				t_game* currgame;
 
 				if (!(gamename = packet_get_str_const(packet, sizeof(t_client_startgame1), MAX_GAMENAME_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME1 packet (missing or too long gamename)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_startgame1)+std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
+				if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_startgame1) + std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME1 packet (missing or too long gamepass)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(gameinfo = packet_get_str_const(packet, sizeof(t_client_startgame1)+std::strlen(gamename) + 1 + std::strlen(gamepass) + 1, MAX_GAMEINFO_LEN))) {
+				if (!(gameinfo = packet_get_str_const(packet, sizeof(t_client_startgame1) + std::strlen(gamename) + 1 + std::strlen(gamepass) + 1, MAX_GAMEINFO_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME1 packet (missing or too long gameinfo)", conn_get_socket(c));
 					return -1;
 				}
@@ -4120,9 +4125,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_startgame3(t_connection * c, t_packet const *const packet)
+		static int _client_startgame3(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_startgame3)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME3 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_startgame3), packet_get_size(packet));
@@ -4130,22 +4135,22 @@ namespace pvpgn
 			}
 
 			{
-				char const *gamename;
-				char const *gamepass;
-				char const *gameinfo;
+				char const* gamename;
+				char const* gamepass;
+				char const* gameinfo;
 				unsigned short bngtype;
 				unsigned int status;
-				t_game *currgame;
+				t_game* currgame;
 
 				if (!(gamename = packet_get_str_const(packet, sizeof(t_client_startgame3), MAX_GAMENAME_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME3 packet (missing or too long gamename)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_startgame3)+std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
+				if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_startgame3) + std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME3 packet (missing or too long gamepass)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(gameinfo = packet_get_str_const(packet, sizeof(t_client_startgame3)+std::strlen(gamename) + 1 + std::strlen(gamepass) + 1, MAX_GAMEINFO_LEN))) {
+				if (!(gameinfo = packet_get_str_const(packet, sizeof(t_client_startgame3) + std::strlen(gamename) + 1 + std::strlen(gamepass) + 1, MAX_GAMEINFO_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME3 packet (missing or too long gameinfo)", conn_get_socket(c));
 					return -1;
 				}
@@ -4206,9 +4211,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_startgame4(t_connection * c, t_packet const *const packet)
+		static int _client_startgame4(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_startgame4)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME4 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_startgame4), packet_get_size(packet));
@@ -4233,24 +4238,24 @@ namespace pvpgn
 				conn_part_channel(c);
 
 			{
-				char const *gamename;
-				char const *gamepass;
-				char const *gameinfo;
+				char const* gamename;
+				char const* gamepass;
+				char const* gameinfo;
 				unsigned short bngtype;
 				unsigned int status;
 				unsigned int flag;
 				unsigned short option;
-				t_game *currgame;
+				t_game* currgame;
 
 				if (!(gamename = packet_get_str_const(packet, sizeof(t_client_startgame4), MAX_GAMENAME_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME4 packet (missing or too long gamename)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_startgame4)+std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
+				if (!(gamepass = packet_get_str_const(packet, sizeof(t_client_startgame4) + std::strlen(gamename) + 1, MAX_GAMEPASS_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME4 packet (missing or too long gamepass)", conn_get_socket(c));
 					return -1;
 				}
-				if (!(gameinfo = packet_get_str_const(packet, sizeof(t_client_startgame4)+std::strlen(gamename) + 1 + std::strlen(gamepass) + 1, MAX_GAMEINFO_LEN))) {
+				if (!(gameinfo = packet_get_str_const(packet, sizeof(t_client_startgame4) + std::strlen(gamename) + 1 + std::strlen(gamepass) + 1, MAX_GAMEINFO_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad STARTGAME4 packet (missing or too long gameinfo)", conn_get_socket(c));
 					return -1;
 				}
@@ -4287,17 +4292,17 @@ namespace pvpgn
 
 					t_game_type gtype;
 					bool allow_create_custom = false;
-					t_game *game;
+					t_game* game;
 
 					gtype = bngtype_to_gtype(conn_get_clienttag(c), bngtype);
 					if ((gtype == game_type_ladder && account_get_auth_createladdergame(conn_get_account(c)) == 0) || (gtype != game_type_ladder && account_get_auth_createnormalgame(conn_get_account(c)) == 0))
 						eventlog(eventlog_level_info, __FUNCTION__, "[{}] game start for \"{}\" refused (no authority)", conn_get_socket(c), conn_get_username(c));
-					else 
+					else
 					{
 						//find is there any existing game with same name and allow the host to create game
 						// with same name only when another game is already started or already done
 						if ((!(game = gamelist_find_game_available(gamename, conn_get_clienttag(c), game_type_all))) &&
-							(conn_set_game(c, gamename, gamepass, gameinfo, gtype, STARTVER_GW4) == 0)) 
+							(conn_set_game(c, gamename, gamepass, gameinfo, gtype, STARTVER_GW4) == 0))
 						{
 							game_set_option(conn_get_game(c), bngoption_to_goption(conn_get_clienttag(c), gtype, option));
 							if (status & CLIENT_STARTGAME4_STATUS_PRIVATE)
@@ -4339,9 +4344,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_closegame(t_connection * c, t_packet const *const packet)
+		static int _client_closegame(t_connection* c, t_packet const* const packet)
 		{
-			t_game *game;
+			t_game* game;
 
 			eventlog(eventlog_level_info, __FUNCTION__, "[{}] client closing game", conn_get_socket(c));
 			if (packet_get_type(packet) == CLIENT_CLOSEGAME2 || ((conn_get_clienttag(c) != CLIENTTAG_WARCRAFT3_UINT) && (conn_get_clienttag(c) != CLIENTTAG_WAR3XP_UINT)))
@@ -4352,7 +4357,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_gamereport(t_connection * c, t_packet const *const packet)
+		static int _client_gamereport(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_game_report)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad GAME_REPORT packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_game_report), packet_get_size(packet));
@@ -4360,17 +4365,17 @@ namespace pvpgn
 			}
 
 			{
-				t_account *my_account;
-				t_account *other_account;
-				t_game *game;
+				t_account* my_account;
+				t_account* other_account;
+				t_game* game;
 				unsigned int player_count;
 				unsigned int i, s;
-				t_client_game_report_result const *result_data;
+				t_client_game_report_result const* result_data;
 				unsigned int result_off;
 				t_game_result result;
-				char const *player;
+				char const* player;
 				unsigned int player_off;
-				t_game_result *results;
+				t_game_result* results;
 
 				player_count = bn_int_get(packet->u.client_gamerep.count);
 
@@ -4382,12 +4387,12 @@ namespace pvpgn
 				eventlog(eventlog_level_info, __FUNCTION__, "[{}] CLIENT_GAME_REPORT: {} ({} players)", conn_get_socket(c), conn_get_username(c), player_count);
 				my_account = conn_get_account(c);
 
-				results = (t_game_result*)xmalloc(sizeof(t_game_result)* game_get_count(game));
+				results = (t_game_result*)xmalloc(sizeof(t_game_result) * game_get_count(game));
 
 				for (i = 0; i < game_get_count(game); i++)
 					results[i] = game_result_none;
 
-				for (i = 0, result_off = sizeof(t_client_game_report), player_off = sizeof(t_client_game_report)+player_count * sizeof(t_client_game_report_result); i < player_count; i++, result_off += sizeof(t_client_game_report_result), player_off += std::strlen(player) + 1) {
+				for (i = 0, result_off = sizeof(t_client_game_report), player_off = sizeof(t_client_game_report) + player_count * sizeof(t_client_game_report_result); i < player_count; i++, result_off += sizeof(t_client_game_report_result), player_off += std::strlen(player) + 1) {
 					/* PELISH: Fixme - Can this crash server (NULL pointer dereferencing)?? */
 					if (!(result_data = (const t_client_game_report_result*)packet_get_data_const(packet, result_off, sizeof(t_client_game_report_result)))) {
 						eventlog(eventlog_level_error, __FUNCTION__, "[{}] got corrupt GAME_REPORT packet (missing results {}-{})", conn_get_socket(c), i + 1, player_count);
@@ -4433,8 +4438,8 @@ namespace pvpgn
 				}
 
 				if (i == player_count) {	/* if everything checked out... */
-					char const *head;
-					char const *body;
+					char const* head;
+					char const* body;
 
 					if (!(head = packet_get_str_const(packet, player_off, MAX_GAMEREP_HEAD_STR)))
 						eventlog(eventlog_level_error, __FUNCTION__, "[{}] got GAME_REPORT with missing or too long report head", conn_get_socket(c));
@@ -4448,7 +4453,7 @@ namespace pvpgn
 				}
 
 				if (game_set_reported_results(game, my_account, results) < 0)
-					xfree((void *)results);
+					xfree((void*)results);
 
 				eventlog(eventlog_level_debug, __FUNCTION__, "[{}] finished parsing result... now leaving game", conn_get_socket(c));
 				conn_set_game(c, NULL, NULL, NULL, game_type_none, 0);
@@ -4457,7 +4462,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_leavechannel(t_connection * c, t_packet const *const packet)
+		static int _client_leavechannel(t_connection* c, t_packet const* const packet)
 		{
 			/* If this user in a channel, notify everyone that the user has left */
 			if (conn_get_channel(c))
@@ -4465,9 +4470,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_ladderreq(t_connection * c, t_packet const *const packet)
+		static int _client_ladderreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 
 			if (packet_get_size(packet) < sizeof(t_client_ladderreq)) {
@@ -4482,9 +4487,9 @@ namespace pvpgn
 				unsigned int start;
 				unsigned int count;
 				unsigned int idnum;
-				t_account *account;
+				t_account* account;
 				t_clienttag clienttag;
-				char const *timestr;
+				char const* timestr;
 				t_bnettime bt;
 				t_ladder_id id;
 				t_ladder_sort sort;
@@ -4522,7 +4527,7 @@ namespace pvpgn
 				bn_int_set(&rpacket->u.server_ladderreply.startplace, start);
 				bn_int_set(&rpacket->u.server_ladderreply.count, count);
 
-				switch (type){
+				switch (type) {
 				case CLIENT_LADDERREQ_TYPE_HIGHESTRATED:
 					sort = ladder_sort_highestrated;
 					break;
@@ -4554,7 +4559,7 @@ namespace pvpgn
 
 					const LadderReferencedObject* referencedObject = NULL;
 					account = NULL;
-					if (!error){
+					if (!error) {
 
 						if (!(referencedObject = ladderList_active->getReferencedObject(i + 1)))
 							referencedObject = ladderList_current->getReferencedObject(i + 1);
@@ -4623,9 +4628,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_laddersearchreq(t_connection * c, t_packet const *const packet)
+		static int _client_laddersearchreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_laddersearchreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad LADDERSEARCHREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_laddersearchreq), packet_get_size(packet));
@@ -4633,8 +4638,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *playername;
-				t_account *account;
+				char const* playername;
+				t_account* account;
 				unsigned int idnum;
 				unsigned int type;
 				unsigned int rank;	/* starts at zero */
@@ -4657,7 +4662,7 @@ namespace pvpgn
 				}
 
 				type = bn_int_get(packet->u.client_laddersearchreq.type);
-				switch (type)  {
+				switch (type) {
 				case CLIENT_LADDERSEARCHREQ_TYPE_HIGHESTRATED:
 					sort = ladder_sort_highestrated;
 					break;
@@ -4680,8 +4685,8 @@ namespace pvpgn
 				if (!(account = accountlist_find_account(playername)))
 					rank = SERVER_LADDERSEARCHREPLY_RANK_NONE;
 				else {
-					LadderList * ladderList_active = ladders.getLadderList(LadderKey(id, ctag, sort, ladder_time_active));
-					LadderList * ladderList_current = ladders.getLadderList(LadderKey(id, ctag, sort, ladder_time_current));
+					LadderList* ladderList_active = ladders.getLadderList(LadderKey(id, ctag, sort, ladder_time_active));
+					LadderList* ladderList_current = ladders.getLadderList(LadderKey(id, ctag, sort, ladder_time_current));
 					unsigned int uid = account_get_uid(account);
 					switch (type) {
 					case CLIENT_LADDERSEARCHREQ_TYPE_HIGHESTRATED:
@@ -4716,9 +4721,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_mapauthreq1(t_connection * c, t_packet const *const packet)
+		static int _client_mapauthreq1(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_mapauthreq1)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad MAPAUTHREQ1 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_mapauthreq1), packet_get_size(packet));
@@ -4726,8 +4731,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *mapname;
-				t_game *game;
+				char const* mapname;
+				t_game* game;
 
 				if (!(mapname = packet_get_str_const(packet, sizeof(t_client_mapauthreq1), MAP_NAME_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad MAPAUTHREQ1 packet (missing or too long mapname)", conn_get_socket(c));
@@ -4782,9 +4787,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_mapauthreq2(t_connection * c, t_packet const *const packet)
+		static int _client_mapauthreq2(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_mapauthreq2)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad MAPAUTHREQ2 packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_mapauthreq2), packet_get_size(packet));
@@ -4792,8 +4797,8 @@ namespace pvpgn
 			}
 
 			{
-				char const *mapname;
-				t_game *game;
+				char const* mapname;
+				t_game* game;
 
 				if (!(mapname = packet_get_str_const(packet, sizeof(t_client_mapauthreq2), MAP_NAME_LEN))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad MAPAUTHREQ2 packet (missing or too long mapname)", conn_get_socket(c));
@@ -4848,7 +4853,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_changeclient(t_connection * c, t_packet const *const packet)
+		static int _client_changeclient(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_changeclient))
 			{
@@ -4871,7 +4876,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clanmemberlistreq(t_connection * c, t_packet const *const packet)
+		static int _client_clanmemberlistreq(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_clanmemberlist_req)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLANMEMBERLIST_REQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clanmemberlist_req), packet_get_size(packet));
@@ -4882,7 +4887,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_motdreq(t_connection * c, t_packet const *const packet)
+		static int _client_clan_motdreq(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_clan_motdreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLAN_MOTDREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clan_motdreq), packet_get_size(packet));
@@ -4893,7 +4898,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_motdchg(t_connection * c, t_packet const *const packet)
+		static int _client_clan_motdchg(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_clan_motdreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLAN_MOTDCHGREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clan_motdreq), packet_get_size(packet));
@@ -4904,9 +4909,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_disbandreq(t_connection * c, t_packet const *const packet)
+		static int _client_clan_disbandreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_clan_disbandreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLAN_DISBANDREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clan_disbandreq), packet_get_size(packet));
@@ -4914,9 +4919,9 @@ namespace pvpgn
 			}
 
 			if ((rpacket = packet_create(packet_class_bnet))) {
-				t_clan *clan;
-				t_clanmember *member;
-				t_account *account;
+				t_clan* clan;
+				t_clanmember* member;
+				t_account* account;
 
 				packet_set_size(rpacket, sizeof(t_server_clan_disbandreply));
 				packet_set_type(rpacket, SERVER_CLAN_DISBANDREPLY);
@@ -4945,7 +4950,7 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_createreq(t_connection * c, t_packet const *const packet)
+		static int _client_clan_createreq(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_clan_createreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLAN_INFOREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clan_createreq), packet_get_size(packet));
@@ -4957,15 +4962,15 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_createinvitereq(t_connection * c, t_packet const *const packet)
+		static int _client_clan_createinvitereq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 			unsigned size;
-			const char *clanname;
-			const char *username;
+			const char* clanname;
+			const char* username;
 			t_clantag clantag;
 			unsigned offset;
-			t_clan *clan;
+			t_clan* clan;
 
 			if ((size = packet_get_size(packet)) < sizeof(t_client_clan_createinvitereq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLAN_CREATEINVITEREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clan_createinvitereq), packet_get_size(packet));
@@ -4983,7 +4988,7 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLAN_CREATEINVITEREQ packet (missing clantag)", conn_get_socket(c));
 				return -1;
 			}
-			clantag = *((int *)packet_get_data_const(packet, offset, 4));
+			clantag = *((int*)packet_get_data_const(packet, offset, 4));
 			offset += 4;
 
 			if ((rpacket = packet_create(packet_class_bnet))) {
@@ -4994,7 +4999,7 @@ namespace pvpgn
 						packet_del_ref(rpacket);
 						return -1;
 					}
-					membercount = *((char *)packet_get_data_const(packet, offset, 1));
+					membercount = *((char*)packet_get_data_const(packet, offset, 1));
 					clan_set_created(clan, -membercount);                               /* FIXME: We should also check if membercount == count of names on end of this packet */
 					packet_set_size(rpacket, sizeof(t_server_clan_createinvitereq));
 					packet_set_type(rpacket, SERVER_CLAN_CREATEINVITEREQ);
@@ -5007,10 +5012,10 @@ namespace pvpgn
 					do {
 						username = packet_get_str_const(packet, offset, MAX_USERNAME_LEN);
 						if (username) {
-							t_connection *conn;
+							t_connection* conn;
 							offset += (std::strlen(username) + 1);
 							if ((conn = connlist_find_connection_by_accountname(username)) != NULL) {
-								t_clanmember *clanmember;
+								t_clanmember* clanmember;
 								if (prefs_get_clan_newer_time() > 0) {
 									clanmember = clan_add_member(clan, conn_get_account(conn), CLAN_NEW);
 									clanmember_set_fullmember(clanmember, 1);      /* FIXME: do only this here and no clan_add_member() */
@@ -5036,12 +5041,12 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_createinvitereply(t_connection * c, t_packet const *const packet)
+		static int _client_clan_createinvitereply(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
-			t_connection *conn;
-			t_clan *clan;
-			const char *username;
+			t_packet* rpacket;
+			t_connection* conn;
+			t_clan* clan;
+			const char* username;
 			char status;
 
 			if (packet_get_size(packet) < sizeof(t_client_clan_createinvitereply)) {
@@ -5060,7 +5065,7 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLAN_CREATEINVITEREPLY packet (mising status)", conn_get_socket(c));
 				return -1;
 			}
-			status = *((char *)packet_get_data_const(packet, offset, 1));
+			status = *((char*)packet_get_data_const(packet, offset, 1));
 			if ((conn = connlist_find_connection_by_accountname(username)) == NULL)
 				return -1;
 			if ((clan = account_get_creating_clan(conn_get_account(conn))) == NULL)
@@ -5104,9 +5109,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clanmember_rankupdatereq(t_connection * c, t_packet const *const packet)
+		static int _client_clanmember_rankupdatereq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_clanmember_rankupdate_req)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLANMEMBER_RANKUPDATE_REQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clanmember_rankupdate_req), packet_get_size(packet));
@@ -5117,10 +5122,10 @@ namespace pvpgn
 			{
 				std::size_t offset = sizeof(t_client_clanmember_rankupdate_req);
 				char status;
-				t_clan *clan;
-				t_clanmember *dest_member;
-				t_clanmember *member;
-				t_account *account;
+				t_clan* clan;
+				t_clanmember* dest_member;
+				t_clanmember* member;
+				t_account* account;
 
 				packet_set_size(rpacket, sizeof(t_server_clanmember_rankupdate_reply));
 				packet_set_type(rpacket, SERVER_CLANMEMBER_RANKUPDATE_REPLY);
@@ -5141,7 +5146,7 @@ namespace pvpgn
 					packet_del_ref(rpacket);
 					return -1;
 				}
-				status = *((char *)packet_get_data_const(packet, offset, 1));
+				status = *((char*)packet_get_data_const(packet, offset, 1));
 
 				account = (conn_get_account(c));
 
@@ -5173,9 +5178,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clanmember_removereq(t_connection * c, t_packet const *const packet)
+		static int _client_clanmember_removereq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_clanmember_remove_req)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLANMEMBER_REMOVE_REQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clanmember_remove_req), packet_get_size(packet));
@@ -5183,11 +5188,11 @@ namespace pvpgn
 			}
 
 			if ((rpacket = packet_create(packet_class_bnet)) != NULL) {
-				t_account *acc;
-				t_clan *clan;
-				const char *username;
-				t_clanmember *member;
-				t_connection *dest_conn;
+				t_account* acc;
+				t_clan* clan;
+				const char* username;
+				t_clanmember* member;
+				t_connection* dest_conn;
 				packet_set_size(rpacket, sizeof(t_server_clanmember_remove_reply));
 				packet_set_type(rpacket, SERVER_CLANMEMBER_REMOVE_REPLY);
 				bn_int_set(&rpacket->u.server_clanmember_remove_reply.count,
@@ -5199,7 +5204,7 @@ namespace pvpgn
 				if ((acc = conn_get_account(c)) && (clan = account_get_clan(acc)) && (member = clan_find_member_by_name(clan, username))) {
 					dest_conn = clanmember_get_conn(member);
 					if (clan_remove_member(clan, member) == 0) {
-						t_packet *rpacket2;
+						t_packet* rpacket2;
 						if (dest_conn) {
 							clan_close_status_window(dest_conn);
 							conn_update_w3_playerinfo(dest_conn);
@@ -5223,9 +5228,9 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_membernewchiefreq(t_connection * c, t_packet const *const packet)
+		static int _client_clan_membernewchiefreq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
+			t_packet* rpacket;
 
 			if (packet_get_size(packet) < sizeof(t_client_clan_membernewchiefreq)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLIENT_CLAN_MEMBERNEWCHIEFREQ packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_clan_createreq), packet_get_size(packet));
@@ -5233,11 +5238,11 @@ namespace pvpgn
 			}
 
 			if ((rpacket = packet_create(packet_class_bnet)) != NULL) {
-				t_account *acc;
-				t_clan *clan;
-				t_clanmember *oldmember;
-				t_clanmember *newmember;
-				const char *username;
+				t_account* acc;
+				t_clan* clan;
+				t_clanmember* oldmember;
+				t_clanmember* newmember;
+				const char* username;
 				packet_set_size(rpacket, sizeof(t_server_clan_membernewchiefreply));
 				packet_set_type(rpacket, SERVER_CLAN_MEMBERNEWCHIEFREPLY);
 				bn_int_set(&rpacket->u.server_clan_membernewchiefreply.count, bn_int_get(packet->u.client_clan_membernewchiefreq.count));
@@ -5259,16 +5264,16 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_invitereq(t_connection * c, t_packet const *const packet)
+		static int _client_clan_invitereq(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
-			t_account *account;
-			t_clan *clan;
-			t_clanmember *member;
+			t_packet* rpacket;
+			t_account* account;
+			t_clan* clan;
+			t_clanmember* member;
 			t_clantag clantag;
-			const char *username;
-			t_connection *conn;
-			t_account *conn_account;
+			const char* username;
+			t_connection* conn;
+			t_account* conn_account;
 			char response_code;
 
 			if (packet_get_size(packet) < sizeof(t_client_clan_invitereq)) {
@@ -5342,17 +5347,17 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_clan_invitereply(t_connection * c, t_packet const *const packet)
+		static int _client_clan_invitereply(t_connection* c, t_packet const* const packet)
 		{
-			t_packet *rpacket;
-			t_account *acc;
-			t_clan *clan;
-			t_clanmember *member;
-			const char *username;
-			t_connection *conn;
-			t_account *conn_account;
-			t_clan *conn_clan;
-			t_clanmember *conn_member;
+			t_packet* rpacket;
+			t_account* acc;
+			t_clan* clan;
+			t_clanmember* member;
+			const char* username;
+			t_connection* conn;
+			t_account* conn_account;
+			t_clan* conn_clan;
+			t_clanmember* conn_member;
 			char status;
 
 			if (packet_get_size(packet) < sizeof(t_client_clan_invitereply)) {
@@ -5369,7 +5374,7 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CLAN_INVITEREPLY packet (mising status)", conn_get_socket(c));
 				return -1;
 			}
-			status = *((char *)packet_get_data_const(packet, offset, 1));
+			status = *((char*)packet_get_data_const(packet, offset, 1));
 
 			// reply without prior request
 			if (!((acc = conn_get_account(c)) &&
@@ -5432,15 +5437,15 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_crashdump(t_connection * c, t_packet const *const packet)
+		static int _client_crashdump(t_connection* c, t_packet const* const packet)
 		{
 			return 0;
 		}
 
-		static int _client_setemailreply(t_connection * c, t_packet const *const packet)
+		static int _client_setemailreply(t_connection* c, t_packet const* const packet)
 		{
-			char const *email;
-			t_account *account;
+			char const* email;
+			t_account* account;
 
 			if (!(email = packet_get_str_const(packet, sizeof(t_client_setemailreply), MAX_EMAIL_STR))) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad SETEMAILREPLY packet", conn_get_socket(c));
@@ -5463,13 +5468,13 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_changeemailreq(t_connection * c, t_packet const *const packet)
+		static int _client_changeemailreq(t_connection* c, t_packet const* const packet)
 		{
-			char const *oldaddr;
-			char const *newaddr;
-			char const *username;
-			char const *email;
-			t_account *account;
+			char const* oldaddr;
+			char const* newaddr;
+			char const* username;
+			char const* email;
+			t_account* account;
 			int pos;
 
 			pos = sizeof(t_client_changeemailreq);
@@ -5508,12 +5513,12 @@ namespace pvpgn
 			return 0;
 		}
 
-		static int _client_getpasswordreq(t_connection * c, t_packet const *const packet)
+		static int _client_getpasswordreq(t_connection* c, t_packet const* const packet)
 		{
-			char const *username;
-			char const *try_email;
-			char const *email;
-			t_account *account;
+			char const* username;
+			char const* try_email;
+			char const* email;
+			t_account* account;
 			int pos;
 
 			pos = sizeof(t_client_getpasswordreq);
@@ -5546,7 +5551,7 @@ namespace pvpgn
 
 
 
-		static int _client_extrawork(t_connection * c, t_packet const *const packet)
+		static int _client_extrawork(t_connection* c, t_packet const* const packet)
 		{
 			if (packet_get_size(packet) < sizeof(t_client_extrawork)) {
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad EXTRAWORK packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_extrawork), packet_get_size(packet));
@@ -5555,23 +5560,23 @@ namespace pvpgn
 			{
 				short gametype;
 				short length;
-				const char * data;
+				const char* data;
 				std::string data_s;
 
 				gametype = bn_short_get(packet->u.client_extrawork.gametype);
 				length = bn_short_get(packet->u.client_extrawork.length);
 
-				if (!(data = (const char *)packet_get_raw_data_const(packet, sizeof(t_client_extrawork)))) {
+				if (!(data = (const char*)packet_get_raw_data_const(packet, sizeof(t_client_extrawork)))) {
 					eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad EXTRAWORK packet (missing or too long data)", conn_get_socket(c));
 					return -1;
 				}
 				// extract substring with given length
 				data_s = std::string(data).substr(0, length);
 				eventlog(eventlog_level_debug, __FUNCTION__, "[{}] Received EXTRAWORK packet with GameType: {} and Length: {} ({})", conn_get_socket(c), gametype, length, data_s.c_str());
-			
-	#ifdef WITH_LUA
+
+#ifdef WITH_LUA
 				lua_handle_client_extrawork(c, gametype, length, data_s.c_str());
-	#endif
+#endif
 			}
 			return 0;
 		}
@@ -5583,8 +5588,8 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad REQUEST_GAME_LIST packet (expected {} bytes, got {})", conn_get_socket(c), sizeof(t_client_request_game_list_packet), packet_get_size(packet));
 				return -1;
 			}
-				
-			game_send_list_to_connection(c); 
+
+			game_send_list_to_connection(c);
 
 			return 0;
 		}
@@ -5628,7 +5633,7 @@ namespace pvpgn
 		// Helper: đọc rank data từ file JSON
 		// File format:
 		// {"username":"xxx","exp":1234,"games":56,"level":3,"rank":"Knight","last_update":1234567890}
-		struct RankData 
+		struct RankData
 		{
 			std::string username;
 			uint32_t    exp;
