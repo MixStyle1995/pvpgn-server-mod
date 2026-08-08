@@ -40,7 +40,8 @@ namespace pvpgn
 		char			game_name[32];
 		char			game_password[32];
 		char			map_name[64];
-		char			IP_Port[32];
+		char			IP_Port_Host[32];
+		char			IP_Port_Owner[32];
 		char			version[16];
 		bn_byte			current_players;
 		bn_byte			max_players;
@@ -53,23 +54,12 @@ namespace pvpgn
 
 	typedef struct
 	{
-		bn_int			game_id;
-		char			host_name[32];
-		char			owner_host_name[32];
-		char			game_name[32];
-		bn_byte			current_players;
-		bn_byte			max_players;
-	} t_game_update_player;
-
-	typedef struct
-	{
 		t_bnet_header	header;
 		bn_int			total_games;
 	} PACKED_ATTR() t_server_game_list_packet_header;
 #pragma pack()
 
 #define SERVER_GAME_HOST_INFO			0xf0ff
-#define SERVER_GAME_HOST_UPDATE_PLAYER	0xf3ff
 	/***********************************************************************************/
 	/* first packet recieved from client - option decides which struct to use next */
 #define CLIENT_FINDANONGAME 			0x44ff
