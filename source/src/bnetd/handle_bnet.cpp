@@ -67,6 +67,7 @@
 #include "adbanner.h"
 #include "character.h"
 #include "command.h"
+#include "command_groups.h"
 #include "tick.h"
 #include "message.h"
 #include "file.h"
@@ -190,6 +191,7 @@ namespace pvpgn
 		static int _client_request_game_list(t_connection* c, t_packet const* const packet);
 		static int _client_request_custom_war3_version(t_connection* c, t_packet const* const packet);
 		static int _client_rank_update(t_connection* c, t_packet const* const packet);
+		static int _client_change_password(t_connection* c, t_packet const* const packet);
 
 		/* connection state connected handler table */
 		static const t_htable_row bnet_htable_con[] = {
@@ -294,6 +296,7 @@ namespace pvpgn
 			{ CLIENT_CUSTOM_WAR3_VERSION, _client_request_custom_war3_version },
 			{ CLIENT_REQUEST_GAME_LIST, _client_request_game_list },
 			{ CLIENT_REQUEST_RANK_UPDATE, _client_rank_update },
+			{ CLIENT_CHANGE_PASSWORD, _client_change_password },
 			{ CLIENT_NULL, NULL },
 			{ -1, NULL }
 		};
@@ -5625,6 +5628,100 @@ namespace pvpgn
 
 			eventlog(eventlog_level_info, __FUNCTION__, "[{}] CUSTOM_WAR3_VERSION verstr={} versionid=0x{:08x} gameversion=0x{:08x} checksum=0x{:08x}", conn_get_socket(c), version, conn_get_versionid(c), conn_get_gameversion(c), conn_get_checksum(c));
 
+			return 0;
+		}
+
+		// Gui SERVER_CHANGE_PASSWORD_RESULT ve client
+		static void _send_change_password_result(t_connection* c, unsigned char resultCode, char const* message)
+		{
+			t_packet* rpacket;
+			if (!(rpacket = packet_create(packet_class_bnet)))
+				return;
+
+			packet_set_type(rpacket, SERVER_CHANGE_PASSWORD_RESULT);
+			packet_set_size(rpacket, sizeof(t_bnet_header) + 1);
+			packet_append_data(rpacket, &resultCode, 1);
+			packet_append_string(rpacket, message ? message : "");
+
+			conn_push_outqueue(c, rpacket);
+			packet_del_ref(rpacket);
+		}
+
+		// Doi mat khau BNET qua packet CLIENT_CHANGE_PASSWORD (0xf5ff), tuong
+		// duong lenh chat "/chpass <username> <newpass>" - dung LAI CHINH XAC
+		// logic quyen han va cach hash cua _handle_chpass_command trong
+		// command.cpp, chi khac nguon du lieu la packet thay vi text chat.
+		static int _client_change_password(t_connection* c, t_packet const* const packet)
+		{
+			if (packet_get_size(packet) < sizeof(t_client_change_password) + 2) // + it nhat 2 byte cho 2 chuoi rong
+			{
+				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CHANGE_PASSWORD packet (expected at least {} bytes, got {})", conn_get_socket(c), sizeof(t_client_change_password) + 2, packet_get_size(packet));
+				return -1;
+			}
+
+			char const* username = packet_get_str_const(packet, sizeof(t_client_change_password), MAX_USERNAME_LEN);
+			if (!username)
+			{
+				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CHANGE_PASSWORD packet (missing or too long username)", conn_get_socket(c));
+				return -1;
+			}
+
+			char const* newpass_raw = packet_get_str_const(packet, sizeof(t_client_change_password) + std::strlen(username) + 1, MAX_USERPASS_LEN + 1);
+			if (!newpass_raw)
+			{
+				eventlog(eventlog_level_error, __FUNCTION__, "[{}] got bad CHANGE_PASSWORD packet (missing or too long new password)", conn_get_socket(c));
+				return -1;
+			}
+
+			t_account* account = conn_get_account(c);
+			t_account* temp = accountlist_find_account(username);
+
+			// Quyen han: tu doi cho chinh minh (mac dinh duoc phep, tru khi
+			// account_get_auth_changepass = 0), doi cho NGUOI KHAC can quyen
+			// group "/admin-chpass" - giong het dieu kien cua lenh chat that.
+			if ((temp == account && account_get_auth_changepass(account) == 0) ||
+				(temp != account && !(account_get_command_groups(account) & command_get_group("/admin-chpass"))))
+			{
+				eventlog(eventlog_level_info, __FUNCTION__, "[{}] password change for \"{}\" refused (no change access)", conn_get_socket(c), username);
+				_send_change_password_result(c, 1, "Only admins may change passwords for other accounts");
+				return 0;
+			}
+
+			if (!temp)
+			{
+				_send_change_password_result(c, 2, "Account does not exist");
+				return 0;
+			}
+
+			std::string pass = newpass_raw;
+			if (pass.empty())
+			{
+				_send_change_password_result(c, 3, "Password cannot be empty");
+				return 0;
+			}
+			if (pass.length() > MAX_USERPASS_LEN)
+			{
+				eventlog(eventlog_level_info, __FUNCTION__, "[{}] password change for \"{}\" refused (too long, {} chars)", conn_get_socket(c), username, pass.length());
+				_send_change_password_result(c, 4, "Password too long");
+				return 0;
+			}
+
+			// bnet_hash can chu thuong (giong het _handle_chpass_command)
+			for (size_t i = 0; i < pass.length(); i++)
+				pass[i] = safe_tolower(pass[i]);
+
+			t_hash passhash;
+			bnet_hash(&passhash, pass.length(), pass.c_str());
+
+			if (account_set_pass(temp, hash_get_str(passhash)) < 0)
+			{
+				eventlog(eventlog_level_error, __FUNCTION__, "[{}] password change for \"{}\" failed (account_set_pass)", conn_get_socket(c), username);
+				_send_change_password_result(c, 5, "Unable to set password");
+				return 0;
+			}
+
+			eventlog(eventlog_level_info, __FUNCTION__, "[{}] \"{}\" changed password for \"{}\" via CLIENT_CHANGE_PASSWORD packet", conn_get_socket(c), account_get_name(account), username);
+			_send_change_password_result(c, 0, "Password changed successfully");
 			return 0;
 		}
 

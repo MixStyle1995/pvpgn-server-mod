@@ -75,6 +75,7 @@ namespace pvpgn
 
 #define SERVER_GAME_HOST_INFO			0xf0ff
 #define SERVER_GAME_STATE_UPDATE		0xf4ff
+#define SERVER_CHANGE_PASSWORD_RESULT	0xf6ff
 	/***********************************************************************************/
 	/* first packet recieved from client - option decides which struct to use next */
 #define CLIENT_FINDANONGAME 			0x44ff

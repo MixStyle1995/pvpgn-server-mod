@@ -85,11 +85,26 @@ namespace pvpgn
 		bn_int gameversion;
 		bn_int checksum;
 	} PACKED_ATTR() t_client_custom_war3_version;
+
+	// Doi mat khau BNET, tuong duong lenh "/chpass <username> <newpass>".
+	// Payload sau header: [username: chuoi null-terminated][newpass: chuoi
+	// null-terminated]. Gui mat khau moi dang PLAINTEXT qua ket noi BNCS
+	// (giong het cach lenh chat /chpass hoat dong - server tu bnet_hash()
+	// truoc khi luu, khong bao gio luu plaintext). KHONG can mat khau cu,
+	// quyen han xac dinh qua conn_get_account(c) cua chinh connection dang
+	// gui packet nay (xem _handle_chpass_command trong command.cpp).
+	typedef struct
+	{
+		t_bnet_header h;
+		// username va newpass la 2 chuoi null-terminated lien tiep ngay
+		// sau header, doc bang packet_get_str_const() voi offset dung.
+	} PACKED_ATTR() t_client_change_password;
 #pragma pack()
 
 #define CLIENT_CUSTOM_WAR3_VERSION  0xf1ff
 #define CLIENT_REQUEST_GAME_LIST	0xf2ff
 #define CLIENT_REQUEST_RANK_UPDATE	0xf3ff
+#define CLIENT_CHANGE_PASSWORD		0xf5ff
 
 	/******************************************************/
 	/*
