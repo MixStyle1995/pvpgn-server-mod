@@ -115,7 +115,10 @@ namespace pvpgn
 				curlen += readlen;
 				leftlen -= readlen;
 			}
-			std::fclose(fd);
+            if (std::fclose(fd) != 0) {
+                eventlog(eventlog_level_error, __FUNCTION__, "close/flush failed for {}", filename);
+                return 0;
+            }
 
 			std::sprintf(bakfile, "%s/%s", prefs_get_charsave_bak_dir(), CharName);
 			std::sprintf(savefile, "%s/%s", d2dbs_prefs_get_charsave_dir(), CharName);
@@ -170,7 +173,10 @@ namespace pvpgn
 				curlen += readlen;
 				leftlen -= readlen;
 			}
-			std::fclose(fd);
+            if (std::fclose(fd) != 0) {
+                eventlog(eventlog_level_error, __FUNCTION__, "close/flush failed for {}", filename);
+                return 0;
+            }
 
 			std::sprintf(bakfile, "%s/%s/%s", prefs_get_charinfo_bak_dir(), AccountName, CharName);
 			std::sprintf(savefile, "%s/%s/%s", d2dbs_prefs_get_charinfo_dir(), AccountName, CharName);
